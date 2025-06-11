@@ -239,9 +239,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     navLinks.forEach(link => {
         const linkPath = link.getAttribute('href');
-        if (currentPath.includes(linkPath) && linkPath !== 'index.html') {
+        if (currentPath.includes(linkPath) && linkPath !== 'index.php') {
             link.classList.add('active');
-        } else if (currentPath.endsWith('/') && linkPath === 'index.html') {
+        } else if (currentPath.endsWith('/') && linkPath === 'index.php') {
             link.classList.add('active');
         }
     });

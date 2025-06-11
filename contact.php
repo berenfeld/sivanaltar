@@ -1,72 +1,12 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>צור קשר - סיון אלטרוביץ מאמנת רגשית בשיטת סאטיה</title>
-    <meta name="description" content="צרו קשר עם סיון אלטרוביץ - מאמנת רגשית בשיטת סאטיה">
-    <link rel="stylesheet" href="css/styles.css">
+    <?php include 'head.html'; ?>
     <link rel="stylesheet" href="css/contact.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Oswald:wght@200;300;400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="icon" type="image/png" href="https://sivanaltar.com/images/favicon.png">
-
-    <!-- Basic Meta Tags -->
-    <meta property="og:site_name" content="סיון אלטרוביץ - מאמנת סאטיה">
-    <meta property="og:title" content="סיון אלטרוביץ - מאמנת סאטיה">
-    <meta property="og:description" content="אימון וטיפול בגישת סאטיה לשחרור ממיינד ורגשות מעכבים ויצירת חיים מלאי משמעות, אהבה וריפוי">
-    <meta property="og:url" content="https://sivanaltar.com/">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://sivanaltar.com/images/logo.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-
-    <!-- WhatsApp Specific -->
-    <meta property="og:image:alt" content="סיון אלטרוביץ - מאמנת סאטיה">
-    <meta name="theme-color" content="#4caf50">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://sivanaltar.com/">
-    <meta property="twitter:title" content="סיון אלטרוביץ - מאמנת סאטיה">
-    <meta property="twitter:description" content="מאמנת סאטיה מוסמכת, מלווה תהליכי שינוי והתפתחות אישית. טיפול ואימון בגישת סאטיה.">
-    <meta property="twitter:image" content="https://sivanaltar.com/images/logo.png">
-
 </head>
 <body>
-    <!-- Navigation -->
-    <header class="site-header">
-        <div class="container">
-            <div class="logo">
-                <a href="index.html">
-                    <img src="images/logo.png" alt="סיון אלטרוביץ - לוגו">
-                </a>
-            </div>
 
-            <button class="mobile-menu-toggle" aria-label="תפריט">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-            <nav class="main-nav">
-                <div class="mobile-menu-header">תפריט</div>
-                <ul>
-                    <li><a href="index.html">בית</a></li>
-                    <li><a href="blog.html">בלוג</a></li>
-                    <li><a href="gallery.html">גלריה</a></li>
-                    <li><a href="contact.html" class="active">צור קשר</a></li>
-                </ul>
-
-                <div class="mobile-contact-info">
-                    <p>טלפון: <a href="tel:054-5999671">054-5999671</a></p>
-                    <p>אימייל: <a href="mailto:sivanaltar@gmail.com">sivanaltar@gmail.com</a></p>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php include 'nav.html'; ?>
 
     <!-- Newsletter Section -->
     <section class="newsletter-section" style="background-image: url(images/contact-background.jpeg)">
@@ -76,7 +16,7 @@
             <p>הירשמו לניוזלטר שלי כדי לקבל תובנות ותוכן בלעדי ישירות לתיבת הדואר שלכם</p>
             <form class="newsletter-form" action="https://formsubmit.co/sivanaltar@gmail.com" method="POST">
                 <input type="hidden" name="_subject" value="הרשמה חדשה לניוזלטר">
-                <input type="hidden" name="_next" value="https://sivanaltar.com/thank-you.html">
+                <input type="hidden" name="_next" value="https://sivanaltar.com/thank-you.php">
                 <input type="hidden" name="_template" value="table">
                 <div class="form-group">
                     <div class="form-row">
@@ -130,7 +70,7 @@
                 <div class="contact-form">
                     <form action="https://formsubmit.co/sivanaltar@gmail.com" method="POST">
                         <input type="hidden" name="_subject" value="פנייה חדשה מהאתר">
-                        <input type="hidden" name="_next" value="https://sivanaltar.com/thank-you.html">
+                        <input type="hidden" name="_next" value="https://sivanaltar.com/thank-you.php">
                         <input type="hidden" name="_template" value="table">
                         <input type="hidden" name="_captcha" value="true">
                         <div class="form-group">
@@ -156,35 +96,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="container">
-            <div class="contact-info">
-                <p class="phone-link">
-                    <i class="fas fa-phone-alt"></i>&nbsp;&nbsp;טלפון:&nbsp;&nbsp;
-                    <a href="tel:+972545999671">054-5999671</a>
-                </p>
-                <p class="email-link">
-                    <i class="fas fa-envelope"></i>&nbsp;&nbsp;אימייל:&nbsp;&nbsp;
-                    <a href="mailto:sivanaltar@gmail.com">sivanaltar@gmail.com</a>
-                </p>
-            </div>
-            <div class="social-links">
-                <a href="https://www.facebook.com/sivan.hackam" target="_blank" aria-label="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="https://www.instagram.com/sivanhackam/" target="_blank" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://www.linkedin.com/in/sivan-hackam-altarovici-561737/" target="_blank" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-            </div>
-            <div class="copyright">
-                <p>© 2025 סיון אלטרוביץ - כל הזכויות שמורות</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'footer.html'; ?>
 
     <script src="js/scripts.js"></script>
 </body>
