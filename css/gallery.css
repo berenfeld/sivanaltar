@@ -1,0 +1,237 @@
+/* Gallery Page Specific Styles */
+
+/* Gallery Section Layout */
+.gallery-section {
+    margin: 10px 0;
+    padding-top: calc(100px + var(--header-height)); /* Accounts for fixed header */
+    background-color: #f8f8f8;
+}
+
+.gallery-header-section {
+    padding: 50px 0;
+    text-align: center;
+    background-color: var(--secondary-color);
+}
+
+.gallery-header-section .section-subtitle {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    margin-top: 5px;
+}
+
+.section-header {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.section-header h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: var(--heading-color);
+}
+
+.section-header p {
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+/* Gallery Grid System */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 20px;
+}
+
+/* Gallery Item Styling */
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    aspect-ratio: 1;
+    cursor: pointer; /* Add cursor pointer for better UX */
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Overlay Effect - FIX: Make it non-interactive for mouse events */
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* THIS FIXES THE SCROLLING ISSUE */
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-info {
+    text-align: center;
+    padding: 20px;
+}
+
+.gallery-info h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.gallery-info p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Lightbox Styles */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox.active {
+    display: flex;
+    opacity: 1;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 80vh;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid white;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 40px;
+    color: white;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 2100;
+}
+
+.lightbox-nav {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    pointer-events: none; /* This allows clicks to pass through */
+}
+
+.lightbox-nav button {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 30px;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+    pointer-events: auto; /* Make only the buttons clickable */
+}
+
+.lightbox-nav button:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-section {
+        padding: 60px 0;
+        padding-top: calc(60px + var(--header-height));
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-gap: 15px;
+    }
+
+    .section-header h1 {
+        font-size: 30px;
+    }
+
+    .section-header p {
+        font-size: 16px;
+    }
+
+    .lightbox-nav button {
+        font-size: 24px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-gap: 10px;
+    }
+
+    .gallery-info h3 {
+        font-size: 18px;
+    }
+
+    .gallery-info p {
+        font-size: 12px;
+    }
+
+    .lightbox-close {
+        top: 10px;
+        right: 10px;
+        font-size: 30px;
+    }
+}

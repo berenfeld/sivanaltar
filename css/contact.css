@@ -1,0 +1,236 @@
+/* Contact Page Specific Styles */
+
+/* Newsletter Section */
+.newsletter-section {
+    position: relative;
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.newsletter-section .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(25, 56, 72, 0.7);
+    z-index: 1;
+}
+
+.newsletter-section .container {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+}
+
+.newsletter-section h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.newsletter-section p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.newsletter-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Form Styling */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-input {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.form-input label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-input input,
+.form-input textarea {
+    padding: 12px 15px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+}
+
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #285e7a;
+}
+
+/* Contact Section */
+.contact-section {
+    padding: 80px 0;
+    background-color: #f8f8f8;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+}
+
+.contact-info {
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-item .icon {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-left: 15px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(52, 116, 148, 0.1);
+    border-radius: 50%;
+}
+
+.info-item .text {
+    font-size: 16px;
+}
+
+.info-item a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.info-item a:hover {
+    color: var(--primary-color);
+}
+
+.map-container {
+    height: 100%;
+    min-height: 350px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.contact-form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.contact-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Success and Error Messages */
+.form-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.form-message.success {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    border: 1px solid #2e7d32;
+}
+
+.form-message.error {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .contact-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+
+    .map-container {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .newsletter-section {
+        padding: 60px 0;
+    }
+
+    .newsletter-section h2 {
+        font-size: 30px;
+    }
+
+    .newsletter-section p {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-info,
+    .contact-form {
+        padding: 20px;
+    }
+
+    .info-item .icon {
+        margin-left: 10px;
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+}

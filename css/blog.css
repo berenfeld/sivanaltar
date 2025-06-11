@@ -1,0 +1,129 @@
+
+/* Blog Page Specific Styles */
+.blog-header-section {
+    padding: 50px 0;
+    text-align: center;
+    background-color: var(--secondary-color);
+}
+
+.blog-header-section .section-subtitle {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    margin-top: 5px;
+}
+
+.blog-content-section {
+    margin: 10px 0;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.blog-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+    height: 100%;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.blog-card-link {
+    display: block;
+    color: inherit;
+    height: 100%;
+}
+
+.blog-card-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.blog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.blog-card:hover .blog-card-image img {
+    transform: scale(1.05);
+}
+
+.blog-card-content {
+    padding: 20px;
+}
+
+.blog-card-title {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: var(--heading-color);
+}
+
+.blog-card-date {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.blog-card-excerpt {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.blog-card-excerpt p {
+    margin-bottom: 8px;
+}
+
+.blog-card-tag {
+    display: inline-block;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+/* Blog Sidebar */
+.blog-sidebar {
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.blog-categories h3 {
+    margin-bottom: 15px;
+    color: var(--heading-color);
+    font-size: 1.3rem;
+}
+
+.blog-categories ul {
+    list-style: none;
+    padding: 0;
+}
+
+.blog-categories li {
+    margin-bottom: 8px;
+}
+
+.blog-categories a {
+    color: var(--text-color);
+    padding: 5px 0;
+    display: block;
+    transition: color 0.3s;
+}
+
+.blog-categories a:hover,
+.blog-categories a.active {
+    color: var(--primary-color);
+}
