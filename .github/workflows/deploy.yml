@@ -1,0 +1,31 @@
+name: Deploy Website to InfinityFree
+
+on:
+  push:
+    branches: [ master ] # Change to main if you use main branch
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  deploy:
+    name: Deploy to InfinityFree via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup FTP deployment
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /sivanaltar.com/htdocs/
+          passive: true
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            README.md
+            deploy.yml
