@@ -27,9 +27,47 @@
 <meta name="twitter:image" content="https://sivanaltar.com/images/logo.jpeg">
 
 <!-- Other head elements -->
-<link rel="stylesheet" href="css/styles.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Oswald:wght@200;300;400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="images/favicon.png">
+
+<!-- Meta tags, title, etc. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Add other meta tags as needed -->
+
+<!-- Always include these base styles -->
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/footer.css">
+
+<!-- Page-specific CSS -->
+<?php
+$current_page = basename($_SERVER['PHP_SELF']);
+switch($current_page) {
+    case 'index.php':
+        echo '<link rel="stylesheet" href="css/hero.css">';
+        echo '<link rel="stylesheet" href="css/sections.css">';
+        break;
+    case 'blog.php':
+        echo '<link rel="stylesheet" href="css/blog.css">';
+        break;
+    case 'gallery.php':
+        echo '<link rel="stylesheet" href="css/gallery.css">';
+        break;
+    case 'contact.php':
+        echo '<link rel="stylesheet" href="css/contact.css">';
+        break;
+    case 'thank-you.php':
+        echo '<link rel="stylesheet" href="css/thank-you.css">';
+        break;
+    default:
+        // For any other page, include sections.css as a fallback
+        echo '<link rel="stylesheet" href="css/sections.css">';
+}
+?>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Oswald:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

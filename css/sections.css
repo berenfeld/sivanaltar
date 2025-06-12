@@ -1,0 +1,127 @@
+/* Content Sections Styles */
+
+/* Common section layout */
+.about-content,
+.method-content,
+.how-it-works-content,
+.value-content {
+    display: flex;
+    flex-direction: row; /* Standard flow */
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* Image containers - THIS IS THE KEY PART */
+.about-image,
+.method-image,
+.how-it-works-image,
+.value-image {
+    flex: 0 0 35%; /* This means: don't grow, don't shrink, start at 35% width */
+    max-width: 35%; /* This is important to limit the width */
+    margin-top: 70px; /* Vertical alignment with heading */
+}
+
+.about-text,
+.method-text,
+.how-it-works-text,
+.value-text {
+    flex: 1; /* Takes remaining space */
+}
+
+/* All images styling */
+.about-image img,
+.method-image img,
+.how-it-works-image img,
+.value-image img {
+    width: 85%; /* Image size within container */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    display: block;
+}
+
+/* Section titles and text styling */
+.about-text h3,
+.method-text h3,
+.how-it-works-text h3,
+.value-text h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.about-text h4,
+.method-text h4,
+.how-it-works-text h4,
+.value-text h4 {
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.about-text p,
+.method-text p,
+.how-it-works-text p,
+.value-text p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.about-text ul,
+.method-text ul,
+.how-it-works-text ul,
+.value-text ul {
+    list-style-type: disc;
+    padding-right: 25px;
+    margin-bottom: 20px;
+}
+
+.about-text ul li,
+.method-text ul li,
+.how-it-works-text ul li,
+.value-text ul li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .about-content,
+    .method-content,
+    .how-it-works-content,
+    .value-content {
+        flex-direction: column; /* Stack vertically */
+    }
+
+    .about-image,
+    .method-image,
+    .how-it-works-image,
+    .value-image {
+        flex: 1 0 100%;
+        max-width: 100%; /* Full width on mobile */
+        margin-top: 0;
+        order: 2; /* Move images below text */
+        margin-bottom: 0;
+        margin-top: 20px;
+    }
+
+    .about-text,
+    .method-text,
+    .how-it-works-text,
+    .value-text {
+        flex: 1 0 100%;
+        max-width: 100%;
+        order: 1; /* Keep text on top */
+    }
+
+    .about-image img,
+    .method-image img,
+    .how-it-works-image img,
+    .value-image img {
+        width: 100%; /* Full width on mobile */
+    }
+}

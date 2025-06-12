@@ -1,53 +1,51 @@
-    <style>
-        .thank-you-section {
-            padding: 120px 0;
-            text-align: center;
-            background-color: #f8f8f8;
-            min-height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.thank-you-section {
+    padding: 120px 0;
+    text-align: center;
+    background-color: #f8f8f8;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .thank-you-content {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 40px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
+.thank-you-content {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
 
-        .thank-you-icon {
-            font-size: 60px;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
+.thank-you-icon {
+    font-size: 60px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
 
-        .thank-you-content h1 {
-            font-size: 36px;
-            margin-bottom: 15px;
-            color: var(--heading-color);
-        }
+.thank-you-content h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: var(--heading-color);
+}
 
-        .thank-you-content p {
-            font-size: 18px;
-            margin-bottom: 30px;
-            color: var(--text-color);
-        }
+.thank-you-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: var(--text-color);
+}
 
-        .back-button {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
+.back-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
 
-        .back-button:hover {
-            background-color: #285e7a;
-        }
-    </style>
+.back-button:hover {
+    background-color: #285e7a;
+}

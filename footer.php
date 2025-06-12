@@ -27,3 +27,19 @@
         </div>
     </div>
 </footer>
+
+<!-- Global Scripts - Always load this -->
+<script src="js/scripts.js"></script>
+
+<?php
+// Page-specific scripts
+$current_page = basename($_SERVER['PHP_SELF']);
+
+// Add page-specific scripts
+if ($current_page == 'blog.php') {
+    echo '<script src="js/blog.js"></script>';
+} else if ($current_page == 'gallery.php') {
+    echo '<script src="js/gallery.js"></script>';
+}
+// Add more conditions for other pages as needed
+?>

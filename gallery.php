@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<head>
-    <?php include 'head.html'; ?>
-    <link rel="stylesheet" href="css/gallery.css">
-</head>
-
+    <?php include 'head.php'; ?>
 </head>
 <body class="gallery-page">
 
@@ -117,8 +113,6 @@
         </div>
     </section>
 
-    <?php include 'footer.html'; ?>
-
-    <script src="js/scripts.js"></script>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

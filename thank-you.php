@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <?php include 'head.html'; ?>
-    <link rel="stylesheet" href="css/thank-you.css">
+    <?php include 'head.php'; ?>
 </head>
 <body>
 
@@ -22,8 +21,6 @@
         </div>
     </section>
 
-    <?php include 'footer.html'; ?>
-
-    <script src="js/scripts.js"></script>
+    <?php include 'footer.php'; ?>
 </body>
 </html>

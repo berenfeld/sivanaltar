@@ -1,7 +1,6 @@
-
 /* Blog Page Specific Styles */
 .blog-header-section {
-    padding: 50px 0;
+    padding: 10px 0;
     text-align: center;
     background-color: var(--secondary-color);
 }
@@ -16,6 +15,7 @@
     margin: 10px 0;
 }
 
+/* Blog grid layout */
 .blog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -23,6 +23,7 @@
     margin-bottom: 40px;
 }
 
+/* Blog card styling */
 .blog-card {
     border-radius: 8px;
     overflow: hidden;
@@ -30,6 +31,7 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background-color: #fff;
     height: 100%;
+    position: relative;
 }
 
 .blog-card:hover {
@@ -94,6 +96,55 @@
     font-size: 0.8rem;
 }
 
+/* Full content and expand/collapse functionality */
+.blog-full-content {
+    margin-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 15px;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.blog-full-content p {
+    margin-bottom: 15px;
+}
+
+.blog-full-content.hidden {
+    display: none !important; /* Force hiding with !important */
+}
+
+.blog-card-excerpt.hidden {
+    display: none !important; /* Force hiding with !important */
+}
+
+.blog-expand-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: inherit;
+    transition: background-color 0.3s;
+    display: inline-block;
+    clear: both;
+    text-align: center;
+}
+
+.blog-expand-button:hover {
+    background-color: #285e7a;
+}
+
+.blog-card.expanded {
+    grid-column: 1 / -1; /* Make expanded card take full width */
+}
+
+.blog-card.expanded .blog-card-image {
+    height: 300px;
+}
+
 /* Blog Sidebar */
 .blog-sidebar {
     padding: 20px;
@@ -126,4 +177,31 @@
 .blog-categories a:hover,
 .blog-categories a.active {
     color: var(--primary-color);
+}
+
+/* Responsive adjustments for blog */
+@media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .blog-card-image {
+        height: 180px;
+    }
+
+    .blog-card.expanded .blog-card-image {
+        height: 200px;
+    }
+
+    .blog-header-section {
+        padding: 10px 0 10px;
+    }
+
+    .blog-content-section .container {
+        display: block; /* Clear any flex properties */
+    }
+
+    .blog-sidebar {
+        margin-top: 30px;
+    }
 }
