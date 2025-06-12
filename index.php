@@ -30,8 +30,6 @@
     <!-- About Me Section -->
     <section class="about-section">
         <div class="container">
-            <h2 class="section-title">מי אני</h2>
-
             <div class="about-content">
                 <div class="about-image">
                     <img src="images/main-1.jpeg" alt="סיון אלטרוביץ">
