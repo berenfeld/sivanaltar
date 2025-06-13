@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const lightboxImage = document.createElement('img');
             lightboxContent.appendChild(lightboxImage);
 
+            // Create caption container for image text
+            const lightboxCaption = document.createElement('div');
+            lightboxCaption.className = 'lightbox-caption';
+            lightboxContent.appendChild(lightboxCaption);
+
             const closeButton = document.createElement('button');
             closeButton.className = 'lightbox-close';
             closeButton.innerHTML = '&times;';
@@ -46,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Get references to elements
         const lightboxImage = lightbox.querySelector('.lightbox-content img');
+        const lightboxCaption = lightbox.querySelector('.lightbox-caption');
         const closeButton = lightbox.querySelector('.lightbox-close');
         const prevButton = lightbox.querySelector('.lightbox-nav button:first-child');
         const nextButton = lightbox.querySelector('.lightbox-nav button:last-child');
@@ -104,20 +110,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Update lightbox image
+        // Update lightbox image with caption
         function updateLightboxImage(index) {
             const imgSrc = galleryImages[index];
+            const currentItem = galleryItems[index];
+
+            // Get title and description from the gallery item
+            const title = currentItem.querySelector('.gallery-info h3').textContent;
+            const description = currentItem.querySelector('.gallery-info p').textContent;
 
             // Fade out current image
             lightboxImage.style.opacity = '0';
+            lightboxCaption.style.opacity = '0';
 
             // Change source after a brief delay
             setTimeout(() => {
                 lightboxImage.src = imgSrc;
 
+                // Update caption with title and description
+                lightboxCaption.innerHTML = `
+                    <h3>${title}</h3>
+                    <p>${description}</p>
+                `;
+
                 // Fade in new image once it's loaded
                 lightboxImage.onload = function() {
                     lightboxImage.style.opacity = '1';
+                    lightboxCaption.style.opacity = '1';
                 };
             }, 300);
 
@@ -136,6 +155,11 @@ document.addEventListener('DOMContentLoaded', function() {
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = ''; // Restore scrolling
+
+            // Reset opacity of caption for next opening
+            if (lightboxCaption) {
+                lightboxCaption.style.opacity = '0';
+            }
         }
     }
 });

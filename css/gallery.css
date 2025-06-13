@@ -130,6 +130,7 @@
     position: relative;
     max-width: 90%;
     max-height: 80vh;
+    margin: auto;
 }
 
 .lightbox-content img {
@@ -139,6 +140,7 @@
     display: block;
     margin: 0 auto;
     border: 2px solid white;
+    transition: opacity 0.3s ease;
 }
 
 .lightbox-close {
@@ -233,5 +235,114 @@
         top: 10px;
         right: 10px;
         font-size: 30px;
+    }
+}
+
+/* Mobile view for gallery overlay */
+@media (max-width: 768px) {
+    /* Show overlay text for mobile devices by default */
+    .gallery-item .gallery-overlay {
+        opacity: 1;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 30%, rgba(0,0,0,0) 60%);
+        top: auto;
+        height: 50%;
+        bottom: 0;
+        display: block;
+        padding: 10px;
+    }
+
+    .gallery-item .gallery-info {
+        position: absolute;
+        bottom: 0;
+        padding: 15px;
+        text-align: right;
+    }
+
+    .gallery-item .gallery-info h3 {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .gallery-item .gallery-info p {
+        font-size: 12px;
+        display: block;
+        margin: 0;
+    }
+
+    /* Disable hover transform effect on mobile */
+    .gallery-item:hover {
+        transform: none;
+    }
+
+    .gallery-item:hover img {
+        transform: none;
+    }
+}
+
+/* For very small screens, reduce text size further */
+@media (max-width: 480px) {
+    .gallery-item .gallery-info h3 {
+        font-size: 14px;
+    }
+
+    .gallery-item .gallery-info p {
+        font-size: 11px;
+    }
+}
+
+/* Lightbox caption styling */
+.lightbox-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0) 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox-caption h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.lightbox-caption p {
+    font-size: 16px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Adjust for mobile */
+@media (max-width: 768px) {
+    .lightbox-caption {
+        padding: 15px;
+    }
+
+    .lightbox-caption h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .lightbox-caption p {
+        font-size: 14px;
+    }
+}
+
+/* Additional adjustment for smaller screens */
+@media (max-width: 480px) {
+    .lightbox-content {
+        max-width: 95%;
+    }
+
+    .lightbox-caption h3 {
+        font-size: 16px;
+    }
+
+    .lightbox-caption p {
+        font-size: 12px;
     }
 }
