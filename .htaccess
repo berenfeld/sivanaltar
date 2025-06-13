@@ -13,3 +13,30 @@
     RewriteCond %{THE_REQUEST} \s/+(.+)\.php[\s?] [NC]
     RewriteRule ^ /%1 [R=301,NE,L]
 </IfModule>
+
+# Set proper ETag configuration
+<IfModule mod_headers.c>
+    # Disable Last-Modified header for PHP files (since they include other files)
+    <FilesMatch "\.(php|html)$">
+        Header unset Last-Modified
+    </FilesMatch>
+
+    # Use ETags based on size and modification time
+    FileETag MTime Size
+
+    # Set cache control for different file types
+    <FilesMatch "\.(html|php|css|js)$">
+        # For HTML/PHP files - long cache with revalidation
+        Header set Cache-Control "max-age=86400, must-revalidate"
+    </FilesMatch>
+
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico)$">
+        # For images - even longer cache
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+</IfModule>
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json
+</IfModule>
