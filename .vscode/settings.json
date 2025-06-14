@@ -1,0 +1,7 @@
+{
+    "phpserver.phpPath": "/usr/bin/php7.4",
+    "phpserver.phpConfigPath": "/etc/php/7.4/cli/php.ini",
+    "phpserver.browser": "chrome",
+    "phpserver.port": 8000,
+    "phpserver.relativePath": "./",
+}
