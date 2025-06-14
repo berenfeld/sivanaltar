@@ -1,6 +1,6 @@
-/* nav.css - Navigation and header styles for Sivan Altar's website */
+/* nav.css - Complete navigation styling for Sivan Altar's website */
 
-/* Header and Navigation */
+/* ----- Header and Navigation Base Styles ----- */
 .site-header {
     position: fixed;
     top: 0;
@@ -9,7 +9,7 @@
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    transition: background-color 0.3s;
+    transition: background-color var(--transition-speed);
     padding: 15px 0;
 }
 
@@ -22,9 +22,10 @@
     padding: 0 20px;
 }
 
-/* Logo styling */
+/* ----- Logo Styling ----- */
 .logo {
     flex-shrink: 0;
+    z-index: 1001; /* Above the mobile menu */
 }
 
 .logo img {
@@ -33,21 +34,23 @@
     display: block;
 }
 
-/* Main Navigation - Desktop */
+/* ----- Main Navigation - Desktop ----- */
+.main-nav {
+    display: flex;
+    align-items: center;
+}
+
 .main-nav ul {
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
+    align-items: center;
 }
 
 .main-nav li {
-    margin-right: 25px;
-    margin-left: 25px;
-}
-
-.main-nav li:last-child {
-    margin-right: 0;
+    margin: 0 15px;
+    position: relative;
 }
 
 .main-nav a {
@@ -55,10 +58,10 @@
     color: var(--heading-color);
     font-size: 16px;
     font-weight: 500;
-    padding: 10px 0;
-    display: inline-block;
+    padding: 8px 0;
+    display: block;
     position: relative;
-    transition: color 0.3s;
+    transition: color var(--transition-speed);
 }
 
 .main-nav a:after {
@@ -69,7 +72,7 @@
     width: 0;
     height: 2px;
     background-color: var(--primary-color);
-    transition: width 0.3s;
+    transition: width var(--transition-speed);
 }
 
 .main-nav a:hover,
@@ -82,13 +85,19 @@
     width: 100%;
 }
 
-/* Mobile menu elements - hidden on desktop */
-.mobile-menu-header,
-.mobile-contact-info {
-    display: none;
+/* ----- Auth Item Styling ----- */
+.main-nav li.auth-item {
+    display: flex;
+    align-items: center;
 }
 
-/* Mobile Menu Toggle Button */
+#auth-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* ----- Mobile Menu Toggle Button ----- */
 .mobile-menu-toggle {
     display: none;
     background: none;
@@ -105,7 +114,7 @@
     display: block;
     width: 100%;
     height: 3px;
-    background-color: var(--heading-color);
+    background-color: #333; /* Fixed color for hamburger icon */
     position: absolute;
     left: 0;
     transition: all 0.3s ease;
@@ -123,7 +132,7 @@
     top: 20px;
 }
 
-/* Mobile Menu Toggle Animation */
+/* ----- Mobile Menu Toggle Animation ----- */
 .mobile-menu-toggle.active span:nth-child(1) {
     transform: translateY(10px) rotate(45deg);
 }
@@ -136,7 +145,13 @@
     transform: translateY(-10px) rotate(-45deg);
 }
 
-/* Overlay for mobile menu */
+/* ----- Mobile Elements - Hidden on Desktop ----- */
+.mobile-menu-header,
+.mobile-contact-info {
+    display: none;
+}
+
+/* ----- Menu Overlay ----- */
 .menu-overlay {
     position: fixed;
     top: 0;
@@ -147,7 +162,7 @@
     z-index: 999;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity var(--transition-speed), visibility var(--transition-speed);
 }
 
 .menu-overlay.active {
@@ -155,38 +170,51 @@
     visibility: visible;
 }
 
-/* Mobile styles - media query */
+/* ----- Mobile Styles - Media Query ----- */
 @media (max-width: 768px) {
+    /* Header container in mobile */
+    .site-header .container {
+        position: relative;
+    }
+
+    /* Show mobile menu toggle */
     .mobile-menu-toggle {
-        display: block; /* Show on mobile */
-    }
-
-    /* Hide desktop menu */
-    .main-nav {
-        position: fixed;
-        top: 0;
-        right: -280px; /* Start off-screen */
-        width: 280px;
-        height: 100vh;
-        background-color: #f8f8f8;
-        z-index: 1000;
-        overflow-y: auto;
-        transition: right 0.3s ease;
-        padding-top: 80px;
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .main-nav.active {
-        right: 0; /* Slide in when active */
+        display: block;
     }
 
     /* Mobile Nav Layout */
-    .main-nav ul {
-        flex-direction: column;
-        padding: 0;
+    .main-nav {
+        position: fixed;
+        top: 0;
+        left: -280px; /* Start off-screen FROM LEFT */
+        right: auto; /* Reset right property */
+        width: 280px;
+        height: 100vh;
+        background-color: var(--background-light);
+        z-index: 1000;
+        overflow-y: auto;
+        transition: left var(--transition-speed); /* Change to animate left property */
+        padding-top: 60px;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1); /* Change shadow direction */
+        display: block; /* Override flex */
     }
 
-    .main-nav li {
+    /* Show menu when active */
+    .main-nav.active {
+        left: 0; /* Slide in FROM LEFT when active */
+        right: auto; /* Reset right property */
+    }
+
+    /* Mobile Nav Links */
+    .main-nav ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .main-nav li,
+    .main-nav li.auth-item {
         margin: 0;
         width: 100%;
     }
@@ -194,8 +222,8 @@
     .main-nav a {
         padding: 15px 25px;
         display: block;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-        font-size: 18px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 16px;
         width: 100%;
     }
 
@@ -203,7 +231,7 @@
         display: none; /* Remove underline effect */
     }
 
-    /* Show mobile elements */
+    /* Show mobile header */
     .mobile-menu-header {
         display: block;
         padding: 15px 25px;
@@ -215,12 +243,14 @@
         top: 0;
         left: 0;
         width: 100%;
+        text-align: center;
     }
 
+    /* Show mobile contact info */
     .mobile-contact-info {
         display: block;
         padding: 20px 25px;
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        border-top: 1px solid var(--border-color);
         margin-top: 20px;
     }
 
@@ -233,14 +263,46 @@
         color: var(--primary-color);
         text-decoration: none;
     }
+}
 
-    /* Ensure links are clickable in mobile nav */
-    .main-nav ul li {
-        position: relative;
-        z-index: 1001; /* Higher than the menu's z-index */
-    }
+/* ----- RTL Support for Hebrew ----- */
+html[dir="rtl"] .main-nav {
+    left: auto; /* Reset left property */
+    right: -280px; /* Start off-screen FROM RIGHT for RTL */
+}
 
-    .main-nav ul li a {
-        display: block; /* Ensure the entire area is clickable */
-    }
+/* Add this to your RTL section */
+html[dir="rtl"] .main-nav {
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1); /* Shadow on left side for RTL */
+}
+
+html[dir="rtl"] .main-nav.active {
+    left: auto; /* Reset left property */
+    right: 0; /* Slide in FROM RIGHT for RTL */
+}
+
+html[dir="rtl"] .mobile-menu-toggle span {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .main-nav a:after {
+    left: auto;
+    right: 0;
+}
+
+/* Ensure the container spacing is correct for RTL */
+html[dir="rtl"] .main-nav li {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+/* Fix alignment of auth elements for RTL */
+html[dir="rtl"] #auth-container {
+    justify-content: flex-end;
+}
+
+/* Prevent page scroll when menu is open */
+body.menu-open {
+    overflow: hidden;
 }

@@ -1,0 +1,128 @@
+/* google_login.css - Styling for authentication elements */
+
+/* Auth container as a list item */
+.auth-item {
+    display: flex;
+    align-items: center;
+    /* No margin-right to ensure proper alignment with other nav items */
+    margin-right: 0 !important;
+}
+
+/* Auth container - the main wrapper for login elements */
+#auth-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0;
+}
+
+/* Google login button container */
+#login-button {
+    display: flex;
+    align-items: center;
+    position: relative; /* Add this line */
+    top: 2px; /* Add this line to move it down 2px */
+}
+
+/* User information shown after login */
+#user-info {
+    display: none; /* Hidden by default, shown after login */
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    white-space: nowrap;
+}
+
+/* User avatar */
+#user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #eee;
+}
+
+/* Username display */
+#user-name {
+    font-size: 14px;
+    font-weight: 400;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Admin badge */
+.admin-badge {
+    background-color: #4285f4;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* Logout button */
+#logout-button {
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+#logout-button:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+
+/* Responsive styling for mobile */
+@media (max-width: 768px) {
+    /* Align auth item like other nav items in mobile view */
+    .auth-item {
+        width: 100%;
+        margin: 0 !important;
+        padding: 0;
+    }
+
+    /* Auth container in mobile */
+    #auth-container {
+        width: 100%;
+        padding: 10px 25px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* Center the Google button in mobile view */
+    #login-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* User info in mobile view */
+    #user-info {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    /* Avatar in mobile */
+    #user-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Username in mobile */
+    #user-name {
+        font-size: 16px;
+        max-width: 160px;
+    }
+
+    /* Mobile logout button */
+    #logout-button {
+        padding: 8px 12px;
+        margin-left: auto;
+    }
+}

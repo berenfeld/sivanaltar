@@ -1,1 +1,4 @@
 /php_errors.log
+/.env
+/.env.dev
+/.env.prod

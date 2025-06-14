@@ -38,6 +38,8 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/nav.css">
 <link rel="stylesheet" href="css/footer.css">
+<!-- In your header/navbar template -->
+<link rel="stylesheet" href="css/google_login.css">
 
 <!-- Page-specific CSS -->
 <?php

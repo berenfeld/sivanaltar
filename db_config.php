@@ -1,27 +1,18 @@
 <?php
-// Determine if we're in production or development
-$is_cli = (php_sapi_name() === 'cli');
-$is_production = !$is_cli && (
-    isset($_SERVER['HTTP_HOST']) && (
-        stripos($_SERVER['HTTP_HOST'], 'infinityfree.com') !== false ||
-        stripos($_SERVER['HTTP_HOST'], 'sivanaltar.com') !== false
-    )
-);
-
-// Configure database connection parameters
-if ($is_production) {
-    // Production database settings
-    $db_host = "sql107.infinityfree.com";  // InfinityFree MySQL host
-    $db_user = "if0_39000738";
-    $db_pass = "dosu20oLXQ";  // Replace with actual production password
-    $db_name = "if0_39000738_sivanaltar";
-} else {
-    // Development database settings (local Docker)
-    $db_host = "127.0.0.1";
-    $db_user = "if0_39000738";
-    $db_pass = "dosu20oLXQ";
-    $db_name = "if0_39000738_sivanaltar";
+// Load environment variables if not already loaded
+if (!getenv('DB_HOST')) {
+    require_once __DIR__ . '/env_loader.php';
 }
+
+// Determine if we're in production based on DEPLOYMENT variable
+$deployment = getenv('DEPLOYMENT') ?: 'Development';
+$is_production = ($deployment === 'Production');
+
+// Use the same database variables regardless of environment
+$db_host = getenv('DB_HOST') ?: '127.0.0.1';
+$db_user = getenv('DB_USER') ?: '';
+$db_pass = getenv('DB_PASS') ?: '';
+$db_name = getenv('DB_NAME') ?: '';
 
 // Function to get PDO database connection
 function getDbConnection() {

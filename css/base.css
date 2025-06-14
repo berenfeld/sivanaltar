@@ -7,7 +7,10 @@
     --heading-color: #1D2023;
     --highlight-color: #d6d939;
     --background-color: #ffffff;
+    --background-light: #f8f8f8;
     --overlay-color: rgba(0, 0, 0, 0.45);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --transition-speed: 0.3s;
 }
 
 * {

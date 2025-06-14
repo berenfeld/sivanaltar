@@ -30,6 +30,8 @@
 
 <!-- Global Scripts - Always load this -->
 <script src="js/scripts.js"></script>
+<!-- Include the authentication script at the end of the body -->
+<script src="js/google_login.js"></script>
 
 <?php
 // Page-specific scripts
