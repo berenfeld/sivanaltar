@@ -1,5 +1,6 @@
 <?php
 // Basic server and PHP configuration test
+require_once __DIR__ . '/env_loader.php';
 header('Content-Type: text/plain');
 echo "Server Test\n";
 echo "----------\n";
