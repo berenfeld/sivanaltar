@@ -1,23 +1,40 @@
 <?php
 // auth_config.php - Configuration for authentication
 
-// Load environment variables
-require_once __DIR__ . '/env_loader.php';
+// Check if environment variables are loaded
+if (empty($GLOBALS['GOOGLE_CLIENT_ID'])) {
+    require_once 'env_loader.php';
+}
 
-// Google OAuth Configuration
-define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: '');
-define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');
+// Google OAuth configuration
+define('GOOGLE_CLIENT_ID', $GLOBALS['GOOGLE_CLIENT_ID'] ?: '');
+define('GOOGLE_CLIENT_SECRET', $GLOBALS['GOOGLE_CLIENT_SECRET'] ?: '');
 
-// Get site URL from environment or construct a default
-$site_url = getenv('SITE_URL') ?: (
-    (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https://" : "http://") .
-    (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost')
-);
+// Site URL configuration
+$site_url = $GLOBALS['SITE_URL'] ?: (
+    isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http"
+) . "://" . $_SERVER['HTTP_HOST'];
 
-define('GOOGLE_REDIRECT_URI', $site_url . '/auth_callback.php');
+// Admin configuration
+define('ADMIN_EMAIL', $GLOBALS['ADMIN_EMAIL'] ?: 'admin@example.com');
 
-// Admin email - only used for reference, not for authorization
-define('ADMIN_EMAIL', getenv('ADMIN_EMAIL') ?: 'admin@example.com');
+// Initialize Google Client
+$client = new Google_Client();
+$client->setClientId(GOOGLE_CLIENT_ID);
+$client->setClientSecret(GOOGLE_CLIENT_SECRET);
+$client->setRedirectUri($site_url . '/auth_callback.php');
+$client->addScope('email');
+$client->addScope('profile');
+
+// Check if user is logged in
+$is_logged_in = false;
+$google_user = null;
+
+if (isset($_SESSION['google_user'])) {
+    $is_logged_in = true;
+    $google_user = $_SESSION['google_user'];
+    $is_admin = $google_user['email'] == $GLOBALS['ADMIN_EMAIL'];
+}
 
 // Function to process Google user data
 function processGoogleUser($google_user) {
@@ -30,7 +47,7 @@ function processGoogleUser($google_user) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Is this an admin email?
-        $is_admin = $google_user['email'] == getenv('ADMIN_EMAIL');
+        $is_admin = $google_user['email'] == $GLOBALS['ADMIN_EMAIL'];
 
         if ($user) {
             // Update existing user

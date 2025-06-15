@@ -1,30 +1,38 @@
 <?php
-// Load environment variables if not already loaded
-if (!getenv('DB_HOST')) {
-    require_once __DIR__ . '/env_loader.php';
+// Check if environment variables are loaded
+if (empty($GLOBALS['DB_HOST'])) {
+    require_once 'env_loader.php';
 }
 
-// Determine if we're in production based on DEPLOYMENT variable
-$deployment = getenv('DEPLOYMENT') ?: 'Development';
+// Get deployment environment
+$deployment = $GLOBALS['DEPLOYMENT'] ?: 'Development';
 $is_production = ($deployment === 'Production');
 
-// Use the same database variables regardless of environment
-$db_host = getenv('DB_HOST') ?: '127.0.0.1';
-$db_user = getenv('DB_USER') ?: '';
-$db_pass = getenv('DB_PASS') ?: '';
-$db_name = getenv('DB_NAME') ?: '';
+// Database configuration
+$db_host = $GLOBALS['DB_HOST'] ?: '127.0.0.1';
+$db_user = $GLOBALS['DB_USER'] ?: '';
+$db_pass = $GLOBALS['DB_PASS'] ?: '';
+$db_name = $GLOBALS['DB_NAME'] ?: '';
 
-// Function to get PDO database connection
+// Get database connection
 function getDbConnection() {
     global $db_host, $db_user, $db_pass, $db_name;
 
     try {
-        $dsn = "mysql:host=$db_host;dbname=$db_name";
-        $conn = new PDO($dsn, $db_user, $db_pass);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $conn = new PDO(
+            "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4",
+            $db_user,
+            $db_pass,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        );
         return $conn;
     } catch (PDOException $e) {
-        throw new Exception("Connection failed: " . $e->getMessage());
+        error_log("Database connection error: " . $e->getMessage());
+        throw new Exception("Database connection failed");
     }
 }
 ?>

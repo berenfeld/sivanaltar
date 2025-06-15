@@ -1,95 +1,92 @@
 <?php
-// init_db.php - Initialize database with only users table
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Load environment variables first
+require_once 'env_loader.php';
 
-// Include environment loader and database configuration
-require_once __DIR__ . '/env_loader.php';
-require_once __DIR__ . '/db_config.php';
+// Get initialization token and admin email
+$valid_init_token = $GLOBALS['INIT_DB_TOKEN'] ?: 'setup_sivanaltar_2023';
+$admin_email = $GLOBALS['ADMIN_EMAIL'] ?: 'berenfeldran@gmail.com';
 
-// Get initialization token from environment
-$valid_init_token = getenv('INIT_DB_TOKEN') ?: 'setup_sivanaltar_2023';
-
-// Get admin email from environment
-$admin_email = getenv('ADMIN_EMAIL') ?: 'berenfeldran@gmail.com';
-
-// Check for security token
-$has_valid_token = isset($_GET['init_token']) && $_GET['init_token'] === $valid_init_token;
-
-// Security check
-if (!$has_valid_token) {
+// Check if token is provided and valid
+if (!isset($_GET['init_token']) || $_GET['init_token'] !== $valid_init_token) {
     header('HTTP/1.0 403 Forbidden');
     echo "<h1>Access Denied</h1>";
     echo "<p>You need to provide a valid initialization token.</p>";
     exit;
 }
 
+// Get database configuration
+$db_host = $GLOBALS['DB_HOST'] ?: '127.0.0.1';
+$db_user = $GLOBALS['DB_USER'] ?: '';
+$db_pass = $GLOBALS['DB_PASS'] ?: '';
+$db_name = $GLOBALS['DB_NAME'] ?: '';
+
+echo "<h1>Database Initialization Script</h1>";
+
+// Add confirmation check for safety
+if (!isset($_GET['confirm']) || $_GET['confirm'] !== 'yes') {
+    echo "<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Database Initialization</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+            .warning { color: #721c24; background-color: #f8d7da; padding: 15px; border-radius: 5px; }
+            .button { display: inline-block; padding: 10px 20px; background-color: #dc3545; color: white;
+                     text-decoration: none; border-radius: 5px; margin-top: 20px; }
+            .button.cancel { background-color: #6c757d; margin-left: 10px; }
+            h1 { border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+            .info { background-color: #e2f0fb; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        </style>
+    </head>
+    <body>
+        <h1>Database Initialization</h1>
+
+        <div class='warning'>
+            <strong>Warning!</strong> This will reset your database and delete all existing data!
+        </div>
+
+        <div class='info'>
+            <p>This script will perform the following actions:</p>
+            <ul>
+                <li>Create database if it doesn't exist</li>
+                <li>Drop any existing tables with foreign keys to users</li>
+                <li>Drop the users table</li>
+                <li>Create a new users table</li>
+                <li>Add initial admin user: <strong>" . htmlspecialchars($admin_email) . "</strong></li>
+            </ul>
+        </div>
+
+        <p>Are you sure you want to proceed?</p>
+
+        <a href='?confirm=yes&init_token=" . htmlspecialchars($valid_init_token) . "' class='button'>Yes, Initialize Database</a>
+        <a href='index.php' class='button cancel'>Cancel</a>
+    </body>
+    </html>";
+    exit;
+}
+
+// Environment information
+echo "<p>Environment: <strong>" . $GLOBALS['DEPLOYMENT'] . "</strong></p>";
+echo "<p>Admin email: <strong>" . htmlspecialchars($admin_email) . "</strong></p>";
+
 try {
-    // Get database connection
-    $conn = getDbConnection();
+    // Get database connection without database name
+    $conn = new PDO("mysql:host=$db_host", $db_user, $db_pass);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    echo "<h1>Database Initialization Script</h1>";
+    // Create database if it doesn't exist
+    echo "<h2>Creating Database</h2>";
+    $conn->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    echo "<p style='color:green;'>✓ Database created or already exists</p>";
 
-    // Load environment variables if not already loaded
-    if (!getenv('DB_HOST')) {
-        require_once __DIR__ . '/env_loader.php';
-    }
+    // Select the database
+    $conn->exec("USE `$db_name`");
+    echo "<p style='color:green;'>✓ Database selected</p>";
 
-    // Determine if we're in production based on DEPLOYMENT variable
-    $deployment = getenv('DEPLOYMENT') ?: 'Development';
-    $is_production = ($deployment === 'Production');
-
-    // Use the same database variables regardless of environment
-    $db_host = getenv('DB_HOST') ?: '127.0.0.1';
-    $db_user = getenv('DB_USER') ?: '';
-    $db_pass = getenv('DB_PASS') ?: '';
-    $db_name = getenv('DB_NAME') ?: '';
-
-    // Add confirmation check for safety
-    if (!isset($_GET['confirm']) || $_GET['confirm'] !== 'yes') {
-        echo "<!DOCTYPE html>
-        <html>
-        <head>
-            <title>Database Initialization</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-                .warning { color: #721c24; background-color: #f8d7da; padding: 15px; border-radius: 5px; }
-                .button { display: inline-block; padding: 10px 20px; background-color: #dc3545; color: white;
-                         text-decoration: none; border-radius: 5px; margin-top: 20px; }
-                .button.cancel { background-color: #6c757d; margin-left: 10px; }
-                h1 { border-bottom: 1px solid #ddd; padding-bottom: 10px; }
-                .info { background-color: #e2f0fb; padding: 15px; border-radius: 5px; margin: 20px 0; }
-            </style>
-        </head>
-        <body>
-            <h1>Database Initialization</h1>
-
-            <div class='warning'>
-                <strong>Warning!</strong> This will reset your database and delete all existing data!
-            </div>
-
-            <div class='info'>
-                <p>This script will perform the following actions:</p>
-                <ul>
-                    <li>Drop any existing tables with foreign keys to users</li>
-                    <li>Drop the users table</li>
-                    <li>Create a new users table</li>
-                    <li>Add initial admin user: <strong>" . htmlspecialchars($admin_email) . "</strong></li>
-                </ul>
-            </div>
-
-            <p>Are you sure you want to proceed?</p>
-
-            <a href='?confirm=yes&init_token=" . htmlspecialchars($valid_init_token) . "' class='button'>Yes, Initialize Database</a>
-            <a href='index.php' class='button cancel'>Cancel</a>
-        </body>
-        </html>";
-        exit;
-    }
-
-    // Environment information
-    echo "<p>Environment: <strong>" . ($is_production ? "Production" : "Development") . "</strong></p>";
-    echo "<p>Admin email: <strong>" . htmlspecialchars($admin_email) . "</strong></p>";
+    // Set connection charset
+    $conn->exec("SET NAMES utf8mb4");
+    $conn->exec("SET CHARACTER SET utf8mb4");
+    $conn->exec("SET character_set_connection=utf8mb4");
 
     // First check for existing tables that reference users
     echo "<h2>Checking Existing Tables</h2>";
@@ -140,7 +137,7 @@ try {
         is_admin BOOLEAN DEFAULT FALSE,
         last_login DATETIME,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )";
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
     $conn->exec($sql_users);
     echo "<p style='color:green;'>✓ Users table created successfully</p>";
@@ -157,7 +154,7 @@ try {
         display_order INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    )";
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
     $conn->exec($sql_gallery);
     echo "<p style='color:green;'>✓ Gallery table created successfully</p>";
@@ -247,7 +244,7 @@ try {
 
     echo "<p style='color:green;'>✓ Successfully inserted $inserted_count gallery items</p>";
 
-    // Add admin user from environment variable
+    // Add admin user
     echo "<h2>Adding Admin User</h2>";
 
     $admin_name = explode('@', $admin_email)[0]; // Simple name from email
@@ -279,7 +276,7 @@ try {
     echo "<p>Error: " . $e->getMessage() . "</p>";
 
     // Debug info for development
-    if (!$is_production) {
+    if ($GLOBALS['DEPLOYMENT'] !== 'Production') {
         echo "<h3>Debug Information:</h3>";
         echo "<pre>";
         print_r($e->getTrace());
