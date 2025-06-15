@@ -2,13 +2,21 @@
 
 /* Gallery Section Layout */
 .gallery-section {
-    margin: 10px 0;
-    padding-top: calc(100px + var(--header-height)); /* Accounts for fixed header */
-    background-color: #f8f8f8;
+    padding: 80px 0;
+    padding-top: calc(80px + var(--header-height));
+    background-color: var(--background-light);
+}
+
+.gallery-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .gallery-header-section {
-    padding: 10px 0;
+    padding: 3px 0;
     text-align: center;
     background-color: var(--secondary-color);
 }
@@ -21,7 +29,7 @@
 
 .section-header {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .section-header h1 {
@@ -39,34 +47,140 @@
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 20px;
+    gap: 20px;
+    width: 100%;
 }
 
 /* Gallery Item Styling */
 .gallery-item {
     position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    background: #fff;
+    border-radius: 8px;
     overflow: hidden;
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-    aspect-ratio: 1;
-    cursor: pointer; /* Add cursor pointer for better UX */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .gallery-item:hover {
     transform: translateY(-5px);
 }
 
-.gallery-item img {
+.gallery-item.sortable-ghost {
+    opacity: 0.5;
+    background: #f0f0f0;
+}
+
+.gallery-item.sortable-chosen {
+    cursor: grabbing;
+}
+
+.gallery-item.sortable-drag {
+    opacity: 0.8;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Add a visual indicator for draggable items */
+.gallery-item[draggable="true"]::after {
+    content: '⋮⋮';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #666;
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.gallery-item[draggable="true"]:hover::after {
+    opacity: 1;
+}
+
+/* Ensure the add new item button stays at the end */
+.gallery-item.add-new-item {
+    cursor: pointer;
+}
+
+.gallery-item.add-new-item::after {
+    display: none;
+}
+
+/* Admin controls styling */
+.gallery-admin-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.gallery-admin-controls button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.edit-button {
+    background-color: #4285f4;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #3367d6;
+}
+
+.delete-button {
+    background-color: #ea4335;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #d33426;
+}
+
+.gallery-image {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 aspect ratio */
+    overflow: hidden;
+}
+
+.gallery-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
 }
 
-.gallery-item:hover img {
+.gallery-item:hover .gallery-image img {
     transform: scale(1.05);
+}
+
+.gallery-info {
+    padding: 15px;
+    background: #fff;
+    flex-grow: 1;
+}
+
+.gallery-info h3 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.gallery-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
 }
 
 /* Overlay Effect - FIX: Make it non-interactive for mouse events */
@@ -88,21 +202,6 @@
 
 .gallery-item:hover .gallery-overlay {
     opacity: 1;
-}
-
-.gallery-info {
-    text-align: center;
-    padding: 20px;
-}
-
-.gallery-info h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
-}
-
-.gallery-info p {
-    font-size: 14px;
-    opacity: 0.8;
 }
 
 /* Lightbox Styles */
@@ -256,17 +355,42 @@
         bottom: 0;
         padding: 15px;
         text-align: right;
+        width: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
     }
 
     .gallery-item .gallery-info h3 {
         font-size: 16px;
         margin-bottom: 5px;
+        color: white;
     }
 
     .gallery-item .gallery-info p {
         font-size: 12px;
         display: block;
         margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Admin controls in mobile view */
+    .gallery-admin-controls {
+        position: relative;
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 8px;
+        background: white;
+        width: 100%;
+        box-sizing: border-box;
+        border-top: 1px solid #eee;
+    }
+
+    .gallery-admin-controls button {
+        flex: 1;
+        padding: 6px 10px;
+        font-size: 13px;
+        opacity: 1;
+        min-height: 36px; /* Smaller touch target but still tap-friendly */
     }
 
     /* Disable hover transform effect on mobile */
@@ -287,6 +411,12 @@
 
     .gallery-item .gallery-info p {
         font-size: 11px;
+    }
+
+    .gallery-admin-controls button {
+        padding: 5px 8px;
+        font-size: 12px;
+        min-height: 32px;
     }
 }
 
@@ -345,4 +475,387 @@
     .lightbox-caption p {
         font-size: 12px;
     }
+}
+
+/* Alert Messages */
+.alert {
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+}
+
+.alert-error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+/* Delete Modal Styles */
+.delete-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-modal-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.delete-modal-content h2 {
+    color: #dc3545;
+    margin-bottom: 15px;
+}
+
+.delete-modal-content p {
+    margin-bottom: 10px;
+}
+
+.delete-modal-content .warning {
+    color: #dc3545;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.delete-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.delete-modal-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.confirm-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.confirm-delete:hover {
+    background-color: #c82333;
+}
+
+.cancel-delete {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancel-delete:hover {
+    background-color: #5a6268;
+}
+
+/* Upload Button in Gallery Item */
+.add-new-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.add-new-item:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.add-new-item .upload-button {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: none;
+    border: none;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.add-new-item .upload-button:hover {
+    background: none;
+    color: #495057;
+}
+
+.add-new-item .upload-button i {
+    font-size: 2.5rem;
+}
+
+.add-new-item .upload-button span {
+    font-size: 1.1rem;
+}
+
+/* Remove old upload button styles */
+.gallery-admin-upload {
+    display: none;
+}
+
+/* Upload Modal */
+.upload-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.upload-modal.active {
+    display: block;
+}
+
+.upload-modal-content {
+    background-color: #fff;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 600px;
+    position: relative;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+}
+
+.upload-modal h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 8px 0;
+}
+
+.image-preview {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f8f8;
+    transition: all 0.3s ease;
+}
+
+.image-preview:hover {
+    border-color: #666;
+    background-color: #f0f0f0;
+}
+
+.preview-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.preview-container:hover .preview-overlay {
+    opacity: 1;
+}
+
+.preview-overlay i {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.submit-button,
+.cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.submit-button:hover {
+    background-color: #45a049;
+}
+
+.cancel-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #da190b;
+}
+
+/* Modal Styles */
+.edit-modal,
+.delete-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+/* When modal is active */
+.edit-modal.active,
+.delete-modal.active {
+    display: flex;
+}
+
+.edit-modal-content,
+.delete-modal-content {
+    position: relative;
+    background: white;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.edit-modal input,
+.edit-modal textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.edit-modal textarea {
+    height: 100px;
+}
+
+.edit-modal-buttons,
+.delete-modal-buttons {
+    text-align: left;
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.edit-modal-buttons button,
+.delete-modal-buttons button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-modal-buttons .save,
+.delete-modal-buttons .confirm-delete {
+    background: #4CAF50;
+    color: white;
+}
+
+.edit-modal-buttons .cancel,
+.delete-modal-buttons .cancel-delete {
+    background: #f44336;
+    color: white;
 }

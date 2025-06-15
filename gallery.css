@@ -1,0 +1,49 @@
+.gallery-item {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-item.sortable-ghost {
+    opacity: 0.5;
+    background: #f0f0f0;
+}
+
+.gallery-item.sortable-chosen {
+    cursor: grabbing;
+}
+
+.gallery-item.sortable-drag {
+    opacity: 0.8;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Add a visual indicator for draggable items */
+.gallery-item[draggable="true"]::after {
+    content: '⋮⋮';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #666;
+    font-size: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.gallery-item[draggable="true"]:hover::after {
+    opacity: 1;
+}
+
+/* Ensure the add new item button stays at the end */
+.gallery-item.add-new-item {
+    cursor: pointer;
+}
+
+.gallery-item.add-new-item::after {
+    display: none;
+}

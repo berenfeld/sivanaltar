@@ -3,6 +3,11 @@
  */
 document.addEventListener('DOMContentLoaded', function() {
     const galleryItems = document.querySelectorAll('.gallery-item');
+    let currentDeleteItem = null;  // Moved to top level scope
+    let currentEditItem = null;
+    let currentImageIndex = 0;
+    let galleryImages = [];
+    let isSubmitting = false; // Add submission flag
 
     if (galleryItems.length) {
         // Create lightbox elements if they don't already exist
@@ -57,17 +62,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const nextButton = lightbox.querySelector('.lightbox-nav button:last-child');
 
         // Variables to track current image
-        let currentIndex = 0;
-        const galleryImages = Array.from(galleryItems).map(item => item.querySelector('img').src);
+        currentImageIndex = 0;
+        galleryImages = Array.from(galleryItems)
+            .filter(item => !item.classList.contains('add-new-item')) // Exclude the add-new-item
+            .map(item => item.querySelector('img').src);
 
         // Add click event to gallery items
         galleryItems.forEach((item, index) => {
-            item.addEventListener('click', () => {
-                currentIndex = index;
-                updateLightboxImage(currentIndex);
-                lightbox.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is active
-            });
+            // Skip the add-new-item
+            if (item.classList.contains('add-new-item')) return;
+
+            const galleryImage = item.querySelector('.gallery-image');
+            if (galleryImage) {
+                galleryImage.addEventListener('click', () => {
+                    currentImageIndex = index;
+                    updateLightboxImage(currentImageIndex);
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is active
+                });
+            }
         });
 
         // Close lightbox
@@ -85,14 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Navigation buttons
         prevButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-            updateLightboxImage(currentIndex);
+            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+            updateLightboxImage(currentImageIndex);
         });
 
         nextButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            currentIndex = (currentIndex + 1) % galleryImages.length;
-            updateLightboxImage(currentIndex);
+            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+            updateLightboxImage(currentImageIndex);
         });
 
         // Keyboard navigation
@@ -102,11 +115,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'Escape') {
                 closeLightbox();
             } else if (e.key === 'ArrowLeft') {
-                currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-                updateLightboxImage(currentIndex);
+                currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+                updateLightboxImage(currentImageIndex);
             } else if (e.key === 'ArrowRight') {
-                currentIndex = (currentIndex + 1) % galleryImages.length;
-                updateLightboxImage(currentIndex);
+                currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+                updateLightboxImage(currentImageIndex);
             }
         });
 
@@ -162,4 +175,239 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+    // Admin functionality
+    const editModal = document.getElementById('editModal');
+    if (editModal) {
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target === editModal) {
+                closeEditModal();
+            }
+        }
+    }
+
+    // Initialize upload form
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadSubmitButton = document.getElementById('uploadSubmitButton');
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
+
+    if (imageInput && imagePreview) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (uploadForm && uploadSubmitButton) {
+        uploadSubmitButton.addEventListener('click', async () => {
+            // Prevent double submission
+            if (isSubmitting) {
+                return;
+            }
+
+            // Validate form
+            if (!uploadForm.checkValidity()) {
+                uploadForm.reportValidity();
+                return;
+            }
+
+            // Disable submit button and set submitting flag
+            isSubmitting = true;
+            uploadSubmitButton.disabled = true;
+            uploadSubmitButton.textContent = 'מעלה...';
+
+            const formData = new FormData(uploadForm);
+
+            try {
+                const response = await fetch('upload_gallery.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('התמונה הועלתה בהצלחה');
+
+                    // Add the new image to the gallery
+                    const galleryGrid = document.querySelector('.gallery-grid');
+                    const newItem = createGalleryItem(result.item);
+                    galleryGrid.insertBefore(newItem, galleryGrid.firstChild.nextSibling);
+
+                    // Reset the form and close modal
+                    uploadForm.reset();
+                    document.getElementById('imagePreview').innerHTML = '';
+                    closeUploadModal();
+                } else {
+                    showAlert(result.error || 'אירעה שגיאה בהעלאת התמונה', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('אירעה שגיאה בהעלאת התמונה', 'error');
+            } finally {
+                // Re-enable submit button and reset submitting flag
+                isSubmitting = false;
+                uploadSubmitButton.disabled = false;
+                uploadSubmitButton.textContent = 'העלה';
+            }
+        });
+    }
 });
+
+// Admin functions
+function openEditModal(item) {
+    document.getElementById('edit_id').value = item.id;
+    document.getElementById('edit_title').value = item.title;
+    document.getElementById('edit_description').value = item.description;
+    document.getElementById('edit_display_order').value = item.display_order;
+    document.getElementById('editModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+// Upload functions
+function openUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is active
+    }
+}
+
+function closeUploadModal() {
+    const modal = document.getElementById('uploadModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Re-enable scrolling
+
+        // Reset form and preview when closing
+        const uploadForm = document.getElementById('uploadForm');
+        if (uploadForm) {
+            uploadForm.reset();
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+
+        // Reset submitting flag and re-enable submit button
+        isSubmitting = false;
+        const uploadSubmitButton = document.getElementById('uploadSubmitButton');
+        if (uploadSubmitButton) {
+            uploadSubmitButton.disabled = false;
+            uploadSubmitButton.textContent = 'העלה';
+        }
+    }
+}
+
+// Delete functions
+function openDeleteModal(item) {
+    currentDeleteItem = item;
+    document.getElementById('delete-title').textContent = item.title;
+    document.getElementById('deleteModal').style.display = 'block';
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    currentDeleteItem = null;
+}
+
+function deleteImage() {
+    if (!currentDeleteItem) return;
+
+    fetch('delete_gallery.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: currentDeleteItem.id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the gallery item from the DOM
+            const item = document.querySelector(`[data-id="${currentDeleteItem.id}"]`);
+            if (item) {
+                item.remove();
+            }
+            closeDeleteModal();
+            // Show success message
+            showAlert('התמונה נמחקה בהצלחה', 'success');
+        } else {
+            showAlert('שגיאה במחיקת התמונה', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('שגיאה במחיקת התמונה', 'error');
+    });
+}
+
+// Create gallery item element
+function createGalleryItem(item) {
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
+    div.setAttribute('data-id', item.id);
+
+    div.innerHTML = `
+        <div class="gallery-image">
+            <img src="${item.image_path}" alt="${item.title}" loading="lazy">
+        </div>
+        <div class="gallery-info">
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+        </div>
+        ${isAdmin ? `
+        <div class="gallery-admin-controls">
+            <button class="edit-button" onclick="openEditModal(${JSON.stringify(item)})">
+                <i class="fas fa-edit"></i> ערוך
+            </button>
+            <button class="delete-button" onclick="openDeleteModal(${JSON.stringify(item)})">
+                <i class="fas fa-trash"></i> מחק
+            </button>
+        </div>
+        ` : ''}
+    `;
+
+    return div;
+}
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const editModal = document.getElementById('editModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const uploadModal = document.getElementById('uploadModal');
+
+    if (event.target === editModal) {
+        closeEditModal();
+    }
+    if (event.target === deleteModal) {
+        closeDeleteModal();
+    }
+    if (event.target === uploadModal) {
+        closeUploadModal();
+    }
+}
+
+// Alert function
+function showAlert(message, type = 'success') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+
+    // Insert at the top of the gallery section
+    const gallerySection = document.querySelector('.gallery-section .container');
+    gallerySection.insertBefore(alertDiv, gallerySection.firstChild);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}

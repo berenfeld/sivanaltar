@@ -5,7 +5,7 @@
 </head>
 <body>
 
-    <?php include 'nav.html'; ?>
+    <?php include 'nav.php'; ?>
 
     <!-- Newsletter Section -->
     <section class="newsletter-section" style="background-image: url(images/contact-background.jpeg)">

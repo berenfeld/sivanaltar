@@ -5,8 +5,9 @@
 
 ### setup .env
 
-### Running mysql serer locally
+see `.env.dev`
 
+### Running mysql serer locally
 
 docker run --name sivans-mysql \
   -e MYSQL_ROOT_PASSWORD=dosu20oLXQ \
@@ -15,3 +16,13 @@ docker run --name sivans-mysql \
   -e MYSQL_PASSWORD=dosu20oLXQ \
   -p 3306:3306 \
   -d mariadb:10.6
+
+### Running phpmyadmin locally
+
+docker run --name sivans-phpmyadmin -d --link sivans-mysql:db -p 8080:80 phpmyadmin/phpmyadmin
+
+## Production
+
+### PHP my admin
+
+https://php-myadmin.net/db_structure.php?db=if0_39000738_sivanaltar

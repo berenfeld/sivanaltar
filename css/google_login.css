@@ -92,12 +92,14 @@
         width: 100%;
         padding: 10px 25px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        flex-direction: row-reverse; /* Reverse the direction for RTL */
     }
 
-    /* Center the Google button in mobile view */
+    /* Align the Google button to the right in mobile view (RTL) */
     #login-button {
-        width: 100%;
-        justify-content: center;
+        width: auto;
+        margin-left: 0;
+        margin-right: 0;
     }
 
     /* User info in mobile view */

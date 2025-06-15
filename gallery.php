@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -5,114 +8,154 @@
 </head>
 <body class="gallery-page">
 
-    <?php include 'nav.html'; ?>
+    <?php include 'nav.php'; ?>
 
     <!-- Blog Header Section -->
     <section class="gallery-header-section">
         <div class="container">
             <h1 class="section-title">גלריית תמונות</h1>
             <p class="section-subtitle">תמונות שצילמתי ואני אוהבת</p>
+            <?php
+            if (isset($_GET['message']) && $_GET['message'] === 'updated') {
+                echo '<div class="alert alert-success">התמונה עודכנה בהצלחה</div>';
+            }
+            if (isset($_GET['error']) && $_GET['error'] === 'update_failed') {
+                echo '<div class="alert alert-error">אירעה שגיאה בעדכון התמונה</div>';
+            }
+            ?>
         </div>
     </section>
 
     <!-- Gallery Section -->
     <section class="gallery-section">
         <div class="container">
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="images/gallery-1.jpeg" alt="תמונת גלריה 1">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>רגע של התבוננות</h3>
-                            <p>צילום מיוחד שלכד רגע של שלווה פנימית</p>
-                        </div>
+            <div class="gallery-container">
+                <div class="gallery-grid">
+                    <?php if ($isAdmin): ?>
+                    <div class="gallery-item add-new-item">
+                        <button class="upload-button" onclick="openUploadModal()">
+                            <i class="fas fa-plus"></i>
+                            <span>הוסף תמונה חדשה</span>
+                        </button>
                     </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-2.jpeg" alt="תמונת גלריה 2">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>דרך חדשה</h3>
-                            <p>תחילתו של מסע אישי</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-3.jpeg" alt="תמונת גלריה 3">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>שקיעה מרהיבה</h3>
-                            <p>סוף יום מלא השראה</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-4.jpeg" alt="תמונת גלריה 4">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>טבע פראי</h3>
-                            <p>החיבור לטבע כחלק מתהליך ההתפתחות</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-5.jpeg" alt="תמונת גלריה 5">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>אור בקצה המנהרה</h3>
-                            <p>תקווה והתחדשות</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-6.jpeg" alt="תמונת גלריה 6">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>מבט אל האופק</h3>
-                            <p>לראות מעבר למה שנמצא כעת</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-7.jpeg" alt="תמונת גלריה 7">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>צבעי החיים</h3>
-                            <p>הדרך שבה אנו רואים את העולם</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-8.jpeg" alt="תמונת גלריה 8">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>דרכים מתפצלות</h3>
-                            <p>בחירות שמעצבות את המסע שלנו</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-9.jpeg" alt="תמונת גלריה 9">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>שקט פנימי</h3>
-                            <p>רגע של מדיטציה והתבוננות</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <img src="images/gallery-10.jpeg" alt="תמונת גלריה 10">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h3>מרחבים פתוחים</h3>
-                            <p>האפשרויות האינסופיות שלפנינו</p>
-                        </div>
-                    </div>
+                    <?php endif; ?>
+                    <?php
+                    // Include database configuration
+                    require_once 'db_config.php';
+
+                    try {
+                        // Get database connection
+                        $conn = getDbConnection();
+
+                        // Get gallery items from database
+                        $sql = "SELECT * FROM gallery ORDER BY display_order ASC";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->execute();
+                        $gallery_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        // Loop through each gallery item
+                        foreach ($gallery_items as $item) {
+                            ?>
+                            <div class="gallery-item" data-id="<?php echo $item['id']; ?>" <?php echo $isAdmin ? 'draggable="true"' : ''; ?>>
+                                <div class="gallery-image">
+                                    <img src="<?php echo htmlspecialchars($item['image_path']); ?>"
+                                         alt="<?php echo htmlspecialchars($item['title']); ?>"
+                                         loading="lazy">
+                                </div>
+                                <div class="gallery-info">
+                                    <h3><?php echo htmlspecialchars($item['title']); ?></h3>
+                                    <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                </div>
+                                <?php if ($isAdmin): ?>
+                                <div class="gallery-admin-controls">
+                                    <button class="edit-button" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
+                                        <i class="fas fa-edit"></i> ערוך
+                                    </button>
+                                    <button class="delete-button" onclick="openDeleteModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
+                                        <i class="fas fa-trash"></i> מחק
+                                    </button>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php
+                        }
+                    } catch (PDOException $e) {
+                        // Log error and show user-friendly message
+                        error_log("Database error: " . $e->getMessage());
+                        echo '<div class="error-message">מצטערים, אירעה שגיאה בטעינת הגלריה. אנא נסו שוב מאוחר יותר.</div>';
+                    }
+                    ?>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Edit Modal -->
+    <div id="editModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <h2>עריכת תמונה</h2>
+            <form id="editForm" method="POST" action="update_gallery.php">
+                <input type="hidden" id="edit_id" name="id">
+                <div>
+                    <label for="edit_title">כותרת:</label>
+                    <input type="text" id="edit_title" name="title" required>
+                </div>
+                <div>
+                    <label for="edit_description">תיאור:</label>
+                    <textarea id="edit_description" name="description" required></textarea>
+                </div>
+                <div class="edit-modal-buttons">
+                    <button type="submit" class="save">שמור</button>
+                    <button type="button" class="cancel" onclick="closeEditModal()">ביטול</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <h2>מחיקת תמונה</h2>
+            <p>האם אתה בטוח שברצונך למחוק את התמונה "<span id="delete-title"></span>"?</p>
+            <p class="warning">פעולה זו אינה ניתנת לביטול!</p>
+            <div class="delete-modal-buttons">
+                <button class="confirm-delete" onclick="deleteImage()">מחק</button>
+                <button class="cancel-delete" onclick="closeDeleteModal()">ביטול</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="upload-modal">
+        <div class="upload-modal-content">
+            <h2>העלאת תמונה חדשה</h2>
+            <form id="uploadForm" enctype="multipart/form-data" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="image">בחר תמונה:</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="title">כותרת:</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">תיאור:</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" id="uploadSubmitButton" class="submit-button">העלה</button>
+                    <button type="button" class="cancel-button" onclick="closeUploadModal()">ביטול</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <?php include 'footer.php'; ?>
+
+    <?php if ($isAdmin): ?>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="gallery.js"></script>
+    <?php endif; ?>
 </body>
 </html>

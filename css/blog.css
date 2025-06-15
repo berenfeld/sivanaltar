@@ -1,14 +1,14 @@
 /* Blog Page Specific Styles */
 .blog-header-section {
-    padding: 10px 0;
+    padding: 3px 0;
     text-align: center;
     background-color: var(--secondary-color);
 }
 
 .blog-header-section .section-subtitle {
     color: var(--primary-color);
-    font-size: 1.4rem;
-    margin-top: 5px;
+    font-size: 1.2rem;
+    margin-top: 3px;
 }
 
 .blog-content-section {
@@ -20,7 +20,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 30px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 /* Blog card styling */

@@ -15,7 +15,7 @@ if ($response['loggedIn']) {
         'name' => $_SESSION['user_name'],
         'email' => $_SESSION['user_email'],
         'picture' => $_SESSION['user_picture'],
-        'isAdmin' => $_SESSION['is_admin']
+        'is_admin' => $_SESSION['is_admin']
     ];
 }
 

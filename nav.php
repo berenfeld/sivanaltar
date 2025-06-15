@@ -1,3 +1,12 @@
+<?php
+session_start();
+// Set PHP isAdmin variable
+$isAdmin = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['is_admin']) && $_SESSION['is_admin'];
+?>
+<script>
+    // Set JavaScript isAdmin variable
+    const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+</script>
 <header class="site-header">
     <div class="container">
         <div class="logo">
@@ -19,13 +28,16 @@
                 <li><a href="blog.php">בלוג</a></li>
                 <li><a href="gallery.php">גלריה</a></li>
                 <li><a href="contact.php">צור קשר</a></li>
+                <?php if ($isAdmin): ?>
+                <li><a href="admin.php">ניהול</a></li>
+                <?php endif; ?>
                 <li class="auth-item">
                     <div id="auth-container">
                         <div id="login-button"></div>
                         <div id="user-info">
                             <img id="user-avatar" src="" alt="תמונת פרופיל">
                             <span id="user-name"></span>
-                            <span id="admin-badge" class="admin-badge" style="display:none;">מנהל</span>
+                            <span id="admin-badge" class="admin-badge" style="display: none;">מנהל</span>
                             <button id="logout-button">יציאה</button>
                         </div>
                     </div>

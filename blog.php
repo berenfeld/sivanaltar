@@ -4,7 +4,7 @@
     <?php include 'head.php'; ?>
 </head>
 <body>
-    <?php include 'nav.html'; ?>
+    <?php include 'nav.php'; ?>
 
     <!-- Blog Header Section -->
     <section class="blog-header-section">

@@ -30,7 +30,7 @@ body {
     background-color: var(--background-color);
     direction: rtl;
     text-align: right;
-    padding-top: 80px; /* Space for the fixed header */
+    padding-top: 60px; /* Space for the fixed header */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -76,7 +76,7 @@ section {
     margin-bottom: 10px;
     font-size: 2.5rem;
     color: var(--primary-color);
-    margin-top: 50px;
+    margin-top: 20px;
 }
 
 /* Common utility styles */

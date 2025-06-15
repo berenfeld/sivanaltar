@@ -4,7 +4,7 @@
 document.addEventListener('DOMContentLoaded', initAuth);
 
 // Global elements
-let loginButton, userInfo, userName, userAvatar, logoutButton;
+let loginButton, userInfo, user_name, userAvatar, logoutButton;
 let loginButtonMobile, userInfoMobile, userNameMobile, userAvatarMobile, logoutButtonMobile;
 
 // Initialize auth elements and check status
@@ -12,7 +12,7 @@ function initAuth() {
     // Get desktop elements
     loginButton = document.getElementById('login-button');
     userInfo = document.getElementById('user-info');
-    userName = document.getElementById('user-name');
+    user_name = document.getElementById('user-name');
     userAvatar = document.getElementById('user-avatar');
     logoutButton = document.getElementById('logout-button');
 
@@ -100,12 +100,8 @@ function handleGoogleCredential(response) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            console.log("Login successful, user data:", data.user);
             updateUIWithUserInfo(data.user);
-
-            // If user is admin, show admin controls
-            if (data.user.is_admin) {
-                showAdminControls();
-            }
         } else {
             console.error('Authentication failed:', data.message);
         }
@@ -124,7 +120,7 @@ function checkLoginStatus() {
             updateUIWithUserInfo(data.user);
 
             // If user is admin, show admin controls
-            if (data.user.isAdmin) {
+            if (data.user.is_admin) {
                 showAdminControls();
             }
         }
@@ -136,13 +132,13 @@ function checkLoginStatus() {
 
 // Update UI with user information
 function updateUIWithUserInfo(user) {
-    console.log("Updating UI with user:", user.name);
+    console.log("Updating UI with user:", user);
 
     // Update desktop UI
     if (loginButton) loginButton.style.display = 'none';
     if (userInfo) userInfo.style.display = 'flex';
     if (userAvatar) userAvatar.src = user.picture || user.profile_picture;
-    if (userName) userName.textContent = user.name;
+    if (user_name) user_name.textContent = user.name;
 
     // Update admin badge on desktop
     const adminBadge = document.getElementById('admin-badge');
@@ -160,6 +156,13 @@ function updateUIWithUserInfo(user) {
     const adminBadgeMobile = document.getElementById('admin-badge-mobile');
     if (adminBadgeMobile) {
         adminBadgeMobile.style.display = user.is_admin ? 'inline-block' : 'none';
+    }
+
+    // Show/hide admin controls based on admin status
+    if (user.is_admin) {
+        showAdminControls();
+    } else {
+        hideAdminControls();
     }
 }
 

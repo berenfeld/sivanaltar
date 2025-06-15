@@ -5,7 +5,7 @@
 </head>
 <body>
 
-    <?php include 'nav.html'; ?>
+    <?php include 'nav.php'; ?>
 
     <!-- Thank You Section -->
     <section class="thank-you-section">
