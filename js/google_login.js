@@ -47,10 +47,14 @@ function initAuth() {
 // Add this function to your google_login.js
 function initGoogleSignIn() {
     // Configure Google Sign-In
+    // Configure Google Sign-In with advanced settings
     google.accounts.id.initialize({
         client_id: '737149879159-k8sksf67g8o8e769u1qvnjjmojv7i8sl.apps.googleusercontent.com',
         callback: handleGoogleCredential,
-        auto_select: false
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        itp_support: true,
+        context: 'signin'  // Explicitly set the context
     });
 
     // Render the sign-in button
@@ -100,7 +104,6 @@ function handleGoogleCredential(response) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            console.log("Login successful, user data:", data.user);
             updateUIWithUserInfo(data.user);
         } else {
             console.error('Authentication failed:', data.message);

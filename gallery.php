@@ -1,3 +1,5 @@
+<?php include 'headers.php'; ?>
+
 <?php
 session_start();
 ?>
