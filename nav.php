@@ -28,9 +28,6 @@ $isAdmin = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SE
                 <li><a href="blog.php">בלוג</a></li>
                 <li><a href="gallery.php">גלריה</a></li>
                 <li><a href="contact.php">צור קשר</a></li>
-                <?php if ($isAdmin): ?>
-                <li><a href="admin.php">ניהול</a></li>
-                <?php endif; ?>
                 <li class="auth-item">
                     <div id="auth-container">
                         <div id="login-button"></div>

@@ -266,8 +266,7 @@ try {
 
     // Show links
     echo '<p>';
-    echo '<a href="admin.php" style="padding:10px 15px; background-color:#4CAF50; color:white; text-decoration:none; border-radius:4px; margin-right:15px;">Go to Admin Panel</a>';
-    echo '<a href="users.php" style="padding:10px 15px; background-color:#2196F3; color:white; text-decoration:none; border-radius:4px;">Manage Users</a>';
+    echo '<a href="server_test.php" style="padding:10px 15px; background-color:#2196F3; color:white; text-decoration:none; border-radius:4px;">Server Test Page</a>';
     echo '</p>';
 
 } catch (PDOException $e) {
