@@ -1,31 +1,38 @@
-name: Deploy Website to InfinityFree
+name: Deploy to AWS VM
 
 on:
   push:
-    branches: [ master ] # Change to main if you use main branch
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+    branches: [ master ]
 
 jobs:
   deploy:
-    name: Deploy to InfinityFree via FTP
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Setup FTP deployment
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
-          server-dir: /sivanaltar.com/htdocs/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            .github/**
-            README.md
-            deploy.yml
-            **/*.sh
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'placeholder'
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Prepare directory for deployment (change ownership to ubuntu)
+        run: |
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo chown -R ubuntu:ubuntu ${{ secrets.DEPLOY_PATH }}"
+
+      - name: Deploy with rsync
+        run: |
+          rsync -avz --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'README.md' \
+            --exclude '*.sh' \
+            ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/
+
+      - name: Set ownership back to www-data with proper permissions
+        run: |
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "sudo chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }}"
