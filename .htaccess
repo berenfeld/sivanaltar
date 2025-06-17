@@ -1,5 +1,9 @@
 # Set proper ETag configuration
 <IfModule mod_headers.c>
+    # Allow Google login popup communication
+    Header set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+    Header set Cross-Origin-Embedder-Policy "credentialless"
+
     # Disable Last-Modified header for PHP files (since they include other files)
     <FilesMatch "\.(php|html)$">
         Header unset Last-Modified

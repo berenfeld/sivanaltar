@@ -1,5 +1,3 @@
-<?php include 'headers.php'; ?>
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>

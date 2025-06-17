@@ -1,9 +1,4 @@
 <?php
-// Add this at the top of your pages
-header("Cross-Origin-Opener-Policy: same-origin-allow-popups");
-?>
-
-<?php
 // auth_callback.php
 // Start with necessary setup
 error_reporting(0); // Disable error reporting in production
