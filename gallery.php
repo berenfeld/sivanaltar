@@ -94,7 +94,7 @@ session_start();
     <div id="editModal" class="edit-modal">
         <div class="edit-modal-content">
             <h2>עריכת תמונה</h2>
-            <form id="editForm" method="POST" action="update_gallery.php">
+            <form id="editForm" method="POST">
                 <input type="hidden" id="edit_id" name="id">
                 <div>
                     <label for="edit_title">כותרת:</label>

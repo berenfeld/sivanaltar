@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }));
 
                 // Send the new order to the server
-                fetch('update_gallery_order.php', {
+                fetch('backend/gallery/gallery_order.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(uploadForm);
 
             try {
-                const response = await fetch('upload_gallery.php', {
+                const response = await fetch('backend/gallery/gallery_upload.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -202,7 +202,7 @@ function deleteImage() {
     const itemId = modal.dataset.itemId;
 
     // Send delete request
-    fetch('delete_gallery.php', {
+    fetch('backend/gallery/gallery_delete.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

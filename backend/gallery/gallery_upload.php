@@ -2,8 +2,18 @@
 session_start();
 header('Content-Type: application/json');
 
+// Include database configuration
+require_once __DIR__ . '/../../db_config.php';
+
+// Include logger
+require_once __DIR__ . '/../logger/logger.php';
+
+// Initialize logger
+$logger = new Logger();
+
 // Check if user is logged in and is admin
 if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in'] || !isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
+    $logger->logFailedLogin($_SESSION['user_email'] ?? 'unknown', 'Unauthorized gallery upload attempt');
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit;
 }
@@ -47,6 +57,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $newId = $conn->lastInsertId();
 
+                // Log successful upload
+                $logger->logGalleryAction([
+                    'action' => 'UPLOAD',
+                    'user_id' => $_SESSION['user_id'] ?? 'unknown',
+                    'user_email' => $_SESSION['user_email'] ?? 'unknown',
+                    'user_name' => $_SESSION['user_name'] ?? 'unknown',
+                    'gallery_id' => $newId,
+                    'title' => $_POST['title'],
+                    'description' => $_POST['description'],
+                    'file_name' => $_FILES['image']['name'],
+                    'file_size' => $_FILES['image']['size'],
+                    'file_type' => $_FILES['image']['type'],
+                    'uploaded_file' => $uploadFile,
+                    'display_order' => $nextOrder
+                ]);
+
                 // Return success response with the new item data
                 echo json_encode([
                     'success' => true,
@@ -66,6 +92,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('No file uploaded or upload error occurred.');
         }
     } catch (Exception $e) {
+        // Log failed upload
+        $logger->logGalleryAction([
+            'action' => 'UPLOAD_FAILED',
+            'user_id' => $_SESSION['user_id'] ?? 'unknown',
+            'user_email' => $_SESSION['user_email'] ?? 'unknown',
+            'user_name' => $_SESSION['user_name'] ?? 'unknown',
+            'error' => $e->getMessage(),
+            'file_name' => $_FILES['image']['name'] ?? 'none',
+            'file_size' => $_FILES['image']['size'] ?? 0,
+            'file_type' => $_FILES['image']['type'] ?? 'none'
+        ]);
+
         error_log("Error uploading gallery image: " . $e->getMessage());
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         exit;

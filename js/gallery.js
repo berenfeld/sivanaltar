@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(uploadForm);
 
             try {
-                const response = await fetch('upload_gallery.php', {
+                const response = await fetch('backend/gallery/gallery_upload.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -257,6 +257,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSubmitting = false;
                 uploadSubmitButton.disabled = false;
                 uploadSubmitButton.textContent = 'העלה';
+            }
+        });
+    }
+});
+
+// Add event listener for edit form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const editForm = document.getElementById('editForm');
+    if (editForm) {
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent traditional form submission
+
+            const formData = {
+                id: document.getElementById('edit_id').value,
+                title: document.getElementById('edit_title').value,
+                description: document.getElementById('edit_description').value
+            };
+
+            try {
+                const response = await fetch('backend/gallery/gallery_update.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('התמונה עודכנה בהצלחה', 'success');
+                    closeEditModal();
+                    // Optionally reload the page to show updated data
+                    location.reload();
+                } else {
+                    showAlert(result.message || 'אירעה שגיאה בעדכון התמונה', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('אירעה שגיאה בעדכון התמונה', 'error');
             }
         });
     }
@@ -322,7 +362,7 @@ function closeDeleteModal() {
 function deleteImage() {
     if (!currentDeleteItem) return;
 
-    fetch('delete_gallery.php', {
+    fetch('backend/gallery/gallery_delete.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

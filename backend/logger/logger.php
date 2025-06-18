@@ -101,6 +101,132 @@ class Logger {
     }
 
     /**
+     * Log gallery actions (upload, update, delete, reorder)
+     */
+    public function logGalleryAction($data) {
+        $action = $data['action'] ?? 'UNKNOWN';
+        $userInfo = sprintf(
+            "User: %s (ID: %s, Email: %s)",
+            $data['user_name'] ?? 'Unknown',
+            $data['user_id'] ?? 'unknown',
+            $data['user_email'] ?? 'unknown'
+        );
+
+        switch ($action) {
+            case 'UPLOAD':
+                $logEntry = sprintf(
+                    "[%s] GALLERY_UPLOAD - %s - Gallery ID: %s - Title: '%s' - File: %s (%s bytes, %s) - Order: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['gallery_id'] ?? 'unknown',
+                    $data['title'] ?? 'unknown',
+                    $data['file_name'] ?? 'unknown',
+                    $data['file_size'] ?? 'unknown',
+                    $data['file_type'] ?? 'unknown',
+                    $data['display_order'] ?? 'unknown'
+                );
+                break;
+
+            case 'UPLOAD_FAILED':
+                $logEntry = sprintf(
+                    "[%s] GALLERY_UPLOAD_FAILED - %s - Error: %s - File: %s (%s bytes, %s)\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['error'] ?? 'unknown',
+                    $data['file_name'] ?? 'unknown',
+                    $data['file_size'] ?? 'unknown',
+                    $data['file_type'] ?? 'unknown'
+                );
+                break;
+
+            case 'UPDATE':
+                $logEntry = sprintf(
+                    "[%s] GALLERY_UPDATE - %s - Gallery ID: %s - Title: '%s' -> '%s' - Description: '%s' -> '%s'\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['gallery_id'] ?? 'unknown',
+                    $data['old_title'] ?? 'unknown',
+                    $data['new_title'] ?? 'unknown',
+                    $data['old_description'] ?? 'unknown',
+                    $data['new_description'] ?? 'unknown'
+                );
+                break;
+
+            case 'UPDATE_FAILED':
+                $logEntry = sprintf(
+                    "[%s] GALLERY_UPDATE_FAILED - %s - Gallery ID: %s - Error: %s - Title: '%s'\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['gallery_id'] ?? 'unknown',
+                    $data['error'] ?? 'unknown',
+                    $data['title'] ?? 'unknown'
+                );
+                break;
+
+            case 'DELETE':
+                $logEntry = sprintf(
+                    "[%s] GALLERY_DELETE - %s - Gallery ID: %s - Title: '%s' - File: %s - File Deleted: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['gallery_id'] ?? 'unknown',
+                    $data['title'] ?? 'unknown',
+                    $data['image_path'] ?? 'unknown',
+                    $data['file_deleted'] ? 'Yes' : 'No'
+                );
+                break;
+
+            case 'DELETE_FAILED':
+                $logEntry = sprintf(
+                    "[%s] GALLERY_DELETE_FAILED - %s - Gallery ID: %s - Error: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['gallery_id'] ?? 'unknown',
+                    $data['error'] ?? 'unknown'
+                );
+                break;
+
+            case 'REORDER':
+                $changes = [];
+                foreach ($data['order_changes'] ?? [] as $change) {
+                    $changes[] = sprintf("ID %s: %s -> %s",
+                        $change['id'],
+                        $change['old_order'],
+                        $change['new_order']
+                    );
+                }
+                $logEntry = sprintf(
+                    "[%s] GALLERY_REORDER - %s - Items: %s - Changes: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['items_count'] ?? 'unknown',
+                    implode(', ', $changes)
+                );
+                break;
+
+            case 'REORDER_FAILED':
+                $logEntry = sprintf(
+                    "[%s] GALLERY_REORDER_FAILED - %s - Items: %s - Error: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['items_count'] ?? 'unknown',
+                    $data['error'] ?? 'unknown'
+                );
+                break;
+
+            default:
+                $logEntry = sprintf(
+                    "[%s] GALLERY_%s - %s - Data: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $action,
+                    $userInfo,
+                    json_encode($data)
+                );
+        }
+
+        $this->writeLog($logEntry);
+    }
+
+    /**
      * Write log entry to file
      */
     private function writeLog($logEntry) {
