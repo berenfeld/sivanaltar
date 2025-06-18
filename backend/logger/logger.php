@@ -10,7 +10,7 @@ class Logger {
 
     public function __construct($logDir = null) {
         if ($logDir === null) {
-            $this->logDir = __DIR__ . '/../../logs';
+            $this->logDir = __DIR__ . '/../../../logs';
         } else {
             $this->logDir = $logDir;
         }
