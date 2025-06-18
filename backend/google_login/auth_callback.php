@@ -1,20 +1,27 @@
 <?php
-// auth_callback.php
 // Start with necessary setup
 error_reporting(0); // Disable error reporting in production
 session_start();
 
 // Load environment variables
-require_once __DIR__ . '/env_loader.php';
+require_once __DIR__ . '/../../env_loader.php';
 
 // IMPORTANT: Set content type to JSON *before* any output
 header('Content-Type: application/json');
 
 // Include database configuration
-require_once 'db_config.php';
+require_once __DIR__ . '/../../db_config.php';
+
+// Include logger
+require_once __DIR__ . '/../logger/logger.php';
+
+// Initialize logger
+$logger = new Logger();
 
 // Check if credential was provided
-if (!isset($_POST['credential'])) {
+$input = json_decode(file_get_contents('php://input'), true);
+if (!isset($input['credential'])) {
+    $logger->logFailedLogin('unknown', 'No credential provided');
     echo json_encode([
         'success' => false,
         'message' => 'No credential provided'
@@ -22,7 +29,7 @@ if (!isset($_POST['credential'])) {
     exit;
 }
 
-$id_token = $_POST['credential'];
+$id_token = $input['credential'];
 
 try {
     // Decode the JWT token to get user information
@@ -63,8 +70,13 @@ try {
         $user_id = $existing_user['id'];
         $is_admin = (bool)$existing_user['is_admin'];
 
-        // Optional: Log the login for auditing
-        error_log("User login: {$user_email}, Admin: " . ($is_admin ? "Yes" : "No"));
+        // Log the login
+        $logger->logLogin([
+            'id' => $user_id,
+            'email' => $user_email,
+            'name' => $user_name,
+            'is_admin' => $is_admin
+        ]);
     } else {
         // New user: create with default non-admin status
         $stmt = $conn->prepare("
@@ -80,7 +92,13 @@ try {
         $user_id = $conn->lastInsertId();
         $is_admin = false; // New users are not admins by default
 
-        error_log("New user created: {$user_email}");
+        // Log the new user login
+        $logger->logLogin([
+            'id' => $user_id,
+            'email' => $user_email,
+            'name' => $user_name,
+            'is_admin' => $is_admin
+        ]);
     }
 
     // Set session variables
@@ -104,6 +122,9 @@ try {
     ]);
 
 } catch (Exception $e) {
+    // Log failed login
+    $logger->logFailedLogin($user_email ?? 'unknown', $e->getMessage());
+
     // Return error as JSON
     echo json_encode([
         'success' => false,

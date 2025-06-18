@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', initAuth);
 
 // Global elements
 let loginButton, userInfo, user_name, userAvatar, logoutButton;
-let loginButtonMobile, userInfoMobile, userNameMobile, userAvatarMobile, logoutButtonMobile;
+let isLoading = false;
 
 // Initialize auth elements and check status
 function initAuth() {
@@ -16,38 +16,12 @@ function initAuth() {
     userAvatar = document.getElementById('user-avatar');
     logoutButton = document.getElementById('logout-button');
 
-    // Get mobile elements
-    loginButtonMobile = document.getElementById('login-button-mobile');
-    userInfoMobile = document.getElementById('user-info-mobile');
-    userNameMobile = document.getElementById('user-name-mobile');
-    userAvatarMobile = document.getElementById('user-avatar-mobile');
-    logoutButtonMobile = document.getElementById('logout-button-mobile');
-
     // Add logout event listeners
     if (logoutButton) {
         logoutButton.addEventListener('click', handleLogout);
     }
 
-    if (logoutButtonMobile) {
-        logoutButtonMobile.addEventListener('click', handleLogout);
-    }
-
-    // Load Google Identity Services script
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    script.onload = initGoogleSignIn;
-    document.head.appendChild(script);
-
-    // Check login status
-    checkLoginStatus();
-}
-
-// Add this function to your google_login.js
-function initGoogleSignIn() {
-    // Configure Google Sign-In
-    // Configure Google Sign-In with advanced settings
+    // Initialize Google Sign-In
     google.accounts.id.initialize({
         client_id: '737149879159-k8sksf67g8o8e769u1qvnjjmojv7i8sl.apps.googleusercontent.com',
         callback: handleGoogleCredential,
@@ -58,66 +32,75 @@ function initGoogleSignIn() {
     });
 
     // Render the sign-in button
-    const loginButton = document.getElementById('login-button');
-
     if (loginButton) {
-        // Use different options based on screen size
-        const isMobile = window.innerWidth <= 768;
-
         google.accounts.id.renderButton(
             loginButton,
             {
                 theme: 'outline',
-                size: isMobile ? 'large' : 'medium',
+                size: 'large',
                 text: 'signin_with',
                 shape: 'rectangular',
-                width: isMobile ? 'max' : undefined
+                width: 250
             }
         );
     }
+
+    // Check login status
+    checkLoginStatus();
 }
-
-// Update the window resize handler
-window.addEventListener('resize', function() {
-    // Re-render the Google button when window is resized across breakpoints
-    const currentIsMobile = window.innerWidth <= 768;
-    if (currentIsMobile !== (window.lastIsMobile || false)) {
-        window.lastIsMobile = currentIsMobile;
-
-        // Only re-render if Google is loaded
-        if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-            initGoogleSignIn();
-        }
-    }
-});
 
 // Handle Google credential response
 function handleGoogleCredential(response) {
+    if (isLoading) return; // Prevent multiple submissions
+    setLoading(true);
+
     // Send the token to our server for verification
-    fetch('auth_callback.php', {
+    fetch('backend/google_login/auth_callback.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
         },
-        body: 'credential=' + encodeURIComponent(response.credential)
+        body: JSON.stringify({ credential: response.credential })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             updateUIWithUserInfo(data.user);
+            showNotification('Successfully logged in!', 'success');
         } else {
-            console.error('Authentication failed:', data.message);
+            throw new Error(data.message || 'Authentication failed');
         }
     })
     .catch(error => {
         console.error('Error during authentication:', error);
+        showNotification(error.message || 'Failed to authenticate. Please try again.', 'error');
+    })
+    .finally(() => {
+        setLoading(false);
     });
 }
 
 // Check if user is already logged in
 function checkLoginStatus() {
-    fetch('auth_status.php')
-    .then(response => response.json())
+    setLoading(true);
+    fetch('backend/google_login/auth_status.php', {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.loggedIn) {
             updateUIWithUserInfo(data.user);
@@ -130,6 +113,10 @@ function checkLoginStatus() {
     })
     .catch(error => {
         console.error('Error checking login status:', error);
+        showNotification('Failed to check login status. Please refresh the page.', 'error');
+    })
+    .finally(() => {
+        setLoading(false);
     });
 }
 
@@ -143,22 +130,10 @@ function updateUIWithUserInfo(user) {
     if (userAvatar) userAvatar.src = user.picture || user.profile_picture;
     if (user_name) user_name.textContent = user.name;
 
-    // Update admin badge on desktop
+    // Update admin badge
     const adminBadge = document.getElementById('admin-badge');
     if (adminBadge) {
         adminBadge.style.display = user.is_admin ? 'inline-block' : 'none';
-    }
-
-    // Update mobile UI
-    if (loginButtonMobile) loginButtonMobile.style.display = 'none';
-    if (userInfoMobile) userInfoMobile.style.display = 'flex';
-    if (userAvatarMobile) userAvatarMobile.src = user.picture || user.profile_picture;
-    if (userNameMobile) userNameMobile.textContent = user.name;
-
-    // Update admin badge on mobile
-    const adminBadgeMobile = document.getElementById('admin-badge-mobile');
-    if (adminBadgeMobile) {
-        adminBadgeMobile.style.display = user.is_admin ? 'inline-block' : 'none';
     }
 
     // Show/hide admin controls based on admin status
@@ -171,31 +146,47 @@ function updateUIWithUserInfo(user) {
 
 // Handle logout
 function handleLogout() {
+    if (isLoading) return; // Prevent multiple submissions
+    setLoading(true);
     console.log("Logging out...");
 
-    fetch('auth_logout.php')
-    .then(response => response.json())
+    fetch('backend/google_login/auth_logout.php', {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            // Reset desktop UI
+            // Reset UI
             if (loginButton) loginButton.style.display = 'flex';
             if (userInfo) userInfo.style.display = 'none';
-
-            // Reset mobile UI
-            if (loginButtonMobile) loginButtonMobile.style.display = 'flex';
-            if (userInfoMobile) userInfoMobile.style.display = 'none';
 
             // Hide admin controls
             hideAdminControls();
 
+            showNotification('Successfully logged out!', 'success');
+
             // Reload to ensure clean state
             window.location.reload();
+        } else {
+            throw new Error(data.message || 'Logout failed');
         }
     })
     .catch(error => {
         console.error('Error during logout:', error);
+        showNotification(error.message || 'Failed to logout. Please try again.', 'error');
         // Fallback reload
         window.location.reload();
+    })
+    .finally(() => {
+        setLoading(false);
     });
 }
 
@@ -211,4 +202,39 @@ function hideAdminControls() {
     document.querySelectorAll('.admin-only').forEach(element => {
         element.style.display = 'none';
     });
+}
+
+// Set loading state
+function setLoading(loading) {
+    isLoading = loading;
+    if (loginButton) {
+        loginButton.disabled = loading;
+        loginButton.style.opacity = loading ? '0.7' : '1';
+    }
+    if (logoutButton) {
+        logoutButton.disabled = loading;
+        logoutButton.style.opacity = loading ? '0.7' : '1';
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Check if notification container exists
+    let notificationContainer = document.getElementById('notification-container');
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.id = 'notification-container';
+        document.body.appendChild(notificationContainer);
+    }
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+
+    notificationContainer.appendChild(notification);
+
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
