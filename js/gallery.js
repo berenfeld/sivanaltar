@@ -237,10 +237,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.success) {
                     showAlert('התמונה הועלתה בהצלחה');
 
-                    // Add the new image to the gallery
+                    // Add the new image to the gallery after the "add new" item
                     const galleryGrid = document.querySelector('.gallery-grid');
+                    const addNewItem = galleryGrid.querySelector('.add-new-item');
                     const newItem = createGalleryItem(result.item);
-                    galleryGrid.insertBefore(newItem, galleryGrid.firstChild.nextSibling);
+
+                    if (addNewItem) {
+                        // Insert after the "add new" item
+                        galleryGrid.insertBefore(newItem, addNewItem.nextSibling);
+                    } else {
+                        // Fallback: insert at the beginning
+                        galleryGrid.insertBefore(newItem, galleryGrid.firstChild);
+                    }
 
                     // Reset the form and close modal
                     uploadForm.reset();
@@ -394,15 +402,25 @@ function deleteImage() {
 function createGalleryItem(item) {
     const div = document.createElement('div');
     div.className = 'gallery-item';
+    if (isAdmin) {
+        div.classList.add('admin-item');
+    }
     div.setAttribute('data-id', item.id);
 
+    // Add draggable attribute for admin users
+    if (isAdmin) {
+        div.setAttribute('draggable', 'true');
+    }
+
     div.innerHTML = `
-        <div class="gallery-image">
-            <img src="${item.image_path}" alt="${item.title}" loading="lazy">
-        </div>
-        <div class="gallery-info">
-            <h3>${item.title}</h3>
-            <p>${item.description}</p>
+        <div class="gallery-image-container">
+            <div class="gallery-image">
+                <img src="${item.image_path}" alt="${item.title}" loading="lazy">
+            </div>
+            <div class="gallery-info">
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+            </div>
         </div>
         ${isAdmin ? `
         <div class="gallery-admin-controls">

@@ -56,15 +56,17 @@ session_start();
                         // Loop through each gallery item
                         foreach ($gallery_items as $item) {
                             ?>
-                            <div class="gallery-item" data-id="<?php echo $item['id']; ?>" <?php echo $isAdmin ? 'draggable="true"' : ''; ?>>
-                                <div class="gallery-image">
-                                    <img src="<?php echo htmlspecialchars($item['image_path']); ?>"
-                                         alt="<?php echo htmlspecialchars($item['title']); ?>"
-                                         loading="lazy">
-                                </div>
-                                <div class="gallery-info">
-                                    <h3><?php echo htmlspecialchars($item['title']); ?></h3>
-                                    <p><?php echo htmlspecialchars($item['description']); ?></p>
+                            <div class="gallery-item<?php echo $isAdmin ? ' admin-item' : ''; ?>" data-id="<?php echo $item['id']; ?>" <?php echo $isAdmin ? 'draggable="true"' : ''; ?>>
+                                <div class="gallery-image-container">
+                                    <div class="gallery-image">
+                                        <img src="<?php echo htmlspecialchars($item['image_path']); ?>"
+                                             alt="<?php echo htmlspecialchars($item['title']); ?>"
+                                             loading="lazy">
+                                    </div>
+                                    <div class="gallery-info">
+                                        <h3><?php echo htmlspecialchars($item['title']); ?></h3>
+                                        <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                    </div>
                                 </div>
                                 <?php if ($isAdmin): ?>
                                 <div class="gallery-admin-controls">

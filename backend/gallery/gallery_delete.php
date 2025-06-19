@@ -57,9 +57,13 @@ try {
     if ($result) {
         // Delete the actual image file
         $image_path = $image['image_path'];
+        $absolute_image_path = __DIR__ . '/../../' . $image_path;
         $fileDeleted = false;
-        if (file_exists($image_path)) {
-            $fileDeleted = unlink($image_path);
+        if (file_exists($absolute_image_path)) {
+            $fileDeleted = unlink($absolute_image_path);
+        } else {
+            // Log that file was not found (might have been manually deleted)
+            error_log("Image file not found for deletion: " . $absolute_image_path);
         }
 
         // Log successful deletion

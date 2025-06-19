@@ -357,6 +357,7 @@
         text-align: right;
         width: 100%;
         background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+        z-index: 2; /* Ensure text appears above admin controls */
     }
 
     .gallery-item .gallery-info h3 {
@@ -372,17 +373,18 @@
         color: rgba(255, 255, 255, 0.9);
     }
 
-    /* Admin controls in mobile view */
+    /* Admin controls in mobile view - position below the image */
     .gallery-admin-controls {
         position: relative;
         display: flex;
         gap: 8px;
-        margin-top: 10px;
+        margin-top: 0; /* Remove top margin */
         padding: 8px;
         background: white;
         width: 100%;
         box-sizing: border-box;
         border-top: 1px solid #eee;
+        z-index: 1; /* Lower than text overlay */
     }
 
     .gallery-admin-controls button {
@@ -391,6 +393,48 @@
         font-size: 13px;
         opacity: 1;
         min-height: 36px; /* Smaller touch target but still tap-friendly */
+    }
+
+    /* For admin items, ensure the image container has proper positioning */
+    .gallery-item.admin-item {
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .gallery-item.admin-item .gallery-image-container {
+        position: relative;
+        flex: 1;
+        /* Ensure the image container maintains its aspect ratio */
+        padding-top: 75%; /* 4:3 aspect ratio */
+    }
+
+    .gallery-item.admin-item .gallery-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .gallery-item.admin-item .gallery-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Ensure text stays on the image for admin items */
+    .gallery-item.admin-item .gallery-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 15px;
+        text-align: right;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+        z-index: 2;
     }
 
     /* Disable hover transform effect on mobile */
@@ -699,6 +743,8 @@
     justify-content: center;
     background-color: #f8f8f8;
     transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
 }
 
 .image-preview:hover {
@@ -713,12 +759,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .preview-container img {
     max-width: 100%;
     max-height: 100%;
+    width: auto;
+    height: auto;
     object-fit: contain;
+    display: block;
 }
 
 .preview-overlay {
