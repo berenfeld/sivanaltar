@@ -71,64 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // Initialize upload form
-    const uploadForm = document.getElementById('gallery_uploadForm');
-    const uploadSubmitButton = document.getElementById('gallery_uploadSubmitButton');
-
-    if (uploadForm && uploadSubmitButton) {
-        uploadSubmitButton.addEventListener('click', async () => {
-            // Prevent double submission
-            if (uploadSubmitButton.disabled) {
-                return;
-            }
-
-            // Validate form
-            if (!uploadForm.checkValidity()) {
-                uploadForm.reportValidity();
-                return;
-            }
-
-            // Disable submit button and set submitting flag
-            uploadSubmitButton.disabled = true;
-            uploadSubmitButton.textContent = 'מעלה...';
-
-            const formData = new FormData(uploadForm);
-
-            try {
-                const response = await fetch('backend/gallery/gallery_upload.php', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    // Add the new image to the gallery
-                    const galleryGrid = document.querySelector('.gallery-grid');
-                    const newItem = createGalleryItem(result.item);
-                    galleryGrid.insertBefore(newItem, galleryGrid.firstChild.nextSibling);
-
-                    // Reset the form and close modal
-                    uploadForm.reset();
-                    imagePreview.innerHTML = '';
-                    closeUploadModal();
-
-                    // Show success message
-                    showAlert('התמונה הועלתה בהצלחה');
-                } else {
-                    showAlert(result.message || 'אירעה שגיאה בהעלאת התמונה', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('אירעה שגיאה בהעלאת התמונה', 'error');
-            } finally {
-                // Re-enable submit button
-                uploadSubmitButton.disabled = false;
-                uploadSubmitButton.textContent = 'העלה';
-            }
-        });
-    }
 });
 
 // Helper function to create a gallery item element
@@ -497,19 +439,3 @@ document.addEventListener('click', function(event) {
         closeDeleteModal();
     }
 });
-
-// Alert function
-function showAlert(message, type = 'success') {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type}`;
-    alertDiv.textContent = message;
-
-    // Insert at the top of the gallery section
-    const gallerySection = document.querySelector('.gallery-section .container');
-    gallerySection.insertBefore(alertDiv, gallerySection.firstChild);
-
-    // Remove after 5 seconds
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 5000);
-}
