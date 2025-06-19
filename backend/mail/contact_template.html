@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #4a90e2;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .info-row {
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            width: 80px;
+        }
+        .message {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #4a90e2;
+        }
+        .message h3 {
+            margin-top: 0;
+            color: #4a90e2;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>פנייה חדשה מהאתר</h2>
+        </div>
+        <div class="content">
+            <div class="info-row">
+                <span class="info-label">שם:</span>
+                <span>{{NAME}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">אימייל:</span>
+                <span>{{EMAIL}}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">תאריך:</span>
+                <span>{{DATE}}</span>
+            </div>
+            <div class="message">
+                <h3>הודעה:</h3>
+                <p>{{MESSAGE}}</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>הודעה זו נשלחה מהאתר sivanaltar.com</p>
+        </div>
+    </div>
+</body>
+</html>

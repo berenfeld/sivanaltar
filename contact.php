@@ -13,10 +13,7 @@
         <div class="container">
             <h2>הישארו מעודכנים</h2>
             <p>הירשמו לניוזלטר שלי כדי לקבל תובנות ותוכן בלעדי ישירות לתיבת הדואר שלכם</p>
-            <form class="newsletter-form" action="https://formsubmit.co/sivanaltar@gmail.com" method="POST">
-                <input type="hidden" name="_subject" value="הרשמה חדשה לניוזלטר">
-                <input type="hidden" name="_next" value="https://sivanaltar.com/thank-you.php">
-                <input type="hidden" name="_template" value="table">
+            <form class="newsletter-form">
                 <div class="form-group">
                     <div class="form-row">
                         <div class="form-input">
@@ -28,7 +25,6 @@
                             <input type="email" id="email" name="email" placeholder="האימייל שלך" required>
                         </div>
                     </div>
-                    <input type="hidden" name="_subject" value="הרשמה לניוזלטר">
                     <button type="submit">הרשם</button>
                 </div>
             </form>
@@ -67,11 +63,7 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form action="https://formsubmit.co/sivanaltar@gmail.com" method="POST">
-                        <input type="hidden" name="_subject" value="פנייה חדשה מהאתר">
-                        <input type="hidden" name="_next" value="https://sivanaltar.com/thank-you.php">
-                        <input type="hidden" name="_template" value="table">
-                        <input type="hidden" name="_captcha" value="true">
+                    <form>
                         <div class="form-group">
                             <div class="form-row">
                                 <div class="form-input">
@@ -96,5 +88,8 @@
     </section>
 
     <?php include 'footer.php'; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/contact.js"></script>
 </body>
 </html>
