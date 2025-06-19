@@ -127,37 +127,43 @@ session_start();
         </div>
     </div>
 
-    <!-- Upload Modal -->
-    <div id="uploadModal" class="upload-modal">
-        <div class="upload-modal-content">
-            <h2>העלאת תמונה חדשה</h2>
-            <form id="uploadForm" enctype="multipart/form-data" onsubmit="return false;">
-                <div class="form-group">
-                    <label for="image">בחר תמונה:</label>
-                    <input type="file" id="image" name="image" accept="image/*" required>
-                    <div id="imagePreview" class="image-preview"></div>
-                </div>
-                <div class="form-group">
-                    <label for="title">כותרת:</label>
-                    <input type="text" id="title" name="title" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">תיאור:</label>
-                    <textarea id="description" name="description" required></textarea>
-                </div>
-                <div class="form-buttons">
-                    <button type="button" id="uploadSubmitButton" class="submit-button">העלה</button>
-                    <button type="button" class="cancel-button" onclick="closeUploadModal()">ביטול</button>
-                </div>
-            </form>
-        </div>
+    <!-- SweetAlert2 Edit Form Container -->
+    <div id="gallery_swalEditForm" style="display: none;">
+        <form id="gallery_editFormSwal">
+            <div class="form-group">
+                <label for="gallery_swal_edit_title">כותרת:</label>
+                <input type="text" name="gallery_swal_edit_title" class="swal2-input" required>
+            </div>
+            <div class="form-group">
+                <label for="gallery_swal_edit_description">תיאור:</label>
+                <textarea name="gallery_swal_edit_description" class="swal2-textarea" required></textarea>
+            </div>
+        </form>
+    </div>
+
+    <!-- SweetAlert2 Upload Form Container -->
+    <div id="gallery_swalUploadForm" style="display: none;">
+        <form id="gallery_uploadFormSwal" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="gallery_swal_upload_image">בחר תמונה:</label>
+                <input type="file" name="gallery_swal_upload_image" class="swal2-input" accept="image/*" required>
+                <div id="gallery_swal_imagePreview" class="image-preview"></div>
+            </div>
+            <div class="form-group">
+                <label for="gallery_swal_upload_title">כותרת:</label>
+                <input type="text" name="gallery_swal_upload_title" class="swal2-input" required>
+            </div>
+            <div class="form-group">
+                <label for="gallery_swal_upload_description">תיאור:</label>
+                <textarea name="gallery_swal_upload_description" class="swal2-textarea" required></textarea>
+            </div>
+        </form>
     </div>
 
     <?php include 'footer.php'; ?>
 
-    <?php if ($isAdmin): ?>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="gallery.js"></script>
-    <?php endif; ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/gallery.js"></script>
 </body>
 </html>

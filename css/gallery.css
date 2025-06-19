@@ -909,3 +909,91 @@
     background: #f44336;
     color: white;
 }
+
+/* SweetAlert2 mobile responsiveness */
+@media (max-width: 768px) {
+    .swal2-popup {
+        width: 90% !important;
+        margin: 1rem auto !important;
+        max-width: 350px !important;
+    }
+
+    .swal2-title {
+        font-size: 1.2rem !important;
+        padding: 0 10px !important;
+    }
+
+    .swal2-content {
+        font-size: 0.9rem !important;
+        padding: 0 10px !important;
+    }
+
+    .swal2-actions {
+        padding: 0 10px 10px 10px !important;
+    }
+
+    .swal2-confirm,
+    .swal2-cancel {
+        font-size: 0.9rem !important;
+        padding: 8px 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .swal2-popup {
+        width: 95% !important;
+        max-width: 300px !important;
+        margin: 0.5rem auto !important;
+    }
+
+    .swal2-title {
+        font-size: 1.1rem !important;
+    }
+
+    .swal2-content {
+        font-size: 0.85rem !important;
+    }
+}
+
+/* SweetAlert2 Form Styling */
+.swal2-popup .form-group {
+    margin-bottom: 15px;
+    text-align: right;
+}
+
+.swal2-popup .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.swal2-popup .swal2-input {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.swal2-popup .swal2-textarea {
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-height: 80px;
+    resize: vertical;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.swal2-popup .swal2-input:focus,
+.swal2-popup .swal2-textarea:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}

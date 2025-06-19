@@ -1,215 +1,85 @@
-/**
- * Gallery specific functionality - lightbox and image navigation
- */
+// Initialize Sortable for gallery items
 document.addEventListener('DOMContentLoaded', function() {
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    let currentDeleteItem = null;  // Moved to top level scope
-    let currentEditItem = null;
-    let currentImageIndex = 0;
-    let galleryImages = [];
-    let isSubmitting = false; // Add submission flag
+    const galleryGrid = document.querySelector('.gallery-grid');
+    if (galleryGrid) {
+        new Sortable(galleryGrid, {
+            animation: 150,
+            handle: '.gallery-item:not(.add-new-item)',
+            ghostClass: 'sortable-ghost',
+            filter: '.add-new-item',
+            draggable: '.gallery-item:not(.add-new-item)',
+            onEnd: function(evt) {
+                const items = Array.from(galleryGrid.querySelectorAll('.gallery-item:not(.add-new-item)'));
+                const newOrder = items.map((item, index) => ({
+                    id: item.dataset.id,
+                    order: index + 1
+                }));
 
-    if (galleryItems.length) {
-        // Create lightbox elements if they don't already exist
-        let lightbox = document.querySelector('.lightbox');
-
-        if (!lightbox) {
-            lightbox = document.createElement('div');
-            lightbox.className = 'lightbox';
-
-            const lightboxContent = document.createElement('div');
-            lightboxContent.className = 'lightbox-content';
-
-            const lightboxImage = document.createElement('img');
-            lightboxContent.appendChild(lightboxImage);
-
-            // Create caption container for image text
-            const lightboxCaption = document.createElement('div');
-            lightboxCaption.className = 'lightbox-caption';
-            lightboxContent.appendChild(lightboxCaption);
-
-            const closeButton = document.createElement('button');
-            closeButton.className = 'lightbox-close';
-            closeButton.innerHTML = '&times;';
-            closeButton.setAttribute('aria-label', 'סגור');
-
-            const navButtons = document.createElement('div');
-            navButtons.className = 'lightbox-nav';
-
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '&#10094;';
-            prevButton.setAttribute('aria-label', 'התמונה הקודמת');
-
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = '&#10095;';
-            nextButton.setAttribute('aria-label', 'התמונה הבאה');
-
-            navButtons.appendChild(prevButton);
-            navButtons.appendChild(nextButton);
-
-            lightbox.appendChild(lightboxContent);
-            lightbox.appendChild(closeButton);
-            lightbox.appendChild(navButtons);
-
-            document.body.appendChild(lightbox);
-        }
-
-        // Get references to elements
-        const lightboxImage = lightbox.querySelector('.lightbox-content img');
-        const lightboxCaption = lightbox.querySelector('.lightbox-caption');
-        const closeButton = lightbox.querySelector('.lightbox-close');
-        const prevButton = lightbox.querySelector('.lightbox-nav button:first-child');
-        const nextButton = lightbox.querySelector('.lightbox-nav button:last-child');
-
-        // Variables to track current image
-        currentImageIndex = 0;
-        galleryImages = Array.from(galleryItems)
-            .filter(item => !item.classList.contains('add-new-item')) // Exclude the add-new-item
-            .map(item => item.querySelector('img').src);
-
-        // Add click event to gallery items
-        galleryItems.forEach((item, index) => {
-            // Skip the add-new-item
-            if (item.classList.contains('add-new-item')) return;
-
-            const galleryImage = item.querySelector('.gallery-image');
-            if (galleryImage) {
-                galleryImage.addEventListener('click', () => {
-                    currentImageIndex = index;
-                    updateLightboxImage(currentImageIndex);
-                    lightbox.classList.add('active');
-                    document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is active
+                // Send the new order to the server
+                fetch('backend/gallery/gallery_order.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newOrder)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('אירעה שגיאה בעדכון סדר התמונות');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('אירעה שגיאה בעדכון סדר התמונות');
                 });
             }
         });
-
-        // Close lightbox
-        closeButton.addEventListener('click', () => {
-            closeLightbox();
-        });
-
-        // Click outside to close
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) {
-                closeLightbox();
-            }
-        });
-
-        // Navigation buttons
-        prevButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-            updateLightboxImage(currentImageIndex);
-        });
-
-        nextButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-            updateLightboxImage(currentImageIndex);
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-
-            if (e.key === 'Escape') {
-                closeLightbox();
-            } else if (e.key === 'ArrowLeft') {
-                currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-                updateLightboxImage(currentImageIndex);
-            } else if (e.key === 'ArrowRight') {
-                currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-                updateLightboxImage(currentImageIndex);
-            }
-        });
-
-        // Update lightbox image with caption
-        function updateLightboxImage(index) {
-            const imgSrc = galleryImages[index];
-            const currentItem = galleryItems[index];
-
-            // Get title and description from the gallery item
-            const title = currentItem.querySelector('.gallery-info h3').textContent;
-            const description = currentItem.querySelector('.gallery-info p').textContent;
-
-            // Fade out current image
-            lightboxImage.style.opacity = '0';
-            lightboxCaption.style.opacity = '0';
-
-            // Change source after a brief delay
-            setTimeout(() => {
-                lightboxImage.src = imgSrc;
-
-                // Update caption with title and description
-                lightboxCaption.innerHTML = `
-                    <h3>${title}</h3>
-                    <p>${description}</p>
-                `;
-
-                // Fade in new image once it's loaded
-                lightboxImage.onload = function() {
-                    lightboxImage.style.opacity = '1';
-                    lightboxCaption.style.opacity = '1';
-                };
-            }, 300);
-
-            // Preload adjacent images for smoother transitions
-            const nextIndex = (index + 1) % galleryImages.length;
-            const prevIndex = (index - 1 + galleryImages.length) % galleryImages.length;
-
-            const nextImage = new Image();
-            nextImage.src = galleryImages[nextIndex];
-
-            const prevImage = new Image();
-            prevImage.src = galleryImages[prevIndex];
-        }
-
-        // Close lightbox and restore scrolling
-        function closeLightbox() {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
-
-            // Reset opacity of caption for next opening
-            if (lightboxCaption) {
-                lightboxCaption.style.opacity = '0';
-            }
-        }
     }
 
-    // Admin functionality
-    const editModal = document.getElementById('editModal');
-    if (editModal) {
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target === editModal) {
-                closeEditModal();
-            }
-        }
-    }
+    // Setup file upload preview
+    const fileInput = document.getElementById('gallery_image');
+    const imagePreview = document.getElementById('gallery_imagePreview');
 
-    // Initialize upload form
-    const uploadForm = document.getElementById('uploadForm');
-    const uploadSubmitButton = document.getElementById('uploadSubmitButton');
-    const imageInput = document.getElementById('image');
-    const imagePreview = document.getElementById('imagePreview');
+    if (fileInput && imagePreview) {
+        // Hide the file input
+        fileInput.style.display = 'none';
 
-    if (imageInput && imagePreview) {
-        imageInput.addEventListener('change', function(e) {
+        // Make the preview area clickable
+        imagePreview.style.cursor = 'pointer';
+        imagePreview.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Handle file selection
+        fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-                }
+                    imagePreview.innerHTML = `
+                        <div class="preview-container">
+                            <img src="${e.target.result}" alt="Preview">
+                            <div class="preview-overlay">
+                                <i class="fas fa-camera"></i>
+                                <span>לחץ לבחירת תמונה</span>
+                            </div>
+                        </div>
+                    `;
+                };
                 reader.readAsDataURL(file);
             }
         });
     }
 
+    // Initialize upload form
+    const uploadForm = document.getElementById('gallery_uploadForm');
+    const uploadSubmitButton = document.getElementById('gallery_uploadSubmitButton');
+
     if (uploadForm && uploadSubmitButton) {
         uploadSubmitButton.addEventListener('click', async () => {
             // Prevent double submission
-            if (isSubmitting) {
+            if (uploadSubmitButton.disabled) {
                 return;
             }
 
@@ -220,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Disable submit button and set submitting flag
-            isSubmitting = true;
             uploadSubmitButton.disabled = true;
             uploadSubmitButton.textContent = 'מעלה...';
 
@@ -235,34 +104,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await response.json();
 
                 if (result.success) {
-                    showAlert('התמונה הועלתה בהצלחה');
-
-                    // Add the new image to the gallery after the "add new" item
+                    // Add the new image to the gallery
                     const galleryGrid = document.querySelector('.gallery-grid');
-                    const addNewItem = galleryGrid.querySelector('.add-new-item');
                     const newItem = createGalleryItem(result.item);
-
-                    if (addNewItem) {
-                        // Insert after the "add new" item
-                        galleryGrid.insertBefore(newItem, addNewItem.nextSibling);
-                    } else {
-                        // Fallback: insert at the beginning
-                        galleryGrid.insertBefore(newItem, galleryGrid.firstChild);
-                    }
+                    galleryGrid.insertBefore(newItem, galleryGrid.firstChild.nextSibling);
 
                     // Reset the form and close modal
                     uploadForm.reset();
-                    document.getElementById('imagePreview').innerHTML = '';
+                    imagePreview.innerHTML = '';
                     closeUploadModal();
+
+                    // Show success message
+                    showAlert('התמונה הועלתה בהצלחה');
                 } else {
-                    showAlert(result.error || 'אירעה שגיאה בהעלאת התמונה', 'error');
+                    showAlert(result.message || 'אירעה שגיאה בהעלאת התמונה', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 showAlert('אירעה שגיאה בהעלאת התמונה', 'error');
             } finally {
-                // Re-enable submit button and reset submitting flag
-                isSubmitting = false;
+                // Re-enable submit button
                 uploadSubmitButton.disabled = false;
                 uploadSubmitButton.textContent = 'העלה';
             }
@@ -270,105 +131,192 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Add event listener for edit form submission
-document.addEventListener('DOMContentLoaded', function() {
-    const editForm = document.getElementById('editForm');
-    if (editForm) {
-        editForm.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Prevent traditional form submission
+// Helper function to create a gallery item element
+function createGalleryItem(item) {
+    const div = document.createElement('div');
+    div.className = 'gallery-item admin-item';
+    div.dataset.id = item.id;
+    div.draggable = true;
 
-            const formData = {
-                id: document.getElementById('edit_id').value,
-                title: document.getElementById('edit_title').value,
-                description: document.getElementById('edit_description').value
-            };
+    div.innerHTML = `
+        <div class="gallery-image-container">
+            <div class="gallery-image">
+                <img src="${item.image_path}" alt="${item.title}" loading="lazy">
+            </div>
+            <div class="gallery-info">
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+            </div>
+        </div>
+        <div class="gallery-admin-controls">
+            <button class="edit-button" onclick="openEditModal(${JSON.stringify(item)})">
+                <i class="fas fa-edit"></i> ערוך
+            </button>
+            <button class="delete-button" onclick="openDeleteModal(${JSON.stringify(item)})">
+                <i class="fas fa-trash"></i> מחק
+            </button>
+        </div>
+    `;
 
-            try {
-                const response = await fetch('backend/gallery/gallery_update.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
+    return div;
+}
 
-                const result = await response.json();
-
-                if (result.success) {
-                    showAlert('התמונה עודכנה בהצלחה', 'success');
-                    closeEditModal();
-                    // Optionally reload the page to show updated data
-                    location.reload();
-                } else {
-                    showAlert(result.message || 'אירעה שגיאה בעדכון התמונה', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('אירעה שגיאה בעדכון התמונה', 'error');
-            }
-        });
-    }
-});
-
-// Admin functions
+// Modal functions
 function openEditModal(item) {
-    document.getElementById('edit_id').value = item.id;
-    document.getElementById('edit_title').value = item.title;
-    document.getElementById('edit_description').value = item.description;
-    document.getElementById('edit_display_order').value = item.display_order;
-    document.getElementById('editModal').style.display = 'block';
+    // Get the HTML from the original form
+    const formHtml = document.getElementById('gallery_swalEditForm').innerHTML;
+
+    Swal.fire({
+        title: 'עריכת תמונה',
+        html: formHtml,
+        showCancelButton: true,
+        confirmButtonText: 'שמור',
+        cancelButtonText: 'ביטול',
+        customClass: {
+            popup: 'swal-rtl',
+            title: 'swal-title-rtl',
+            content: 'swal-content-rtl'
+        },
+        didOpen: () => {
+            // Set values on the cloned form elements that SweetAlert created
+            const modalContent = Swal.getHtmlContainer();
+            const titleField = modalContent.querySelector('[name="gallery_swal_edit_title"]');
+            const descriptionField = modalContent.querySelector('[name="gallery_swal_edit_description"]');
+
+            if (titleField && descriptionField) {
+                titleField.value = item.title;
+                descriptionField.value = item.description;
+            }
+        },
+        preConfirm: () => {
+            const modalContent = Swal.getHtmlContainer();
+            const title = modalContent.querySelector('[name="gallery_swal_edit_title"]').value;
+            const description = modalContent.querySelector('[name="gallery_swal_edit_description"]').value;
+
+            return {
+                id: item.id,
+                title: title,
+                description: description
+            };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            updateImage(result.value);
+        }
+    });
+}
+
+function updateImage(data) {
+    // Show loading state
+    Swal.fire({
+        title: 'מעדכן תמונה...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch('backend/gallery/gallery_update.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(responseData => {
+        if (responseData.success) {
+            // Update the gallery item in the DOM using the original data
+            const item = document.querySelector(`[data-id="${data.id}"]`);
+            if (item) {
+                const titleElement = item.querySelector('.gallery-info h3');
+                const descriptionElement = item.querySelector('.gallery-info p');
+
+                if (titleElement) titleElement.textContent = data.title;
+                if (descriptionElement) descriptionElement.textContent = data.description;
+            }
+
+            // Show success message
+            Swal.fire({
+                title: 'הצלחה!',
+                text: 'התמונה עודכנה בהצלחה',
+                icon: 'success',
+                confirmButtonText: 'אישור'
+            });
+        } else {
+            Swal.fire({
+                title: 'שגיאה',
+                text: responseData.message || 'אירעה שגיאה בעדכון התמונה',
+                icon: 'error',
+                confirmButtonText: 'אישור'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: 'שגיאה',
+            text: 'אירעה שגיאה בעדכון התמונה',
+            icon: 'error',
+            confirmButtonText: 'אישור'
+        });
+    });
 }
 
 function closeEditModal() {
-    document.getElementById('editModal').style.display = 'none';
+    const modal = document.getElementById('editModal');
+    modal.classList.remove('active');
 }
 
-// Upload functions
-function openUploadModal() {
-    const modal = document.getElementById('uploadModal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is active
-    }
-}
-
-function closeUploadModal() {
-    const modal = document.getElementById('uploadModal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = ''; // Re-enable scrolling
-
-        // Reset form and preview when closing
-        const uploadForm = document.getElementById('uploadForm');
-        if (uploadForm) {
-            uploadForm.reset();
-            document.getElementById('imagePreview').innerHTML = '';
-        }
-
-        // Reset submitting flag and re-enable submit button
-        isSubmitting = false;
-        const uploadSubmitButton = document.getElementById('uploadSubmitButton');
-        if (uploadSubmitButton) {
-            uploadSubmitButton.disabled = false;
-            uploadSubmitButton.textContent = 'העלה';
-        }
-    }
-}
-
-// Delete functions
 function openDeleteModal(item) {
     currentDeleteItem = item;
-    document.getElementById('delete-title').textContent = item.title;
-    document.getElementById('deleteModal').style.display = 'block';
+
+    Swal.fire({
+        title: 'מחיקת תמונה',
+        text: `האם אתה בטוח שברצונך למחוק את התמונה "${item.title}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'מחק',
+        cancelButtonText: 'ביטול',
+        customClass: {
+            popup: 'swal-rtl',
+            title: 'swal-title-rtl',
+            content: 'swal-content-rtl'
+        }
+    }).then((result) => {
+        console.log('SweetAlert result:', result); // Debug log
+        if (result.isConfirmed === true) {
+            deleteImage();
+        } else {
+            // User clicked cancel or dismissed the modal
+            currentDeleteItem = null;
+        }
+    });
 }
 
 function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
-    currentDeleteItem = null;
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('active');
 }
 
 function deleteImage() {
-    if (!currentDeleteItem) return;
+    console.log('deleteImage called, currentDeleteItem:', currentDeleteItem); // Debug log
+
+    if (!currentDeleteItem) {
+        console.warn('No item selected for deletion');
+        return;
+    }
+
+    // Show loading state
+    Swal.fire({
+        title: 'מוחק תמונה...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     fetch('backend/gallery/gallery_delete.php', {
         method: 'POST',
@@ -385,63 +333,162 @@ function deleteImage() {
             if (item) {
                 item.remove();
             }
-            closeDeleteModal();
+
             // Show success message
-            showAlert('התמונה נמחקה בהצלחה', 'success');
+            Swal.fire({
+                title: 'הצלחה!',
+                text: 'התמונה נמחקה בהצלחה',
+                icon: 'success',
+                confirmButtonText: 'אישור'
+            });
         } else {
-            showAlert('שגיאה במחיקת התמונה', 'error');
+            Swal.fire({
+                title: 'שגיאה',
+                text: data.message || 'שגיאה במחיקת התמונה',
+                icon: 'error',
+                confirmButtonText: 'אישור'
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showAlert('שגיאה במחיקת התמונה', 'error');
+        Swal.fire({
+            title: 'שגיאה',
+            text: 'שגיאה במחיקת התמונה',
+            icon: 'error',
+            confirmButtonText: 'אישור'
+        });
     });
 }
 
-// Create gallery item element
-function createGalleryItem(item) {
-    const div = document.createElement('div');
-    div.className = 'gallery-item';
-    if (isAdmin) {
-        div.classList.add('admin-item');
-    }
-    div.setAttribute('data-id', item.id);
+// Upload functions
+function openUploadModalSwal() {
+    // Get the form HTML from the original form
+    const formHtml = document.getElementById('gallery_swalUploadForm').innerHTML;
 
-    // Add draggable attribute for admin users
-    if (isAdmin) {
-        div.setAttribute('draggable', 'true');
-    }
+    Swal.fire({
+        title: 'העלאת תמונה חדשה',
+        html: formHtml,
+        showCancelButton: true,
+        confirmButtonText: 'העלה',
+        cancelButtonText: 'ביטול',
+        customClass: {
+            popup: 'swal-rtl',
+            title: 'swal-title-rtl',
+            content: 'swal-content-rtl'
+        },
+        didOpen: () => {
+            // Setup file upload preview for the cloned form
+            const modalContent = Swal.getHtmlContainer();
+            const fileInput = modalContent.querySelector('[name="gallery_swal_upload_image"]');
+            const imagePreview = modalContent.querySelector('#gallery_swal_imagePreview');
 
-    div.innerHTML = `
-        <div class="gallery-image-container">
-            <div class="gallery-image">
-                <img src="${item.image_path}" alt="${item.title}" loading="lazy">
-            </div>
-            <div class="gallery-info">
-                <h3>${item.title}</h3>
-                <p>${item.description}</p>
-            </div>
-        </div>
-        ${isAdmin ? `
-        <div class="gallery-admin-controls">
-            <button class="edit-button" onclick="openEditModal(${JSON.stringify(item)})">
-                <i class="fas fa-edit"></i> ערוך
-            </button>
-            <button class="delete-button" onclick="openDeleteModal(${JSON.stringify(item)})">
-                <i class="fas fa-trash"></i> מחק
-            </button>
-        </div>
-        ` : ''}
-    `;
+            if (fileInput && imagePreview) {
+                // Handle file selection
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            imagePreview.innerHTML = `
+                                <div class="preview-container">
+                                    <img src="${e.target.result}" alt="Preview">
+                                    <div class="preview-overlay">
+                                        <i class="fas fa-camera"></i>
+                                        <span>לחץ לבחירת תמונה</span>
+                                    </div>
+                                </div>
+                            `;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        },
+        preConfirm: () => {
+            const modalContent = Swal.getHtmlContainer();
+            const fileInput = modalContent.querySelector('[name="gallery_swal_upload_image"]');
+            const titleField = modalContent.querySelector('[name="gallery_swal_upload_title"]');
+            const descriptionField = modalContent.querySelector('[name="gallery_swal_upload_description"]');
 
-    return div;
+            if (!fileInput.files[0] || !titleField.value || !descriptionField.value) {
+                Swal.showValidationMessage('נא למלא את כל השדות');
+                return false;
+            }
+
+            // Create FormData for file upload
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            formData.append('title', titleField.value);
+            formData.append('description', descriptionField.value);
+
+            return formData;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            uploadImage(result.value);
+        }
+    });
+}
+
+function uploadImage(formData) {
+    // Show loading state
+    Swal.fire({
+        title: 'מעלה תמונה...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch('backend/gallery/gallery_upload.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Add the new image to the gallery
+            const galleryGrid = document.querySelector('.gallery-grid');
+            const newItem = createGalleryItem(data.item);
+            galleryGrid.insertBefore(newItem, galleryGrid.firstChild.nextSibling);
+
+            // Show success message
+            Swal.fire({
+                title: 'הצלחה!',
+                text: 'התמונה הועלתה בהצלחה',
+                icon: 'success',
+                confirmButtonText: 'אישור'
+            });
+        } else {
+            Swal.fire({
+                title: 'שגיאה',
+                text: data.message || 'אירעה שגיאה בהעלאת התמונה',
+                icon: 'error',
+                confirmButtonText: 'אישור'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: 'שגיאה',
+            text: 'אירעה שגיאה בהעלאת התמונה',
+            icon: 'error',
+            confirmButtonText: 'אישור'
+        });
+    });
+}
+
+// Keep the old function for backward compatibility but redirect to new one
+function openUploadModal() {
+    openUploadModalSwal();
 }
 
 // Close modals when clicking outside
-window.onclick = function(event) {
+document.addEventListener('click', function(event) {
     const editModal = document.getElementById('editModal');
     const deleteModal = document.getElementById('deleteModal');
-    const uploadModal = document.getElementById('uploadModal');
 
     if (event.target === editModal) {
         closeEditModal();
@@ -449,10 +496,7 @@ window.onclick = function(event) {
     if (event.target === deleteModal) {
         closeDeleteModal();
     }
-    if (event.target === uploadModal) {
-        closeUploadModal();
-    }
-}
+});
 
 // Alert function
 function showAlert(message, type = 'success') {
