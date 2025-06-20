@@ -14,8 +14,9 @@
 
     # Set cache control for different file types
     <FilesMatch "\.(html|php|css|js)$">
-        # For HTML/PHP files - long cache with revalidation
-        Header set Cache-Control "max-age=86400, must-revalidate"
+        # Always revalidate - send If-Modified-Since against ETag
+        Header set Cache-Control "must-revalidate, no-cache"
+        Header set Pragma "no-cache"
     </FilesMatch>
 
     <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico)$">
