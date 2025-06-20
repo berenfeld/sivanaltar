@@ -1,7 +1,9 @@
 // Initialize Sortable for gallery items
 document.addEventListener('DOMContentLoaded', function() {
     const galleryGrid = document.querySelector('.gallery-grid');
-    if (galleryGrid) {
+
+    // Only initialize Sortable if user is admin
+    if (galleryGrid && typeof isAdmin !== 'undefined' && isAdmin) {
         new Sortable(galleryGrid, {
             animation: 150,
             handle: '.gallery-item:not(.add-new-item)',
@@ -105,6 +107,12 @@ function createGalleryItem(item) {
 
 // Modal functions
 function openEditModal(item) {
+    // Check if user is admin
+    if (typeof isAdmin === 'undefined' || !isAdmin) {
+        console.warn('Non-admin user attempted to edit image');
+        return;
+    }
+
     // Get the HTML from the original form
     const formHtml = document.getElementById('gallery_swalEditForm').innerHTML;
 
@@ -211,6 +219,12 @@ function closeEditModal() {
 }
 
 function openDeleteModal(item) {
+    // Check if user is admin
+    if (typeof isAdmin === 'undefined' || !isAdmin) {
+        console.warn('Non-admin user attempted to delete image');
+        return;
+    }
+
     currentDeleteItem = item;
 
     Swal.fire({
