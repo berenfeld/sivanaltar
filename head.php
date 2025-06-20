@@ -2,8 +2,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>סיון אלטרוביץ - מאמנת רגשית בשיטת סאטיה</title>
 
+<!-- Google Sign-In Meta Tag for One-Tap -->
+<meta name="google-signin-client_id" content="737149879159-k8sksf67g8o8e769u1qvnjjmojv7i8sl.apps.googleusercontent.com">
+
 <!-- Basic Meta -->
-<meta name="description" content="אימון וטיפול בגישת סאטיה לשחרור ממיינד ורגשות מעכבים ויצירת חיים מלאי משמעות, אהבה וריפוי">
+<meta name="description" content="אימון וטיפול בגישת סאטיה לשחרור ממיינד ורגשות מעכבים ויצירת חיים מלאים ומשמעותיים, אהבה וריפוי">
 <meta name="keywords" content="סיון אלטרוביץ, מאמנת סאטיה, טיפול סאטיה, אימון אישי, התפתחות אישית">
 
 <!-- Open Graph / Facebook / WhatsApp -->

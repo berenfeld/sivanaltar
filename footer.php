@@ -30,9 +30,7 @@
 
 <!-- Global Scripts - Always load this -->
 <script src="js/scripts.js"></script>
-<!-- Google Sign-In -->
-<script src="https://accounts.google.com/gsi/client"></script>
-<!-- Include the authentication script at the end of the body -->
+<!-- Include the authentication script first -->
 <script src="js/google_login.js"></script>
 
 <?php

@@ -7,51 +7,117 @@ document.addEventListener('DOMContentLoaded', initAuth);
 let loginButton, userInfo, user_name, userAvatar, logoutButton;
 let isLoading = false;
 
+// Dynamically load Google Sign-In script
+function loadGoogleSignInScript() {
+    return new Promise((resolve, reject) => {
+        // Check if script is already loaded
+        if (window.google && window.google.accounts) {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+
+        script.onload = () => {
+            console.log('Google Sign-In script loaded successfully');
+            resolve();
+        };
+
+        script.onerror = () => {
+            console.error('Failed to load Google Sign-In script');
+            reject(new Error('Failed to load Google Sign-In script'));
+        };
+
+        document.head.appendChild(script);
+    });
+}
+
 // Initialize auth elements and check status
-function initAuth() {
+async function initAuth() {
     // Get desktop elements
     loginButton = document.getElementById('login-button');
     userInfo = document.getElementById('user-info');
     user_name = document.getElementById('user-name');
     userAvatar = document.getElementById('user-avatar');
     logoutButton = document.getElementById('logout-button');
+    logoutButton.addEventListener('click', handleLogout);
 
-    // Add logout event listeners
-    if (logoutButton) {
-        logoutButton.addEventListener('click', handleLogout);
-    }
+    try {
+        // Load Google Sign-In script first
+        await loadGoogleSignInScript();
 
-    // Initialize Google Sign-In
-    google.accounts.id.initialize({
-        client_id: '737149879159-k8sksf67g8o8e769u1qvnjjmojv7i8sl.apps.googleusercontent.com',
-        callback: handleGoogleCredential,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-        itp_support: true,
-        context: 'signin'  // Explicitly set the context
-    });
+        // Initialize Google Sign-In
+        google.accounts.id.initialize({
+            client_id: '737149879159-k8sksf67g8o8e769u1qvnjjmojv7i8sl.apps.googleusercontent.com',
+            callback: handleGoogleCredential,
+            auto_select: true,  // Enable auto-selection for better UX
+            cancel_on_tap_outside: true,
+            itp_support: true,
+            context: 'signin'  // Explicitly set the context
+        });
 
-    // Render the sign-in button
-    if (loginButton) {
-        google.accounts.id.renderButton(
-            loginButton,
-            {
-                theme: 'outline',
-                size: 'large',
-                text: 'signin_with',
-                shape: 'rectangular',
-                width: 250
+        // Render the sign-in button
+        if (loginButton) {
+            google.accounts.id.renderButton(
+                loginButton,
+                {
+                    theme: 'outline',
+                    size: 'large',
+                    text: 'signin_with',
+                    shape: 'rectangular',
+                    width: 250
+                }
+            );
+        }
+
+        // Check login status
+        checkLoginStatus();
+
+        // Delay the one-tap prompt to ensure everything is ready
+        setTimeout(() => {
+            try {
+                console.log('Attempting to show one-tap sign-in...');
+                google.accounts.id.prompt((notification) => {
+                    console.log('One-tap notification:', notification);
+                    // Use FedCM-compatible methods
+                    if (notification.isNotDisplayed()) {
+                        console.log('One-tap not displayed:', notification.getNotDisplayedReason());
+                    } else if (notification.isSkippedMoment()) {
+                        console.log('One-tap skipped:', notification.getSkippedReason());
+                    } else if (notification.isDismissedMoment()) {
+                        console.log('One-tap dismissed:', notification.getDismissedReason());
+                    }
+                });
+            } catch (error) {
+                console.error('Error showing one-tap sign-in:', error);
             }
-        );
+        }, 1000); // Wait 1 second after initialization
+    } catch (error) {
+        console.error('Failed to initialize Google Sign-In:', error);
+        showNotification('Failed to load Google Sign-In. Please refresh the page.', 'error');
     }
-
-    // Check login status
-    checkLoginStatus();
 }
 
 // Handle Google credential response
 function handleGoogleCredential(response) {
-    if (isLoading) return; // Prevent multiple submissions
+    console.log('=== Google Credential Callback Started ===');
+    console.log('Response object:', response);
+    console.log('Response type:', typeof response);
+    console.log('Response keys:', Object.keys(response));
+
+    if (!response || !response.credential) {
+        console.error('Invalid response received:', response);
+        showNotification('Invalid authentication response. Please try again.', 'error');
+        return;
+    }
+
+    if (isLoading) {
+        console.log('Already processing authentication, ignoring duplicate call');
+        return; // Prevent multiple submissions
+    }
+
+    console.log('Starting authentication process...');
     setLoading(true);
 
     // Send the token to our server for verification
@@ -64,12 +130,15 @@ function handleGoogleCredential(response) {
         body: JSON.stringify({ credential: response.credential })
     })
     .then(response => {
+        console.log('Server response status:', response.status);
+        console.log('Server response headers:', response.headers);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(data => {
+        console.log('Server response data:', data);
         if (data.success) {
             updateUIWithUserInfo(data.user);
             showNotification('Successfully logged in!', 'success');
@@ -82,6 +151,7 @@ function handleGoogleCredential(response) {
         showNotification(error.message || 'Failed to authenticate. Please try again.', 'error');
     })
     .finally(() => {
+        console.log('Authentication process completed');
         setLoading(false);
     });
 }
