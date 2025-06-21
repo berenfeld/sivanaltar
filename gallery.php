@@ -160,6 +160,24 @@ session_start();
         </form>
     </div>
 
+    </div>
+
+    <!-- Lightbox for full-screen image preview -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="" alt="">
+            <div class="lightbox-caption">
+                <h3 id="lightbox-title"></h3>
+                <p id="lightbox-description"></p>
+            </div>
+        </div>
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <div class="lightbox-nav">
+            <button onclick="previousImage()">&lt;</button>
+            <button onclick="nextImage()">&gt;</button>
+        </div>
+    </div>
+
     <?php include 'footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

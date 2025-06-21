@@ -486,6 +486,11 @@
     transition: opacity 0.3s ease;
 }
 
+/* Show caption when lightbox is active */
+.lightbox.active .lightbox-caption {
+    opacity: 1;
+}
+
 .lightbox-caption h3 {
     font-size: 22px;
     margin-bottom: 8px;
