@@ -13,7 +13,7 @@
     FileETag MTime Size
 
     # Set cache control for different file types
-    <FilesMatch "\.(html|php|css|js)$">
+    <FilesMatch "\.(html|php|css|js|xml)$">
         # Always revalidate - send If-Modified-Since against ETag
         Header set Cache-Control "must-revalidate, no-cache"
         Header set Pragma "no-cache"
