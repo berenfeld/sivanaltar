@@ -101,6 +101,75 @@ class Logger {
     }
 
     /**
+     * Log contact form and newsletter submissions
+     */
+    public function logContactAction($data) {
+        $action = $data['action'] ?? 'UNKNOWN';
+        $userInfo = sprintf(
+            "User: %s (Email: %s)",
+            $data['user_name'] ?? 'Unknown',
+            $data['user_email'] ?? 'unknown'
+        );
+
+        switch ($action) {
+            case 'CONTACT_FORM':
+                $logEntry = sprintf(
+                    "[%s] CONTACT_FORM - %s - Message Length: %d chars - IP: %s - User Agent: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    strlen($data['message'] ?? ''),
+                    $data['ip_address'] ?? $this->getClientIP(),
+                    $this->getUserAgent()
+                );
+                break;
+
+            case 'CONTACT_FORM_FAILED':
+                $logEntry = sprintf(
+                    "[%s] CONTACT_FORM_FAILED - %s - Error: %s - IP: %s - User Agent: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['error'] ?? 'unknown',
+                    $data['ip_address'] ?? $this->getClientIP(),
+                    $this->getUserAgent()
+                );
+                break;
+
+            case 'NEWSLETTER_SIGNUP':
+                $logEntry = sprintf(
+                    "[%s] NEWSLETTER_SIGNUP - %s - IP: %s - User Agent: %s - Referrer: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['ip_address'] ?? $this->getClientIP(),
+                    $this->getUserAgent(),
+                    $_SERVER['HTTP_REFERER'] ?? 'unknown'
+                );
+                break;
+
+            case 'NEWSLETTER_SIGNUP_FAILED':
+                $logEntry = sprintf(
+                    "[%s] NEWSLETTER_SIGNUP_FAILED - %s - Error: %s - IP: %s - User Agent: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['error'] ?? 'unknown',
+                    $data['ip_address'] ?? $this->getClientIP(),
+                    $this->getUserAgent()
+                );
+                break;
+
+            default:
+                $logEntry = sprintf(
+                    "[%s] CONTACT_%s - %s - Data: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $action,
+                    $userInfo,
+                    json_encode($data)
+                );
+        }
+
+        $this->writeLog($logEntry);
+    }
+
+    /**
      * Log gallery actions (upload, update, delete, reorder)
      */
     public function logGalleryAction($data) {

@@ -75,7 +75,11 @@ try {
             'user_name' => $name,
             'user_email' => $email,
             'message' => $message,
-            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+            'referrer' => $_SERVER['HTTP_REFERER'] ?? 'unknown',
+            'form_type' => $form_type,
+            'timestamp' => date('Y-m-d H:i:s')
         ]);
 
         echo json_encode([
@@ -94,7 +98,11 @@ try {
         'user_email' => $email,
         'message' => $message,
         'error' => $e->getMessage(),
-        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+        'referrer' => $_SERVER['HTTP_REFERER'] ?? 'unknown',
+        'form_type' => $form_type,
+        'timestamp' => date('Y-m-d H:i:s')
     ]);
 
     // Log error
