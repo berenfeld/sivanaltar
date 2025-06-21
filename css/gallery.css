@@ -117,12 +117,13 @@
 }
 
 .gallery-admin-controls button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s ease;
+    flex: 1;
+    padding: 14px 18px;
+    font-size: 16px;
+    min-height: 52px;
+    border-radius: 8px;
+    font-weight: 600;
+    min-width: calc(50% - 6px); /* Make buttons wider, accounting for gap */
 }
 
 .edit-button {
@@ -377,9 +378,9 @@
     .gallery-admin-controls {
         position: relative;
         display: flex;
-        gap: 8px;
+        gap: 12px;
         margin-top: 0; /* Remove top margin */
-        padding: 8px;
+        padding: 12px;
         background: white;
         width: 100%;
         box-sizing: border-box;
@@ -389,10 +390,12 @@
 
     .gallery-admin-controls button {
         flex: 1;
-        padding: 6px 10px;
-        font-size: 13px;
-        opacity: 1;
-        min-height: 36px; /* Smaller touch target but still tap-friendly */
+        padding: 14px 18px;
+        font-size: 16px;
+        min-height: 52px;
+        border-radius: 8px;
+        font-weight: 600;
+        min-width: calc(50% - 6px); /* Make buttons wider, accounting for gap */
     }
 
     /* For admin items, ensure the image container has proper positioning */
@@ -458,9 +461,11 @@
     }
 
     .gallery-admin-controls button {
-        padding: 5px 8px;
-        font-size: 12px;
-        min-height: 32px;
+        padding: 14px 18px;
+        font-size: 16px;
+        min-height: 52px;
+        border-radius: 8px;
+        font-weight: 600;
     }
 }
 
