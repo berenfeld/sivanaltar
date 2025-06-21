@@ -1,5 +1,26 @@
 /* Content Sections Styles */
 
+/* Alternating section backgrounds */
+.about-section {
+    background-color: var(--background-color);
+    padding: 80px 0;
+}
+
+.method-section {
+    background-color: var(--secondary-color);
+    padding: 80px 0;
+}
+
+.how-it-works-section {
+    background-color: var(--background-color);
+    padding: 80px 0;
+}
+
+.value-section {
+    background-color: var(--secondary-color);
+    padding: 80px 0;
+}
+
 /* Common section layout */
 .about-content,
 .method-content,
@@ -48,7 +69,7 @@
 .value-text h3 {
     font-size: 28px;
     margin-bottom: 20px;
-    color: #333;
+    color: var(--primary-color) !important;
 }
 
 .about-text h4,
@@ -58,7 +79,7 @@
     font-size: 20px;
     margin-top: 25px;
     margin-bottom: 15px;
-    color: #555;
+    color: #5a7a8a;
 }
 
 .about-text p,

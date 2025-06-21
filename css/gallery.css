@@ -119,10 +119,13 @@
 .gallery-admin-controls button {
     flex: 1;
     padding: 14px 18px;
-    font-size: 16px;
-    min-height: 52px;
+    border: none;
     border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
     font-weight: 600;
+    transition: all 0.2s ease;
+    min-height: 52px;
     min-width: calc(50% - 6px); /* Make buttons wider, accounting for gap */
 }
 
