@@ -2,15 +2,29 @@
 document.addEventListener('DOMContentLoaded', function() {
     const galleryGrid = document.querySelector('.gallery-grid');
 
-    // Only initialize Sortable if user is admin
-    if (galleryGrid && typeof isAdmin !== 'undefined' && isAdmin) {
-        new Sortable(galleryGrid, {
+    // Only initialize Sortable on desktop devices
+    if (galleryGrid && !isMobile()) {
+        galleryGrid.sortable = new Sortable(galleryGrid, {
             animation: 150,
             handle: '.gallery-item:not(.add-new-item)',
             ghostClass: 'sortable-ghost',
             filter: '.add-new-item',
             draggable: '.gallery-item:not(.add-new-item)',
+            onMove: function(evt) {
+                // Prevent move if user is not admin
+                if (!isAdmin()) {
+                    console.log('Non-admin user attempted to move gallery item');
+                    return false; // This prevents the move
+                }
+                return true; // Allow move for admin users
+            },
             onEnd: function(evt) {
+                // Check if user is admin before allowing reorder
+                if (!isAdmin()) {
+                    console.log('Non-admin user attempted to reorder gallery');
+                    return;
+                }
+
                 const items = Array.from(galleryGrid.querySelectorAll('.gallery-item:not(.add-new-item)'));
                 const newOrder = items.map((item, index) => ({
                     id: item.dataset.id,
@@ -37,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+        console.log('Sortable initialized for desktop');
+    } else if (isMobile()) {
+        console.log('Sortable disabled on mobile device');
     }
 
     // Setup file upload preview
@@ -108,7 +125,7 @@ function createGalleryItem(item) {
 // Modal functions
 function openEditModal(item) {
     // Check if user is admin
-    if (typeof isAdmin === 'undefined' || !isAdmin) {
+    if (!isAdmin()) {
         console.warn('Non-admin user attempted to edit image');
         return;
     }
@@ -220,7 +237,7 @@ function closeEditModal() {
 
 function openDeleteModal(item) {
     // Check if user is admin
-    if (typeof isAdmin === 'undefined' || !isAdmin) {
+    if (!isAdmin()) {
         console.warn('Non-admin user attempted to delete image');
         return;
     }

@@ -123,3 +123,19 @@ document.addEventListener('DOMContentLoaded', function() {
         updateActiveNavLinks();
     }
 });
+
+/**
+ * Check if the current device is mobile
+ * @returns {boolean} True if device is mobile, false otherwise
+ */
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+};
+
+/**
+ * Check if the current user is an admin
+ * @returns {boolean} True if user is admin, false otherwise
+ */
+function isAdmin() {
+    return typeof window.is_admin !== 'undefined' && window.is_admin;
+};

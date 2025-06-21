@@ -5,7 +5,7 @@ $isAdmin = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SE
 ?>
 <script>
     // Set JavaScript isAdmin variable
-    const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+    window.isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
 </script>
 
 <header class="site-header">

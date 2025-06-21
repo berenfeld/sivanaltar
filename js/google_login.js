@@ -194,6 +194,9 @@ function checkLoginStatus() {
 function updateUIWithUserInfo(user) {
     console.log("Updating UI with user:", user);
 
+    // Set global admin status for isAdmin() method
+    window.is_admin = user.is_admin || false;
+
     // Update desktop UI
     if (loginButton) loginButton.style.display = 'none';
     if (userInfo) userInfo.style.display = 'flex';
@@ -234,6 +237,9 @@ function handleLogout() {
     })
     .then(data => {
         if (data.success) {
+            // Reset global admin status
+            window.is_admin = false;
+
             // Reset UI
             if (loginButton) loginButton.style.display = 'flex';
             if (userInfo) userInfo.style.display = 'none';

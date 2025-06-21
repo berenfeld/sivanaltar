@@ -161,7 +161,6 @@ session_start();
     </div>
 
     <?php include 'footer.php'; ?>
-
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/gallery.js"></script>

@@ -61,5 +61,6 @@
     </section>
 
     <?php include 'footer.php'; ?>
+    <script src="js/blog.js"></script>
 </body>
 </html>
