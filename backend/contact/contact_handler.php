@@ -2,6 +2,9 @@
 session_start();
 header('Content-Type: application/json');
 
+// Include environment loader
+require_once __DIR__ . '/../../env_loader.php';
+
 // Include logger
 require_once __DIR__ . '/../logger/logger.php';
 
@@ -11,6 +14,9 @@ require_once __DIR__ . '/../mail/template_loader.php';
 // Initialize logger and template loader
 $logger = new Logger();
 $templateLoader = new TemplateLoader();
+
+// Get admin email from environment or use default
+$admin_email = $GLOBALS['ADMIN_EMAIL'];
 
 // Check if it's a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -59,8 +65,8 @@ try {
         $email_content = $templateLoader->loadTemplate('contact_template', $templateData);
     }
 
-    // Send email using Gmail SMTP (you'll need to set up an App Password)
-    $mail_sent = sendEmailViaSMTP($subject, $email_content, $name, $email);
+    // Send email using simple mail() function
+    $mail_sent = sendSimpleEmail($subject, $email_content, $name, $email, $admin_email);
 
     if ($mail_sent) {
         // Log successful email
@@ -100,31 +106,27 @@ try {
     ]);
 }
 
-function sendEmailViaSMTP($subject, $html_content, $from_name, $from_email) {
-    // Option 1: Using Gmail SMTP (recommended for simplicity)
-    $smtp_host = 'smtp.gmail.com';
-    $smtp_port = 587;
-    $smtp_username = 'sivanaltar@gmail.com'; // Your Gmail address
-    $smtp_password = 'your-app-password'; // Gmail App Password (not regular password)
+function sendSimpleEmail($subject, $html_content, $from_name, $from_email, $admin_email) {
+    $to_email = $admin_email;
 
-    // Option 2: Using AWS SES (if you prefer)
-    // $smtp_host = 'email-smtp.us-east-1.amazonaws.com';
-    // $smtp_port = 587;
-    // $smtp_username = 'your-ses-smtp-username';
-    // $smtp_password = 'your-ses-smtp-password';
-
-    $to_email = 'sivanaltar@gmail.com';
-
-    // Set headers for SMTP
+    // Set proper headers for HTML email
     $headers = array();
     $headers[] = 'MIME-Version: 1.0';
     $headers[] = 'Content-type: text/html; charset=UTF-8';
-    $headers[] = 'From: ' . $from_name . ' <' . $smtp_username . '>';
+    $headers[] = 'From: ' . $from_name . ' <' . $admin_email . '>';
     $headers[] = 'Reply-To: ' . $from_email;
     $headers[] = 'X-Mailer: PHP/' . phpversion();
+    $headers[] = 'X-Priority: 1';
 
-    // For now, use the simple mail() function
-    // In production, you should use PHPMailer or similar library for better SMTP support
-    return mail($to_email, $subject, $html_content, implode("\r\n", $headers));
+    // Convert headers array to string
+    $header_string = implode("\r\n", $headers);
+
+    // Send email using mail() function
+    $result = mail($to_email, $subject, $html_content, $header_string);
+
+    // Log the attempt for debugging
+    error_log("Email send attempt - To: $to_email, Subject: $subject, Result: " . ($result ? 'SUCCESS' : 'FAILED'));
+
+    return $result;
 }
 ?>
