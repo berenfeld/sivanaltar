@@ -1,0 +1,6 @@
+FROM mysql:8.0
+
+# Install additional tools
+RUN microdnf update -y && \
+    microdnf install -y procps-ng net-tools vim curl grep sed && \
+    microdnf clean all

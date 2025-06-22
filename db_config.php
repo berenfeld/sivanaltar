@@ -4,15 +4,11 @@ if (empty($GLOBALS['DB_HOST'])) {
     require_once 'env_loader.php';
 }
 
-// Get deployment environment
-$deployment = $GLOBALS['DEPLOYMENT'] ?: 'Development';
-$is_production = ($deployment === 'Production');
-
 // Database configuration
-$db_host = $GLOBALS['DB_HOST'] ?: '127.0.0.1';
-$db_user = $GLOBALS['DB_USER'] ?: '';
-$db_pass = $GLOBALS['DB_PASS'] ?: '';
-$db_name = $GLOBALS['DB_NAME'] ?: '';
+$db_host = $GLOBALS['DB_HOST'];
+$db_user = $GLOBALS['DB_USER'];
+$db_pass = $GLOBALS['DB_PASS'];
+$db_name = $GLOBALS['DB_NAME'];
 
 // Get database connection
 function getDbConnection() {
@@ -32,7 +28,7 @@ function getDbConnection() {
         return $conn;
     } catch (PDOException $e) {
         error_log("Database connection error: " . $e->getMessage());
-        throw new Exception("Database connection failed");
+        throw new Exception("Database connection failed: " . $e->getMessage());
     }
 }
 ?>

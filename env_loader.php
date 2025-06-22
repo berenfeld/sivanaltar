@@ -16,11 +16,8 @@ $GLOBALS['ADMIN_EMAIL'] = '';
 $GLOBALS['GOOGLE_CLIENT_ID'] = '';
 $GLOBALS['GOOGLE_CLIENT_SECRET'] = '';
 
-function loadEnv($path = null) {
-    // If no path provided, look for .env in the parent directory of document root
-    if ($path === null) {
-        $path = dirname($_SERVER['DOCUMENT_ROOT']) . '/.env';
-    }
+function loadEnv() {
+    $path = dirname($_SERVER['DOCUMENT_ROOT']) . '/.env';
 
     // Check if file exists
     if (!file_exists($path)) {
@@ -78,12 +75,4 @@ function loadEnv($path = null) {
 // Load environment variables
 loadEnv();
 
-// Optional: Check if .env was loaded
-if (!$env_loaded) {
-    // For development, you could show a warning
-    // For production, you might want to silently continue or log this
-    if (php_sapi_name() !== 'cli' && (!isset($_SERVER['HTTP_HOST']) || strpos($_SERVER['HTTP_HOST'], 'localhost') !== false)) {
-        echo "<!-- Warning: .env file not found or could not be loaded -->\n";
-    }
-}
 ?>

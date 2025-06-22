@@ -90,7 +90,6 @@ if (!empty($db_host) && !empty($db_user)) {
     echo formatOutput("DB_HOST", $db_host) . "\n";
     echo formatOutput("DB_NAME", $db_name) . "\n";
     echo formatOutput("DB_USER", $db_user) . "\n";
-    echo formatOutput("DB_PASS", $db_pass, true) . "\n";
     echo formatOutput("DEPLOYMENT", $deployment) . "\n";
     echo formatOutput("ADMIN_EMAIL", $admin_email) . "\n";
 }
@@ -118,7 +117,7 @@ try {
     $version = $conn->query('SELECT VERSION()')->fetchColumn();
     echo "MySQL Version: " . $version . "\n";
 
-} catch (PDOException $e) {
+} catch (Exception $e) {
     echo "Connection failed: " . $e->getMessage() . "\n";
 }
 ?>
