@@ -33,9 +33,6 @@ services:
     restart: unless-stopped
     ports:
       - "8000:80"
-    volumes:
-      - ../uploads:/var/www/html/uploads
-      - ../images:/var/www/html/images
     environment:
       - DB_HOST=mysql
       - DB_NAME=sivanaltar_db

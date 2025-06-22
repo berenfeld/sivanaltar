@@ -36,9 +36,6 @@ This Docker setup provides a complete development environment for the Sivan Alta
 - **Root Password**: sivanaltar_root_password
 
 ### Volumes
-- `uploads/`: Gallery uploads directory
-- `images/`: Static images directory
-- `mysql_data`: Persistent MySQL data
 
 ## Configuration Files
 
