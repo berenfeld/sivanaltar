@@ -1,13 +1,11 @@
 <?php
-// logout.php - Handle user logout
-// Start session if not already started
-session_start();
-
-// Set content type for JSON response
-header('Content-Type: application/json');
+// Include common backend functionality
+require_once __DIR__ . '/../common.php';
 
 // Include logger
 require_once __DIR__ . '/../logger/logger.php';
+
+// logout.php - Handle user logout
 
 // Initialize logger
 $logger = new Logger();

@@ -1,3 +1,9 @@
+<?php
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>סיון אלטרוביץ - מאמנת רגשית בשיטת סאטיה</title>

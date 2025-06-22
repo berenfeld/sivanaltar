@@ -1,5 +1,4 @@
 <?php
-session_start();
 // Set PHP isAdmin variable
 $isAdmin = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['is_admin']) && $_SESSION['is_admin'];
 ?>

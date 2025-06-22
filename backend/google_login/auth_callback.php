@@ -1,13 +1,6 @@
 <?php
-// Start with necessary setup
-error_reporting(0); // Disable error reporting in production
-session_start();
-
-// Load environment variables
-require_once __DIR__ . '/../../env_loader.php';
-
-// IMPORTANT: Set content type to JSON *before* any output
-header('Content-Type: application/json');
+// Include common backend functionality
+require_once __DIR__ . '/../common.php';
 
 // Include database configuration
 require_once __DIR__ . '/../../db_config.php';

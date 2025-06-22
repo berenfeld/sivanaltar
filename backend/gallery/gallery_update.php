@@ -1,6 +1,6 @@
 <?php
-session_start();
-header('Content-Type: application/json');
+// Include common backend functionality
+require_once __DIR__ . '/../common.php';
 
 // Include database configuration
 require_once __DIR__ . '/../../db_config.php';

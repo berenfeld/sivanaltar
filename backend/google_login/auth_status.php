@@ -1,7 +1,11 @@
 <?php
+// Include common backend functionality
+require_once __DIR__ . '/../common.php';
+
+// Include database configuration
+require_once __DIR__ . '/../../db_config.php';
+
 // auth_status.php - Return current authentication status
-session_start();
-header('Content-Type: application/json');
 
 // Return the login status
 $response = [

@@ -1,9 +1,6 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-
-// Include environment loader
-require_once __DIR__ . '/../../env_loader.php';
+// Include common backend functionality
+require_once __DIR__ . '/../common.php';
 
 // Include logger
 require_once __DIR__ . '/../logger/logger.php';
