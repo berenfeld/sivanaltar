@@ -9,28 +9,25 @@
 .privacy-header-section {
     background-color: var(--secondary-color);
     color: var(--text-color);
-    padding: 40px 0 30px;
+    padding: 3px 0;
     text-align: center;
 }
 
 .privacy-header-section .section-title {
     font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    font-family: 'Playfair Display', serif;
-    color: var(--heading-color);
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    margin-top: 20px;
 }
 
 .privacy-header-section .section-subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    opacity: 0.9;
-    font-family: 'Assistant', sans-serif;
-    color: var(--text-color);
+    font-size: 1.2rem;
+    margin-bottom: 3px;
+    color: var(--primary-color);
 }
 
 .privacy-header-section .last-updated {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     opacity: 0.7;
     font-style: italic;
     color: var(--text-color);
@@ -123,7 +120,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .privacy-header-section {
-        padding: 30px 0 25px;
+        padding: 3px 0;
     }
 
     .privacy-header-section .section-title {

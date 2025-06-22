@@ -25,6 +25,9 @@ switch($current_page) {
     case 'contact.php':
         echo '<link rel="canonical" href="' . $base_url . '/contact.php">';
         break;
+    case 'privacy-policy.php':
+        echo '<link rel="canonical" href="' . $base_url . '/privacy-policy.php">';
+        break;
     case 'thank-you.php':
         echo '<link rel="canonical" href="' . $base_url . '/thank-you.php">';
         break;
