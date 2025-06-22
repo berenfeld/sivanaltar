@@ -95,6 +95,9 @@ switch($current_page) {
     case 'thank-you.php':
         echo '<link rel="stylesheet" href="css/thank-you.css">';
         break;
+    case 'privacy-policy.php':
+        echo '<link rel="stylesheet" href="css/privacy-policy.css">';
+        break;
     default:
         // For any other page, include sections.css as a fallback
         echo '<link rel="stylesheet" href="css/sections.css">';

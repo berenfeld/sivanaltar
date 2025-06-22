@@ -22,6 +22,9 @@
                 <i class="fab fa-linkedin-in"></i>
             </a>
         </div>
+        <div class="footer-links">
+            <a href="privacy-policy.php">מדיניות פרטיות</a>
+        </div>
         <div class="copyright">
             <p>© 2025 סיון אלטרוביץ - כל הזכויות שמורות</p>
         </div>

@@ -69,6 +69,24 @@
     transform: translateY(-3px);
 }
 
+.footer-links {
+    margin-bottom: 20px;
+}
+
+.footer-links a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+    opacity: 0.8;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+    opacity: 1;
+    text-decoration: underline;
+}
+
 .copyright {
     font-size: 14px;
     color: var(--text-color);
