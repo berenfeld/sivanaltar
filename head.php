@@ -2,6 +2,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>סיון אלטרוביץ - מאמנת רגשית בשיטת סאטיה</title>
 
+<!-- Canonical URL -->
+<?php
+$current_page = basename($_SERVER['PHP_SELF']);
+$base_url = 'https://sivanaltar.com';
+switch($current_page) {
+    case 'index.php':
+        echo '<link rel="canonical" href="' . $base_url . '/">';
+        break;
+    case 'blog.php':
+        echo '<link rel="canonical" href="' . $base_url . '/blog.php">';
+        break;
+    case 'gallery.php':
+        echo '<link rel="canonical" href="' . $base_url . '/gallery.php">';
+        break;
+    case 'contact.php':
+        echo '<link rel="canonical" href="' . $base_url . '/contact.php">';
+        break;
+    case 'thank-you.php':
+        echo '<link rel="canonical" href="' . $base_url . '/thank-you.php">';
+        break;
+    default:
+        echo '<link rel="canonical" href="' . $base_url . '/' . $current_page . '">';
+}
+?>
+
 <!-- Google Sign-In Meta Tag for One-Tap -->
 <meta name="google-signin-client_id" content="737149879159-k8sksf67g8o8e769u1qvnjjmojv7i8sl.apps.googleusercontent.com">
 
