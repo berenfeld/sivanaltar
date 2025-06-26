@@ -25,6 +25,14 @@ if (defined('DEPLOYMENT') && DEPLOYMENT === 'Development') {
 // Set content type for JSON responses
 header('Content-Type: application/json; charset=utf-8');
 
+// Add security headers to indicate this is a legitimate API
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
+
+// disable caching at all for backend calls
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+
 // Enable CORS for AJAX requests
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to load mainpage content from API
 function loadMainpageContent() {
-    fetch('backend/mainpage/mainpage_get.php')
+    fetch('backend/mainpage/mainpage_content.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
