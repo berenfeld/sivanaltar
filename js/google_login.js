@@ -121,7 +121,7 @@ function handleGoogleCredential(response) {
     setLoading(true);
 
     // Send the token to our server for verification
-    fetch('backend/google_login/auth_callback.php', {
+    fetch('api/google_login/auth_callback.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ function handleGoogleCredential(response) {
 // Check if user is already logged in
 function checkLoginStatus() {
     setLoading(true);
-    fetch('backend/google_login/auth_status.php', {
+    fetch('api/google_login/auth_status.php', {
         headers: {
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
@@ -223,7 +223,7 @@ function handleLogout() {
     setLoading(true);
     console.log("Logging out...");
 
-    fetch('backend/google_login/auth_logout.php', {
+    fetch('api/google_login/auth_logout.php', {
         headers: {
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'

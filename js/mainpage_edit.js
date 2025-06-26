@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to load mainpage content from API
 function loadMainpageContent() {
-    fetch('backend/mainpage/mainpage_content.php')
+    fetch('api/mainpage/mainpage_content.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -119,7 +119,7 @@ function saveContent(editor) {
     formData.append('content', content);
 
     // Send to API
-    fetch('backend/mainpage/mainpage_update.php', {
+    fetch('api/mainpage/mainpage_update.php', {
         method: 'POST',
         body: formData
     })

@@ -1,6 +1,6 @@
 <?php
 // Test email templates
-require_once 'backend/mail/template_loader.php';
+require_once 'api/mail/template_loader.php';
 
 echo "<h2>Email Template Test</h2>";
 

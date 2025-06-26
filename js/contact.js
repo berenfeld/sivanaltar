@@ -34,7 +34,7 @@ function handleFormSubmission(form, formType) {
     });
 
     // Send form data
-    fetch('backend/contact/contact_handler.php', {
+    fetch('api/contact/contact_handler.php', {
         method: 'POST',
         body: formData
     })

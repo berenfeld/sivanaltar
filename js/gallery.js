@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }));
 
                 // Send the new order to the server
-                fetch('backend/gallery/gallery_order.php', {
+                fetch('api/gallery/gallery_order.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ function updateImage(data) {
         }
     });
 
-    fetch('backend/gallery/gallery_update.php', {
+    fetch('api/gallery/gallery_update.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -289,7 +289,7 @@ function deleteImage() {
         }
     });
 
-    fetch('backend/gallery/gallery_delete.php', {
+    fetch('api/gallery/gallery_delete.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -412,7 +412,7 @@ function uploadImage(formData) {
         }
     });
 
-    fetch('backend/gallery/gallery_upload.php', {
+    fetch('api/gallery/gallery_upload.php', {
         method: 'POST',
         body: formData
     })

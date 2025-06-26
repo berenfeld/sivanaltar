@@ -17,7 +17,7 @@ function loadMainpageContent() {
     mainpageDiv.innerHTML = '<div style="text-align: center; padding: 50px;"><h2>טוען תוכן...</h2></div>';
 
     // Fetch content from API
-    fetch('backend/mainpage/mainpage_get.php')
+    fetch('api/mainpage/mainpage_get.php')
         .then(response => response.json())
         .then(data => {
             if (data.success && data.content) {
