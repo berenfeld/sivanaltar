@@ -29,10 +29,19 @@ try {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($result) {
+        // Ensure content is properly UTF-8 encoded before base64 encoding
+        $content = $result['content'];
+        if (!mb_check_encoding($content, 'UTF-8')) {
+            $content = mb_convert_encoding($content, 'UTF-8', 'auto');
+        }
+
+        // Encode the HTML content as base64 to avoid UTF-8 encoding issues
+        $encodedContent = base64_encode($content);
+
         echo json_encode([
             'success' => true,
             'data' => [
-                'content' => $result['content']
+                'content' => $encodedContent
             ],
         ]);
     } else {

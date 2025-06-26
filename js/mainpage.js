@@ -22,7 +22,14 @@ function loadMainpageContent() {
         .then(data => {
             if (data.success && data.data && data.data.content) {
                 console.log('Mainpage content loaded successfully');
-                mainpageDiv.innerHTML = data.data.content;
+                // Decode base64 content and convert UTF-8 to UTF-16
+                const base64Content = atob(data.data.content);
+                const bytes = new Uint8Array(base64Content.length);
+                for (let i = 0; i < base64Content.length; i++) {
+                    bytes[i] = base64Content.charCodeAt(i);
+                }
+                const decodedContent = new TextDecoder('utf-8').decode(bytes);
+                mainpageDiv.innerHTML = decodedContent;
             } else {
                 console.error('Failed to load content:', data.message);
                 showFallbackContent(mainpageDiv);
