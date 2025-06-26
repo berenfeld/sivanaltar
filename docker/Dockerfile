@@ -70,7 +70,7 @@ RUN echo "DEPLOYMENT=Development" > /var/www/.env && \
     echo "DB_USER=sivanaltar_user" >> /var/www/.env && \
     echo "DB_PASS=sivanaltar_password" >> /var/www/.env && \
     echo "DB_NAME=sivanaltar_db" >> /var/www/.env && \
-    echo "SITE_URL=http://localhost:8000" >> /var/www/.env && \
+    echo "SITE_URL=http://localhost:8080" >> /var/www/.env && \
     echo "INIT_DB_TOKEN=your_init_token_here" >> /var/www/.env && \
     echo "ADMIN_EMAIL=berenfeldran@gmail.com" >> /var/www/.env
 

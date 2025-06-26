@@ -31,7 +31,7 @@ mkdir -p /var/log/php
 chown -R www-data:www-data /var/log/php
 
 echo "=== Services are ready! ==="
-echo "Website: http://localhost:8000"
+echo "Website: http://localhost:8080"
 echo "MySQL: mysql:3306"
 
 # Start Apache in foreground

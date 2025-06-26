@@ -56,5 +56,5 @@ rm -rf "${TEMP_DIR}"
 echo -e "${GREEN}🧹 Cleaned up temporary directory${NC}"
 
 echo -e "${GREEN}✅ Website updated successfully!${NC}"
-echo -e "${YELLOW}💡 The changes should be immediately available at http://localhost:8000${NC}"
+echo -e "${YELLOW}💡 The changes should be immediately available at http://localhost:8080${NC}"
 

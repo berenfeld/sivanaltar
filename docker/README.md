@@ -20,12 +20,12 @@ This Docker setup provides a complete development environment for the Sivan Alta
    ```
 
 3. **Access the website:**
-   - Website: http://localhost:8000
+   - Website: http://localhost:8080
 
 ## Container Details
 
 ### Services
-- **Apache**: Web server running on port 80 (mapped to 8000)
+- **Apache**: Web server running on port 80 (mapped to 8080)
 - **MySQL**: Database server running on port 3306
 - **PHP**: PHP 8.3 with common extensions
 
