@@ -1,0 +1,258 @@
+/* Main Page Content Sections Styles */
+
+/* Main page wrapper div - neutral styling to avoid affecting existing layout */
+.mainpage_main_div {
+    /* Neutral styling - doesn't affect existing layout */
+    width: 100%;
+    height: auto;
+    position: relative;
+    /* No margin, padding, or other properties that could interfere */
+}
+
+/* Hero Section */
+.mainpage_hero-section {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+    margin-top: 0;
+}
+
+.mainpage_hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../images/hero-background.jpeg');
+}
+
+.mainpage_hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-color);
+}
+
+.mainpage_hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.mainpage_quote-box {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    border-radius: 5px;
+    max-width: 800px;
+    margin-bottom: 40px;
+}
+
+.mainpage_quote-box blockquote {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--highlight-color);
+    font-family: 'Playfair Display', serif;
+    line-height: 1.4;
+}
+
+.mainpage_quote-box cite {
+    display: block;
+    margin-top: 15px;
+    font-size: 1.8rem;
+    color: #f1f461;
+    font-style: normal;
+    font-family: 'Oswald', sans-serif;
+}
+
+.mainpage_hero-text {
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 30px;
+    border-radius: 5px;
+    max-width: 800px;
+    color: var(--text-color);
+}
+
+.mainpage_hero-text p {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+/* Hero responsive adjustments */
+@media (max-width: 768px) {
+    .mainpage_hero-section {
+        height: auto;
+        min-height: 500px;
+    }
+
+    .mainpage_quote-box blockquote {
+        font-size: 1.8rem;
+    }
+
+    .mainpage_quote-box cite {
+        font-size: 1.4rem;
+    }
+
+    .mainpage_hero-text p {
+        font-size: 1.1rem;
+    }
+}
+
+/* Alternating section backgrounds */
+.mainpage_about-section {
+    background-color: var(--background-color);
+    padding: 80px 0;
+}
+
+.mainpage_method-section {
+    background-color: var(--secondary-color);
+    padding: 80px 0;
+}
+
+.mainpage_how-it-works-section {
+    background-color: var(--background-color);
+    padding: 80px 0;
+}
+
+.mainpage_value-section {
+    background-color: var(--secondary-color);
+    padding: 80px 0;
+}
+
+/* Common section layout */
+.mainpage_about-content,
+.mainpage_method-content,
+.mainpage_how-it-works-content,
+.mainpage_value-content {
+    display: flex;
+    flex-direction: row; /* Standard flow */
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* Image containers - THIS IS THE KEY PART */
+.mainpage_about-image,
+.mainpage_method-image,
+.mainpage_how-it-works-image,
+.mainpage_value-image {
+    flex: 0 0 35%; /* This means: don't grow, don't shrink, start at 35% width */
+    max-width: 35%; /* This is important to limit the width */
+    margin-top: 70px; /* Vertical alignment with heading */
+}
+
+.mainpage_about-text,
+.mainpage_method-text,
+.mainpage_how-it-works-text,
+.mainpage_value-text {
+    flex: 1; /* Takes remaining space */
+}
+
+/* All images styling */
+.mainpage_about-image img,
+.mainpage_method-image img,
+.mainpage_how-it-works-image img,
+.mainpage_value-image img {
+    width: 85%; /* Image size within container */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    display: block;
+}
+
+/* Section titles and text styling */
+.mainpage_about-text h3,
+.mainpage_method-text h3,
+.mainpage_how-it-works-text h3,
+.mainpage_value-text h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: var(--primary-color) !important;
+}
+
+.mainpage_about-text h4,
+.mainpage_method-text h4,
+.mainpage_how-it-works-text h4,
+.mainpage_value-text h4 {
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: #5a7a8a;
+}
+
+.mainpage_about-text p,
+.mainpage_method-text p,
+.mainpage_how-it-works-text p,
+.mainpage_value-text p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.mainpage_about-text ul,
+.mainpage_method-text ul,
+.mainpage_how-it-works-text ul,
+.mainpage_value-text ul {
+    list-style-type: disc;
+    padding-right: 25px;
+    margin-bottom: 20px;
+}
+
+.mainpage_about-text ul li,
+.mainpage_method-text ul li,
+.mainpage_how-it-works-text ul li,
+.mainpage_value-text ul li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .mainpage_about-content,
+    .mainpage_method-content,
+    .mainpage_how-it-works-content,
+    .mainpage_value-content {
+        flex-direction: column; /* Stack vertically */
+    }
+
+    .mainpage_about-image,
+    .mainpage_method-image,
+    .mainpage_how-it-works-image,
+    .mainpage_value-image {
+        flex: 1 0 100%;
+        max-width: 100%; /* Full width on mobile */
+        margin-top: 0;
+        order: 2; /* Move images below text */
+        margin-bottom: 0;
+        margin-top: 20px;
+    }
+
+    .mainpage_about-text,
+    .mainpage_method-text,
+    .mainpage_how-it-works-text,
+    .mainpage_value-text {
+        flex: 1 0 100%;
+        max-width: 100%;
+        order: 1; /* Keep text on top */
+    }
+
+    .mainpage_about-image img,
+    .mainpage_method-image img,
+    .mainpage_how-it-works-image img,
+    .mainpage_value-image img {
+        width: 100%; /* Full width on mobile */
+    }
+}

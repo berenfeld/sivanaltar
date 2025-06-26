@@ -83,8 +83,7 @@ switch($current_page) {
 $current_page = basename($_SERVER['PHP_SELF']);
 switch($current_page) {
     case 'index.php':
-        echo '<link rel="stylesheet" href="css/hero.css">';
-        echo '<link rel="stylesheet" href="css/sections.css">';
+        echo '<link rel="stylesheet" href="css/mainpage.css">';
         break;
     case 'blog.php':
         echo '<link rel="stylesheet" href="css/blog.css">';
@@ -102,8 +101,8 @@ switch($current_page) {
         echo '<link rel="stylesheet" href="css/privacy-policy.css">';
         break;
     default:
-        // For any other page, include sections.css as a fallback
-        echo '<link rel="stylesheet" href="css/sections.css">';
+        // No fallback CSS needed - all pages have their own specific CSS files
+        break;
 }
 ?>
 
