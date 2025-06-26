@@ -10,6 +10,9 @@ if (session_status() === PHP_SESSION_NONE) {
 // Load environment variables
 require_once __DIR__ . '/../env_loader.php';
 
+// Load Logger class
+require_once __DIR__ . '/logger/logger.php';
+
 // Set error reporting for development
 if (defined('DEPLOYMENT') && DEPLOYMENT === 'Development') {
     error_reporting(E_ALL);
@@ -31,5 +34,51 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
+}
+
+// Set global isAdmin variable
+$GLOBALS['isAdmin'] = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['is_admin']) && $_SESSION['is_admin'];
+
+/**
+ * Require admin access - redirects to error if not admin
+ * @return void
+ */
+function requireAdmin() {
+    // Initialize logger
+    $logger = new Logger();
+
+    // Get user information from session
+    $userData = [
+        'user_name' => $_SESSION['name'] ?? 'Unknown',
+        'user_id' => $_SESSION['user_id'] ?? 'unknown',
+        'user_email' => $_SESSION['email'] ?? 'unknown',
+        'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown'
+    ];
+
+    // Debug: Log the admin status for troubleshooting
+    $debug_info = array_merge($userData, [
+        'session_logged_in' => isset($_SESSION['logged_in']) ? ($_SESSION['logged_in'] ? 'true' : 'false') : 'not set',
+        'session_is_admin' => isset($_SESSION['is_admin']) ? ($_SESSION['is_admin'] ? 'true' : 'false') : 'not set',
+        'global_isAdmin' => $GLOBALS['isAdmin'] ? 'true' : 'false'
+    ]);
+
+    $logger->logAdminAccess(array_merge($debug_info, ['action' => 'ACCESS_CHECK_DEBUG']));
+
+    // Check if admin access is granted
+    if (!$GLOBALS['isAdmin']) {
+        // Log the failed admin access attempt
+        $logger->logAdminAccess(array_merge($userData, ['action' => 'ACCESS_DENIED']));
+
+        // Return error response
+        http_response_code(403);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Admin access required'
+        ]);
+        exit();
+    }
+
+    // Log successful admin access
+    $logger->logAdminAccess(array_merge($userData, ['action' => 'ACCESS_GRANTED']));
 }
 ?>

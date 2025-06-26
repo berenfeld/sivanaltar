@@ -1,0 +1,38 @@
+/* Mainpage Edit Styles */
+.mainpage_edit_body {
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.mainpage_edit_editor-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.mainpage_edit_editor-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.mainpage_edit_editor-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.mainpage_edit_editor-content {
+    padding: 20px;
+}
+
+.mainpage_edit_mainpage-editor {
+    min-height: 600px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background: white;
+}

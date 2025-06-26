@@ -100,6 +100,10 @@ switch($current_page) {
     case 'privacy-policy.php':
         echo '<link rel="stylesheet" href="css/privacy-policy.css">';
         break;
+    case 'mainpage_edit.php':
+        echo '<link rel="stylesheet" href="css/mainpage.css">';
+        echo '<link rel="stylesheet" href="css/mainpage_edit.css">';
+        break;
     default:
         // No fallback CSS needed - all pages have their own specific CSS files
         break;

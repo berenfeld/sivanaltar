@@ -11,12 +11,8 @@ require_once __DIR__ . '/../logger/logger.php';
 // Initialize logger
 $logger = new Logger();
 
-// Check if user is admin
-if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) {
-    $logger->logFailedLogin($_SESSION['user_email'] ?? 'unknown', 'Unauthorized gallery update attempt');
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
-    exit;
-}
+// Require admin access
+requireAdmin();
 
 // Check if it's a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

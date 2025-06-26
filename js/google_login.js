@@ -194,7 +194,7 @@ function checkLoginStatus() {
 function updateUIWithUserInfo(user) {
     console.log("Updating UI with user:", user);
 
-    // Set global admin status for isAdmin() method
+    // Set global admin status for window.isAdmin method
     window.is_admin = user.is_admin || false;
 
     // Update desktop UI

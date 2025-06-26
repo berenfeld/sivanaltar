@@ -296,6 +296,67 @@ class Logger {
     }
 
     /**
+     * Log admin access attempts (successful and failed)
+     */
+    public function logAdminAccess($data) {
+        $action = $data['action'] ?? 'UNKNOWN';
+        $userInfo = sprintf(
+            "User: %s (ID: %s, Email: %s)",
+            $data['user_name'] ?? 'Unknown',
+            $data['user_id'] ?? 'unknown',
+            $data['user_email'] ?? 'unknown'
+        );
+
+        switch ($action) {
+            case 'ACCESS_GRANTED':
+                $logEntry = sprintf(
+                    "[%s] ADMIN_ACCESS_GRANTED - %s - Request URI: %s - IP: %s - Session: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['request_uri'] ?? 'unknown',
+                    $this->getClientIP(),
+                    session_id()
+                );
+                break;
+
+            case 'ACCESS_DENIED':
+                $logEntry = sprintf(
+                    "[%s] ADMIN_ACCESS_DENIED - %s - Request URI: %s - IP: %s - Session: %s - User Agent: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['request_uri'] ?? 'unknown',
+                    $this->getClientIP(),
+                    session_id(),
+                    $this->getUserAgent()
+                );
+                break;
+
+            case 'ACCESS_CHECK_DEBUG':
+                $logEntry = sprintf(
+                    "[%s] ADMIN_ACCESS_DEBUG - %s - Session Logged In: %s - Session Is Admin: %s - Global IsAdmin: %s - Request URI: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['session_logged_in'] ?? 'unknown',
+                    $data['session_is_admin'] ?? 'unknown',
+                    $data['global_isAdmin'] ?? 'unknown',
+                    $data['request_uri'] ?? 'unknown'
+                );
+                break;
+
+            default:
+                $logEntry = sprintf(
+                    "[%s] ADMIN_%s - %s - Data: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $action,
+                    $userInfo,
+                    json_encode($data)
+                );
+        }
+
+        $this->writeLog($logEntry);
+    }
+
+    /**
      * Write log entry to file
      */
     private function writeLog($logEntry) {
@@ -336,27 +397,6 @@ class Logger {
      */
     public function getLogFile() {
         return $this->logFile;
-    }
-
-    /**
-     * Read recent log entries (for admin purposes)
-     */
-    public function getRecentLogs($limit = 100) {
-        if (!file_exists($this->logFile)) {
-            return [];
-        }
-
-        $lines = file($this->logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $logs = [];
-
-        foreach (array_reverse($lines) as $line) {
-            $logs[] = $line;
-            if (count($logs) >= $limit) {
-                break;
-            }
-        }
-
-        return array_reverse($logs);
     }
 }
 ?>

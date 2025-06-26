@@ -12,16 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
             draggable: '.gallery-item:not(.add-new-item)',
             onMove: function(evt) {
                 // Prevent move if user is not admin
-                if (!isAdmin()) {
-                    console.log('Non-admin user attempted to move gallery item');
+                if (!window.isAdmin) {
                     return false; // This prevents the move
                 }
                 return true; // Allow move for admin users
             },
             onEnd: function(evt) {
                 // Check if user is admin before allowing reorder
-                if (!isAdmin()) {
-                    console.log('Non-admin user attempted to reorder gallery');
+                if (!window.isAdmin) {
                     return;
                 }
 
@@ -125,7 +123,7 @@ function createGalleryItem(item) {
 // Modal functions
 function openEditModal(item) {
     // Check if user is admin
-    if (!isAdmin()) {
+    if (!window.isAdmin) {
         console.warn('Non-admin user attempted to edit image');
         return;
     }
@@ -237,7 +235,7 @@ function closeEditModal() {
 
 function openDeleteModal(item) {
     // Check if user is admin
-    if (!isAdmin()) {
+    if (!window.isAdmin) {
         console.warn('Non-admin user attempted to delete image');
         return;
     }
