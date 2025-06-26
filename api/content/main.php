@@ -31,8 +31,9 @@ try {
     if ($result) {
         echo json_encode([
             'success' => true,
-            'content' => $result['content'],
-            'updated_at' => $result['updated_at']
+            'data' => [
+                'content' => $result['content']
+            ],
         ]);
     } else {
         echo json_encode([

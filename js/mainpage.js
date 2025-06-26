@@ -17,12 +17,12 @@ function loadMainpageContent() {
     mainpageDiv.innerHTML = '<div style="text-align: center; padding: 50px;"><h2>טוען תוכן...</h2></div>';
 
     // Fetch content from API
-    fetch('api/mainpage/mainpage_get.php')
+    fetch('api/content/main.php')
         .then(response => response.json())
         .then(data => {
-            if (data.success && data.content) {
+            if (data.success && data.data && data.data.content) {
                 console.log('Mainpage content loaded successfully');
-                mainpageDiv.innerHTML = data.content;
+                mainpageDiv.innerHTML = data.data.content;
             } else {
                 console.error('Failed to load content:', data.message);
                 showFallbackContent(mainpageDiv);

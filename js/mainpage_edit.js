@@ -23,12 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to load mainpage content from API
 function loadMainpageContent() {
-    fetch('api/mainpage/mainpage_content.php')
+    fetch('api/content/main.php')
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.success && data.data && data.data.content) {
+                initializeTinyMCE(data.data.content);
                 console.log('Content loaded from API');
-                initializeTinyMCE(data.content);
             }
         })
         .catch(error => {
