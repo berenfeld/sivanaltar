@@ -33,6 +33,9 @@
 
 <!-- Global Scripts - Always load this -->
 <script src="js/scripts.js"></script>
+<script src="js/common.js"></script>
 <!-- Include the authentication script first -->
 <script src="js/google_login.js"></script>
+<!-- SweetAlert2 for notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

@@ -57,9 +57,9 @@ function requireAdmin() {
 
     // Get user information from session
     $userData = [
-        'user_name' => $_SESSION['name'] ?? 'Unknown',
+        'user_name' => $_SESSION['user_name'] ?? 'Unknown',
         'user_id' => $_SESSION['user_id'] ?? 'unknown',
-        'user_email' => $_SESSION['email'] ?? 'unknown',
+        'user_email' => $_SESSION['user_email'] ?? 'unknown',
         'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown'
     ];
 
@@ -88,5 +88,50 @@ function requireAdmin() {
 
     // Log successful admin access
     $logger->logAdminAccess(array_merge($userData, ['action' => 'ACCESS_GRANTED']));
+}
+
+/**
+ * Encode content to base64 for transmission
+ * @param string $content The content to encode
+ * @return string Base64 encoded content
+ */
+function encodeContent($content) {
+    if (empty($content)) {
+        return '';
+    }
+
+    // Ensure content is UTF-8 encoded
+    if (!mb_check_encoding($content, 'UTF-8')) {
+        $content = mb_convert_encoding($content, 'UTF-8', 'auto');
+    }
+
+    // Convert to base64
+    return base64_encode($content);
+}
+
+/**
+ * Decode content from base64
+ * @param string $base64Content The base64 encoded content
+ * @return string Decoded content
+ */
+function decodeContent($base64Content) {
+    if (empty($base64Content)) {
+        return '';
+    }
+
+    // Decode from base64
+    $decoded = base64_decode($base64Content, true);
+
+    if ($decoded === false) {
+        // If base64 decode fails, return original content
+        return $base64Content;
+    }
+
+    // Ensure content is UTF-8 encoded
+    if (!mb_check_encoding($decoded, 'UTF-8')) {
+        $decoded = mb_convert_encoding($decoded, 'UTF-8', 'auto');
+    }
+
+    return $decoded;
 }
 ?>

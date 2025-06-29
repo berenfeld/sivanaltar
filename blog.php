@@ -2,6 +2,8 @@
 <html lang="he" dir="rtl">
 <head>
     <?php include 'head.php'; ?>
+    <title>בלוג - הבלוג שלי</title>
+    <link rel="stylesheet" href="css/blog.css">
 </head>
 <body>
     <?php include 'nav.php'; ?>
@@ -18,28 +20,44 @@
     <section class="blog-content-section">
         <div class="container">
             <div class="blog-grid">
-                <!-- Blog Post 1 -->
-                <article class="blog-card">
+                <?php if ($GLOBALS['isAdmin']): ?>
+                <article class="blog-card add-new-blog-card" onclick="createNewBlog()">
+                    <div class="blog-card-image add-new-image">
+                        <div class="add-new-content">
+                            <i class="fas fa-plus-circle"></i>
+                            <h3>הוסף פוסט חדש</h3>
+                            <p>צור פוסט חדש לבלוג</p>
+                        </div>
+                    </div>
+                </article>
+                <?php endif; ?>
+
+                <!-- Container for dynamically loaded blog posts -->
+                <div id="blog-posts-container">
+                    <!-- Blog posts will be loaded dynamically via JavaScript -->
+                </div>
+
+                <!-- Blog post template (hidden by default) -->
+                <article class="blog-card" id="blog-post-template" style="display: none;">
                     <div class="blog-card-image">
-                        <img src="images/blog-post-image.jpeg" alt="גלי הים ושיחות בארבע עיניים">
+                        <img id="blog-post-image" src="" alt="">
                     </div>
                     <div class="blog-card-content">
-                        <h3 class="blog-card-title">תהייה פילוסופית על החשיבות של מפגש פנים מול פנים</h3>
-                        <div class="blog-card-date">27 אפריל, 2025</div>
-                        <div class="blog-card-excerpt">
-                            <p>?גלי הים ושיחות בארבע עיניים: למה אנחנו כמהים למפגש פנים אל פנים</p>
-                            <p>היום, כשהגלים של הים שטפו את החוף ואני נהניתי מהשקט של יום חופשי, תהיתי על משהו שמעסיק אותי כמאמנת רגשית: למה, בעידן של תקשורת דיגיטלית זמינה כל כך, אנחנו עדיין כמהים כל כך לשיחה "אמיתית", פנים מול פנים, בארבע עיניים?</p>
+                        <h3 class="blog-card-title" id="blog-post-title"></h3>
+                        <div class="blog-card-date" id="blog-post-date"></div>
+                        <div class="blog-card-excerpt" id="blog-post-excerpt"></div>
+                        <div class="blog-card-tag" id="blog-post-category"></div>
+                        <div class="blog-post-status" id="blog-post-status" style="display: none;">
+                            <span class="unpublished-label">לא מאושר לפרסום</span>
                         </div>
-                        <div class="blog-full-content hidden">
-                            <p>?גלי הים ושיחות בארבע עיניים: למה אנחנו כמהים למפגש פנים אל פנים</p>
-                            <p>היום, כשהגלים של הים שטפו את החוף ואני נהניתי מהשקט של יום חופשי, תהיתי על משהו שמעסיק אותי כמאמנת רגשית: למה, בעידן של תקשורת דיגיטלית זמינה כל כך, אנחנו עדיין כמהים כל כך לשיחה "אמיתית", פנים מול פנים, בארבע עיניים?</p>
-                            <p>שמעתי פודקאסט על הפילוסופיה המעמיקה של עמנואל לוינס, שראה בפניו של האחר הרבה יותר מסתם תווי פנים. עבורו, הפנים הן התגלות ייחודית של אדם אחר, של עולם פנימי שלם ושונה משלי. הן נושאות עמן פגיעות, חשופות לרגשות ולחוויות, ודווקא הפגיעות הזו היא שמטילה עלינו אחריות מוסרית עמוקה – את הציווי "לא תרצח" במובנו הרחב של לא לבטל, לא לפגוע, אלא להכיר בקיום האחר.</p>
-                            <p>אולי הרצון שלנו לשיחה פנים מול פנים נובע מהצורך העמוק הזה לפגוש את האחר באמת, מעבר למילים הכתובות או לקולות המרוחקים. במפגש פיזי, אנחנו קולטים רבדים שלמים של תקשורת – שפת גוף, הבעות פנים, אנרגיה – שמסייעים לנו להבין לעומק את מה שהאחר באמת מרגיש ורוצה להביע.</p>
-                            <p>בארבע עיניים, קשה יותר להתחבא מאחורי מסכים או מסכות. ישנה דרישה לנוכחות מלאה, לקשב אמיתי, למפגש בלתי אמצעי עם האנושיות של האחר – על כאבו, שמחתו, תקוותיו ופחדיו. אולי זו הסיבה שבזמנים של קונפליקט או צורך אמיתי בהבנה, האינסטינקט שלנו הוא "בוא נדבר על זה פנים מול פנים".</p>
-                            <p>הים היום הזכיר לי את האינסופיות של כל אדם ואת הצורך הבסיסי שלנו בקשר אותנטי. כמאמנת רגשית בשיטת סאטיה, אני רואה בכל מפגש פנים אל פנים הזדמנות ייחודית לפגוש את האדם שמולי במלוא הווייתו, להכיר בפגיעותו ולעודד צמיחה מתוך מרחב של אמון ובטחון.</p>
+                        <div class="blog-admin-controls" id="blog-admin-controls" style="display: none;">
+                            <button class="blog-edit-button" id="blog-edit-button">
+                                <i class="fas fa-edit"></i> ערוך
+                            </button>
+                            <button class="blog-delete-button" id="blog-delete-button">
+                                <i class="fas fa-trash"></i> מחק
+                            </button>
                         </div>
-                        <div class="blog-card-tag">הגיגים</div>
-                        <button class="blog-expand-button">קרא עוד</button>
                     </div>
                 </article>
             </div>
@@ -49,11 +67,12 @@
                 <div class="blog-categories">
                     <h3>קטגוריות</h3>
                     <ul>
-                        <li><a href="#" class="active">הגיגים</a></li>
-                        <li><a href="#">תובנות</a></li>
-                        <li><a href="#">שיטת סאטיה</a></li>
-                        <li><a href="#">צמיחה אישית</a></li>
-                        <li><a href="#">אימון רגשי</a></li>
+                        <li><a href="#" class="active" data-category="all">הכל</a></li>
+                        <li><a href="#" data-category="הגיגים">הגיגים</a></li>
+                        <li><a href="#" data-category="תובנות">תובנות</a></li>
+                        <li><a href="#" data-category="שיטת סאטיה">שיטת סאטיה</a></li>
+                        <li><a href="#" data-category="צמיחה אישית">צמיחה אישית</a></li>
+                        <li><a href="#" data-category="אימון רגשי">אימון רגשי</a></li>
                     </ul>
                 </div>
             </aside>

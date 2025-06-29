@@ -108,14 +108,14 @@ try {
     $table_operations = [
         'users' => [
             'create_sql' => "
-                CREATE TABLE users (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    email VARCHAR(255) NOT NULL UNIQUE,
-                    name VARCHAR(255) NOT NULL,
-                    profile_picture VARCHAR(255),
-                    is_admin BOOLEAN DEFAULT FALSE,
-                    last_login DATETIME,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    CREATE TABLE users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        name VARCHAR(255) NOT NULL,
+        profile_picture VARCHAR(255),
+        is_admin BOOLEAN DEFAULT FALSE,
+        last_login DATETIME,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
             'insert_data' => function($conn, $admin_email) {
                 $admin_name = explode('@', $admin_email)[0];
@@ -128,16 +128,60 @@ try {
                 echo "<p style='color:green;'>✓ Admin user <strong>" . htmlspecialchars($admin_email) . "</strong> added successfully</p>";
             }
         ],
-        'gallery' => [
+        'blog' => [
             'create_sql' => "
-                CREATE TABLE gallery (
+                CREATE TABLE blog (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     title VARCHAR(255) NOT NULL,
-                    description TEXT,
-                    image_path VARCHAR(255) NOT NULL,
+                    content LONGTEXT NOT NULL,
+                    image_path VARCHAR(255),
+                    category VARCHAR(100) DEFAULT 'הגיגים',
+                    is_published BOOLEAN DEFAULT TRUE,
                     display_order INT DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+            'insert_data' => function($conn) {
+                $blog_data = [
+                    [
+                        'title' => 'תהייה פילוסופית על החשיבות של מפגש פנים מול פנים',
+                        'content' => '<p>?גלי הים ושיחות בארבע עיניים: למה אנחנו כמהים למפגש פנים אל פנים</p>
+<p>היום, כשהגלים של הים שטפו את החוף ואני נהניתי מהשקט של יום חופשי, תהיתי על משהו שמעסיק אותי כמאמנת רגשית: למה, בעידן של תקשורת דיגיטלית זמינה כל כך, אנחנו עדיין כמהים כל כך לשיחה "אמיתית", פנים מול פנים, בארבע עיניים?</p>
+<p>שמעתי פודקאסט על הפילוסופיה המעמיקה של עמנואל לוינס, שראה בפניו של האחר הרבה יותר מסתם תווי פנים. עבורו, הפנים הן התגלות ייחודית של אדם אחר, של עולם פנימי שלם ושונה משלי. הן נושאות עמן פגיעות, חשופות לרגשות ולחוויות, ודווקא הפגיעות הזו היא שמטילה עלינו אחריות מוסרית עמוקה – את הציווי "לא תרצח" במובנו הרחב של לא לבטל, לא לפגוע, אלא להכיר בקיום האחר.</p>
+<p>אולי הרצון שלנו לשיחה פנים מול פנים נובע מהצורך העמוק הזה לפגוש את האחר באמת, מעבר למילים הכתובות או לקולות המרוחקים. במפגש פיזי, אנחנו קולטים רבדים שלמים של תקשורת – שפת גוף, הבעות פנים, אנרגיה – שמסייעים לנו להבין לעומק את מה שהאחר באמת מרגיש ורוצה להביע.</p>
+<p>בארבע עיניים, קשה יותר להתחבא מאחורי מסכים או מסכות. ישנה דרישה לנוכחות מלאה, לקשב אמיתי, למפגש בלתי אמצעי עם האנושיות של האחר – על כאבו, שמחתו, תקוותיו ופחדיו. אולי זו הסיבה שבזמנים של קונפליקט או צורך אמיתי בהבנה, האינסטינקט שלנו הוא "בוא נדבר על זה פנים מול פנים".</p>
+<p>הים היום הזכיר לי את האינסופיות של כל אדם ואת הצורך הבסיסי שלנו בקשר אותנטי. כמאמנת רגשית בשיטת סאטיה, אני רואה בכל מפגש פנים אל פנים הזדמנות ייחודית לפגוש את האדם שמולי במלוא הווייתו, להכיר בפגיעותו ולעודד צמיחה מתוך מרחב של אמון ובטחון.</p>',
+                        'image_path' => 'images/blog-post-image.jpeg',
+                        'category' => 'הגיגים',
+                        'display_order' => 1
+                    ]
+                ];
+
+                $sql_insert = "INSERT INTO blog (title, content, image_path, category, display_order) VALUES (:title, :content, :image_path, :category, :display_order)";
+                $stmt = $conn->prepare($sql_insert);
+                $inserted_count = 0;
+
+                foreach ($blog_data as $item) {
+                    try {
+                        $stmt->execute($item);
+                        $inserted_count++;
+                    } catch (PDOException $e) {
+                        echo "<p style='color:orange;'>Warning inserting blog item: " . $e->getMessage() . "</p>";
+                    }
+                }
+                echo "<p style='color:green;'>✓ Successfully inserted $inserted_count blog items</p>";
+            }
+        ],
+        'gallery' => [
+            'create_sql' => "
+    CREATE TABLE gallery (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        image_path VARCHAR(255) NOT NULL,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
             'insert_data' => function($conn) {
                 $gallery_data = [
@@ -171,14 +215,14 @@ try {
         'mainpage' => [
             'create_sql' => "
                 CREATE TABLE mainpage (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+        id INT AUTO_INCREMENT PRIMARY KEY,
                     content LONGTEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
             'insert_data' => function($conn) {
                 $mainpage_content = '<div class="mainpage_main_div">
-                    <!-- Hero Section -->
+    <!-- Hero Section -->
                     <section class="mainpage_hero-section">
                         <div class="mainpage_hero-background">
                             <div class="mainpage_hero-overlay"></div>
@@ -188,24 +232,24 @@ try {
                                         <blockquote>
                                             <p>"מי שמביט החוצה חולם, מי שמביט פנימה מתעורר"</p>
                                             <cite>קרל יונג</cite>
-                                        </blockquote>
-                                    </div>
+                        </blockquote>
+                    </div>
                                     <div class="mainpage_hero-text">
                                         <p>גלה את הפוטנציאל הטמון בך וחווה חיים מלאים ומשמעותיים בעזרת אימון רגשי</p>
                                         <p>דרך מפגשי אימון אישיים המותאמים לצרכים שלך, ובשיתוף פעולה מלא, נתווה דרך להשגת המטרות האישיות והמקצועיות שלך</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <!-- About Me Section -->
+    <!-- About Me Section -->
                     <section class="mainpage_about-section">
                         <div class="container">
                             <div class="mainpage_about-content">
                                 <div class="mainpage_about-image">
                                     <img src="images/main-1.jpeg" alt="סיון אלטרוביץ">
-                                </div>
+                </div>
                                 <div class="mainpage_about-text">
                                     <h3>בקצרה עלי</h3>
                                     <p>נעים מאוד, אני סיון, מנהלת משאבי אנוש ומאמנת רגשית בשיטת סאטיה, המלווה בתהליכי צמיחה אישית</p>
@@ -228,18 +272,18 @@ try {
                                     <p>המטרה שלי היא להעניק לאחרים כלים נוספים למסעותיהם האישיים, בדומה למסע שלי</p>
 
                                     <p>אני משלבת את הידע והכלים שרכשתי משני התחומים ומציעה את כישורי ההקשבה שלי כדי לעזור למתאמנים שלי לקבל בהירות, להתחבר מחדש לעצמם ולקבל החלטות טובות יותר הן בחיים האישיים והן בקריירה</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <!-- Method Section -->
+    <!-- Method Section -->
                     <section class="mainpage_method-section">
                         <div class="container">
                             <div class="mainpage_method-content">
                                 <div class="mainpage_method-image">
                                     <img src="images/main-2.png" alt="שיטת סאטיה">
-                                </div>
+                </div>
                                 <div class="mainpage_method-text">
                                     <h3>מהי שיטת סאטיה</h3>
                                     <p>שיטת סאטיה היא שיטת עבודה הממוקדת במתן קשב עמוק וחומל לגוף ולנפש האדם</p>
@@ -254,18 +298,18 @@ try {
                                     <p>שיטת סאטיה מציעה דרך חומלת, מכבדת וטרנספורמטיבית לריפוי, כך שתתפתח גישה לחופש פנימי ויצירה של אפשרויות חדשות</p>
 
                                     <p>שיטת סאטיה פותחה על ידי נטאלי בן דוד אלחנן העוסקת בהתפתחותו האפשרית של האדם וביצירת דרכי גישה וכלים להפחתת סבל על כל גווניו מתוך חזון ליצור עולם מיטיב יותר</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <!-- How It Works Section -->
+    <!-- How It Works Section -->
                     <section class="mainpage_how-it-works-section">
                         <div class="container">
                             <div class="mainpage_how-it-works-content">
                                 <div class="mainpage_how-it-works-image">
                                     <img src="images/main-4.jpeg" alt="תהליך האימון">
-                                </div>
+                </div>
                                 <div class="mainpage_how-it-works-text">
                                     <h3>איך זה עובד בעצם</h3>
                                     <p>אז מה קורה בחדר האימון ואיך זה עובד בעצם ?</p>
@@ -285,22 +329,22 @@ try {
                                         <li>הקשבה מלאה ונוכחת: אני שם לכל מילה, לכל תחושה ולכל מה שעולה בכם.</li>
                                         <li>הבנה עניינית וממוקדת: נדייק ונבין יחד את שורש הדברים.</li>
                                         <li>התייחסות רגשית ואמפתית: ניתן מקום לכל רגש שעולה, נאפשר לו להיות ונלמד ממנו.</li>
-                                    </ul>
+                    </ul>
                                     <p>הכל במרחב בטוח, מכיל ודיסקרטי לחלוטין.</p>
 
                                     <p>במפגשים שלנו, קיימים רק אתם ואני, עם מטרה משותפת אחת: הטובה והצמיחה האישית שלכם.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <!-- Value Section -->
+    <!-- Value Section -->
                     <section class="mainpage_value-section">
                         <div class="container">
                             <div class="mainpage_value-content">
                                 <div class="mainpage_value-image">
                                     <img src="images/main-3.jpeg" alt="ערך האימון">
-                                </div>
+                </div>
                                 <div class="mainpage_value-text">
                                     <h3>הערך באימון בשיטת סאטיה</h3>
                                     <p>החיים הם כאן ועכשיו, פעם אחת ויחידה (לפחות בסיבוב הזה)</p>
@@ -318,14 +362,14 @@ try {
                                         <li>שיפור מערכות יחסים</li>
                                         <li>עבודה על איזון פנימי וניהול לחצים</li>
                                         <li>קידום התפתחות אישית וצמיחה</li>
-                                    </ul>
+                    </ul>
 
                                     <p>אם קראת והתחברת, ואת או אתה מוכנ/ה לתהליך של צמיחה והתפתחות</p>
                                     <p>אני מזמינה אותך לפנות אליי כדי לשמוע עוד ולשתף אותי</p>
                                     <p>ונבחן יחד אפשרות לדרך של עבודה משותפת :-)</p>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
                     </section>
                 </div>';
 

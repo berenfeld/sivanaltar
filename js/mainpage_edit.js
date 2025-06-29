@@ -64,7 +64,7 @@ function initializeTinyMCE(content) {
             'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
             'insertdatetime', 'media', 'table', 'help', 'wordcount', 'textcolor'
         ],
-        toolbar: 'undo redo | formatselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | preview fullscreen | save',
+        toolbar: 'undo redo | formatselect fontselect fontsizeselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | preview fullscreen | save',
         content_css: [
             'css/base.css',
             'css/mainpage.css'
@@ -104,6 +104,20 @@ function initializeTinyMCE(content) {
                     saveContent(editor);
                 }
             });
+
+            // Add save to file menu
+            editor.ui.registry.addMenuItem('save', {
+                text: 'שמור',
+                icon: 'save',
+                onAction: function() {
+                    saveContent(editor);
+                }
+            });
+        },
+        // Add file menu with save option
+        menubar: 'file edit view insert format tools table help',
+        menu: {
+            file: { title: 'קובץ', items: 'save | print' }
         }
     });
 }

@@ -28,7 +28,7 @@
         <div class="container">
             <div class="gallery-container">
                 <div class="gallery-grid">
-                    <?php if ($isAdmin): ?>
+                    <?php if ($GLOBALS['isAdmin']): ?>
                     <div class="gallery-item add-new-item">
                         <button class="upload-button" onclick="openUploadModal()">
                             <i class="fas fa-plus"></i>
@@ -53,7 +53,7 @@
                         // Loop through each gallery item
                         foreach ($gallery_items as $item) {
                             ?>
-                            <div class="gallery-item<?php echo $isAdmin ? ' admin-item' : ''; ?>" data-id="<?php echo $item['id']; ?>" <?php echo $isAdmin ? 'draggable="true"' : ''; ?>>
+                            <div class="gallery-item<?php echo $GLOBALS['isAdmin'] ? ' admin-item' : ''; ?>" data-id="<?php echo $item['id']; ?>" <?php echo $GLOBALS['isAdmin'] ? 'draggable="true"' : ''; ?>>
                                 <div class="gallery-image-container">
                                     <div class="gallery-image">
                                         <img src="<?php echo htmlspecialchars($item['image_path']); ?>"
@@ -65,7 +65,7 @@
                                         <p><?php echo htmlspecialchars($item['description']); ?></p>
                                     </div>
                                 </div>
-                                <?php if ($isAdmin): ?>
+                                <?php if ($GLOBALS['isAdmin']): ?>
                                 <div class="gallery-admin-controls">
                                     <button class="edit-button" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
                                         <i class="fas fa-edit"></i> ערוך
@@ -177,7 +177,6 @@
 
     <?php include 'footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/gallery.js"></script>
 </body>
 </html>

@@ -4,8 +4,6 @@
     <?php include 'head.php'; ?>
     <!-- TinyMCE - Self-hosted free version -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.2/tinymce.min.js" referrerpolicy="origin"></script>
-    <!-- SweetAlert2 for notifications -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="mainpage_edit_body">
 

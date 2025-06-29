@@ -1,10 +1,9 @@
 <?php
-// Set PHP isAdmin variable
-$isAdmin = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['is_admin']) && $_SESSION['is_admin'];
+// Use the global isAdmin variable that's set in head.php
 ?>
 <script>
     // Set JavaScript isAdmin variable
-    window.isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+    window.isAdmin = <?php echo $GLOBALS['isAdmin'] ? 'true' : 'false'; ?>;
 </script>
 
 <header class="site-header">

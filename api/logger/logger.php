@@ -296,6 +296,106 @@ class Logger {
     }
 
     /**
+     * Log blog actions (create, update, delete)
+     */
+    public function logBlogAction($data) {
+        $action = $data['action'] ?? 'UNKNOWN';
+        $userInfo = sprintf(
+            "User: %s (ID: %s, Email: %s)",
+            $data['user_name'] ?? 'Unknown',
+            $data['user_id'] ?? 'unknown',
+            $data['user_email'] ?? 'unknown'
+        );
+
+        switch ($action) {
+            case 'CREATE':
+                $logEntry = sprintf(
+                    "[%s] BLOG_CREATE - %s - Blog ID: %s - Title: '%s' - Category: %s - Published: %s - Content Length: %d chars\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['blog_id'] ?? 'unknown',
+                    $data['title'] ?? 'unknown',
+                    $data['category'] ?? 'unknown',
+                    $data['is_published'] ? 'Yes' : 'No',
+                    strlen($data['content'] ?? '')
+                );
+                break;
+
+            case 'CREATE_FAILED':
+                $logEntry = sprintf(
+                    "[%s] BLOG_CREATE_FAILED - %s - Error: %s - Title: '%s' - Category: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['error'] ?? 'unknown',
+                    $data['title'] ?? 'unknown',
+                    $data['category'] ?? 'unknown'
+                );
+                break;
+
+            case 'UPDATE':
+                $logEntry = sprintf(
+                    "[%s] BLOG_UPDATE - %s - Blog ID: %s - Title: '%s' -> '%s' - Category: %s -> %s - Published: %s -> %s - Content Length: %d chars\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['blog_id'] ?? 'unknown',
+                    $data['old_title'] ?? 'unknown',
+                    $data['new_title'] ?? 'unknown',
+                    $data['old_category'] ?? 'unknown',
+                    $data['new_category'] ?? 'unknown',
+                    $data['old_published'] ? 'Yes' : 'No',
+                    $data['new_published'] ? 'Yes' : 'No',
+                    strlen($data['content'] ?? '')
+                );
+                break;
+
+            case 'UPDATE_FAILED':
+                $logEntry = sprintf(
+                    "[%s] BLOG_UPDATE_FAILED - %s - Blog ID: %s - Error: %s - Title: '%s'\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['blog_id'] ?? 'unknown',
+                    $data['error'] ?? 'unknown',
+                    $data['title'] ?? 'unknown'
+                );
+                break;
+
+            case 'DELETE':
+                $logEntry = sprintf(
+                    "[%s] BLOG_DELETE - %s - Blog ID: %s - Title: '%s' - Category: %s - Content Length: %d chars\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['blog_id'] ?? 'unknown',
+                    $data['title'] ?? 'unknown',
+                    $data['category'] ?? 'unknown',
+                    strlen($data['content'] ?? '')
+                );
+                break;
+
+            case 'DELETE_FAILED':
+                $logEntry = sprintf(
+                    "[%s] BLOG_DELETE_FAILED - %s - Blog ID: %s - Error: %s - Title: '%s'\n",
+                    date('Y-m-d H:i:s'),
+                    $userInfo,
+                    $data['blog_id'] ?? 'unknown',
+                    $data['error'] ?? 'unknown',
+                    $data['title'] ?? 'unknown'
+                );
+                break;
+
+            default:
+                $logEntry = sprintf(
+                    "[%s] BLOG_%s - %s - Data: %s\n",
+                    date('Y-m-d H:i:s'),
+                    $action,
+                    $userInfo,
+                    json_encode($data)
+                );
+        }
+
+        $this->writeLog($logEntry);
+    }
+
+    /**
      * Log admin access attempts (successful and failed)
      */
     public function logAdminAccess($data) {

@@ -3,6 +3,9 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Set global isAdmin variable for all frontend pages
+$GLOBALS['isAdmin'] = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] && isset($_SESSION['is_admin']) && $_SESSION['is_admin'];
 ?>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,6 +106,10 @@ switch($current_page) {
     case 'mainpage_edit.php':
         echo '<link rel="stylesheet" href="css/mainpage.css">';
         echo '<link rel="stylesheet" href="css/mainpage_edit.css">';
+        break;
+    case 'blog_edit.php':
+        echo '<link rel="stylesheet" href="css/blog.css">';
+        echo '<link rel="stylesheet" href="css/blog_edit.css">';
         break;
     default:
         // No fallback CSS needed - all pages have their own specific CSS files
