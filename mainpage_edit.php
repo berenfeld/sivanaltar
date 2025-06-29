@@ -12,12 +12,9 @@
     <?php include 'nav.php'; ?>
 
     <div class="mainpage_edit_editor-container">
-        <div class="mainpage_edit_editor-header">
-            <h1>עורך דף ראשי - TinyMCE</h1>
-        </div>
+        <h1>עריכת דף ראשי</h1>
 
         <div class="mainpage_edit_editor-content">
-            <h3>עורך TinyMCE:</h3>
             <div id="mainpage-editor" class="mainpage_edit_mainpage-editor">
                 <!-- Content will be loaded here -->
             </div>

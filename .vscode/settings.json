@@ -1,3 +1,10 @@
 {
-
+    "remote.portsAttributes": {
+    "8080": {
+        "label": "Application Port",
+        "onAutoForward": "notify",
+        "requireLocalPort": true
+    }
+    },
+    "remote.localPortHost": "localhost"
 }
