@@ -67,10 +67,10 @@
                                 </div>
                                 <?php if ($GLOBALS['isAdmin']): ?>
                                 <div class="gallery-admin-controls">
-                                    <button class="edit-button" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
+                                    <button class="edit-button hide-on-mobile" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
                                         <i class="fas fa-edit"></i> ערוך
                                     </button>
-                                    <button class="delete-button" onclick="openDeleteModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
+                                    <button class="delete-button hide-on-mobile" onclick="openDeleteModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
                                         <i class="fas fa-trash"></i> מחק
                                     </button>
                                 </div>

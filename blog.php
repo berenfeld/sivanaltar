@@ -51,10 +51,10 @@
                             <span class="unpublished-label">לא מאושר לפרסום</span>
                         </div>
                         <div class="blog-admin-controls" id="blog-admin-controls" style="display: none;">
-                            <button class="blog-edit-button" id="blog-edit-button">
+                            <button class="blog-edit-button hide-on-mobile" id="blog-edit-button">
                                 <i class="fas fa-edit"></i> ערוך
                             </button>
-                            <button class="blog-delete-button" id="blog-delete-button">
+                            <button class="blog-delete-button hide-on-mobile" id="blog-delete-button">
                                 <i class="fas fa-trash"></i> מחק
                             </button>
                         </div>

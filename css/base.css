@@ -86,3 +86,14 @@ section {
     color: var(--text-color);
     margin-bottom: 30px;
 }
+
+/* Mobile hiding utility class for admin controls */
+.hide-on-mobile {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none !important;
+    }
+}

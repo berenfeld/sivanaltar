@@ -36,11 +36,11 @@
 
                     <?php if ($GLOBALS['isAdmin']): ?>
                     <div class="blog-post-admin-controls" id="blog-post-admin-controls" style="display: none;">
-                        <button class="blog-edit-button" id="blog-edit-button">
-                            <i class="fas fa-edit"></i> ערוך
+                        <button class="blog-edit-button hide-on-mobile" id="blog-edit-button">
+                            <i class="fas fa-edit"></i> ערוך פוסט
                         </button>
-                        <button class="blog-delete-button" id="blog-delete-button">
-                            <i class="fas fa-trash"></i> מחק
+                        <button class="blog-delete-button hide-on-mobile" id="blog-delete-button">
+                            <i class="fas fa-trash"></i> מחק פוסט
                         </button>
                     </div>
                     <?php endif; ?>
