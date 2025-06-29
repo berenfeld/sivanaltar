@@ -71,28 +71,52 @@ async function initAuth() {
             );
         }
 
-        // Check login status
-        checkLoginStatus();
-
-        // Delay the one-tap prompt to ensure everything is ready
-        setTimeout(() => {
-            try {
-                console.log('Attempting to show one-tap sign-in...');
-                google.accounts.id.prompt((notification) => {
-                    console.log('One-tap notification:', notification);
-                    // Use FedCM-compatible methods
-                    if (notification.isNotDisplayed()) {
-                        console.log('One-tap not displayed:', notification.getNotDisplayedReason());
-                    } else if (notification.isSkippedMoment()) {
-                        console.log('One-tap skipped:', notification.getSkippedReason());
-                    } else if (notification.isDismissedMoment()) {
-                        console.log('One-tap dismissed:', notification.getDismissedReason());
+        // Check login status first, then decide whether to show one-tap
+        checkLoginStatus().then((isLoggedIn) => {
+            // Only show one-tap if user is not logged in
+            if (!isLoggedIn) {
+                setTimeout(() => {
+                    try {
+                        console.log('Attempting to show one-tap sign-in...');
+                        google.accounts.id.prompt((notification) => {
+                            console.log('One-tap notification:', notification);
+                            // Use FedCM-compatible methods
+                            if (notification.isNotDisplayed()) {
+                                console.log('One-tap not displayed:', notification.getNotDisplayedReason());
+                            } else if (notification.isSkippedMoment()) {
+                                console.log('One-tap skipped:', notification.getSkippedReason());
+                            } else if (notification.isDismissedMoment()) {
+                                console.log('One-tap dismissed:', notification.getDismissedReason());
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error showing one-tap sign-in:', error);
                     }
-                });
-            } catch (error) {
-                console.error('Error showing one-tap sign-in:', error);
+                }, 1000); // Wait 1 second after initialization
+            } else {
+                console.log('User is already logged in, skipping one-tap prompt');
             }
-        }, 1000); // Wait 1 second after initialization
+        }).catch((error) => {
+            console.error('Error checking login status, showing one-tap as fallback:', error);
+            // Show one-tap as fallback if we can't determine login status
+            setTimeout(() => {
+                try {
+                    console.log('Showing one-tap sign-in as fallback...');
+                    google.accounts.id.prompt((notification) => {
+                        console.log('One-tap notification:', notification);
+                        if (notification.isNotDisplayed()) {
+                            console.log('One-tap not displayed:', notification.getNotDisplayedReason());
+                        } else if (notification.isSkippedMoment()) {
+                            console.log('One-tap skipped:', notification.getSkippedReason());
+                        } else if (notification.isDismissedMoment()) {
+                            console.log('One-tap dismissed:', notification.getDismissedReason());
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error showing one-tap sign-in:', error);
+                }
+            }, 1000);
+        });
     } catch (error) {
         console.error('Failed to initialize Google Sign-In:', error);
         showNotification('Failed to load Google Sign-In. Please refresh the page.', 'error');
@@ -159,7 +183,7 @@ function handleGoogleCredential(response) {
 // Check if user is already logged in
 function checkLoginStatus() {
     setLoading(true);
-    fetch('api/google_login/auth_status.php', {
+    return fetch('api/google_login/auth_status.php', {
         headers: {
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
@@ -179,11 +203,14 @@ function checkLoginStatus() {
             if (data.user.is_admin) {
                 showAdminControls();
             }
+            return true;
         }
+        return false;
     })
     .catch(error => {
         console.error('Error checking login status:', error);
         showNotification('Failed to check login status. Please refresh the page.', 'error');
+        return false;
     })
     .finally(() => {
         setLoading(false);
