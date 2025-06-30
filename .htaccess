@@ -29,3 +29,18 @@
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json
 </IfModule>
+
+# Process sitemap.xml as PHP and disable all caching for it
+<Files "sitemap.xml">
+    # Process as PHP
+    ForceType application/x-httpd-php
+    SetHandler application/x-httpd-php
+    php_value default_mimetype "application/xml"
+
+    # Completely disable caching for sitemap.xml
+    <IfModule mod_headers.c>
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </IfModule>
+</Files>

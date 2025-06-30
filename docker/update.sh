@@ -39,7 +39,6 @@ rsync -av --exclude='.git' \
           --exclude='vendor' \
           --exclude='*.log' \
           --exclude='.env*' \
-          --exclude='.*' \
           "${REPO_ROOT}/" "${TEMP_DIR}/"
 
 # Copy the update to the container
