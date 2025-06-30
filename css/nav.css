@@ -26,6 +26,7 @@
 .logo {
     flex-shrink: 0;
     z-index: 1001; /* Above the mobile menu */
+    transition: opacity var(--transition-speed); /* Smooth transition for hiding/showing */
 }
 
 .logo img {
@@ -182,6 +183,13 @@
         display: block;
     }
 
+    /* Hide logo when mobile menu is open to prevent interference */
+    .main-nav.active ~ .site-header .logo,
+    .main-nav.active + .site-header .logo {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     /* Mobile Nav Layout */
     .main-nav {
         position: fixed;
@@ -190,13 +198,15 @@
         right: auto; /* Reset right property */
         width: 280px;
         height: 100vh;
-        background-color: var(--background-light);
+        background-color: var(--background-light) !important; /* Force solid background */
         z-index: 1000;
         overflow-y: auto;
         transition: left var(--transition-speed); /* Change to animate left property */
         padding-top: 60px;
         box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1); /* Change shadow direction */
         display: block; /* Override flex */
+        opacity: 1 !important; /* Force full opacity */
+        background-image: none !important; /* Remove any background images */
     }
 
     /* Show menu when active */
@@ -235,7 +245,7 @@
     .mobile-menu-header {
         display: block;
         padding: 15px 25px;
-        background-color: var(--primary-color);
+        background-color: var(--primary-color) !important; /* Force solid background */
         color: white;
         font-size: 18px;
         font-weight: bold;
@@ -244,6 +254,10 @@
         left: 0;
         width: 100%;
         text-align: center;
+        z-index: 3000; /* Ensure it's above other elements */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for better visibility */
+        opacity: 1 !important; /* Force full opacity */
+        background-image: none !important; /* Remove any background images */
     }
 
     /* Show mobile contact info */
@@ -305,4 +319,11 @@ html[dir="rtl"] #auth-container {
 /* Prevent page scroll when menu is open */
 body.menu-open {
     overflow: hidden;
+}
+
+/* Hide logo when mobile menu is open to prevent interference with תפריט text */
+body.menu-open .logo {
+    opacity: 0 !important;
+    pointer-events: none;
+    transition: opacity var(--transition-speed);
 }

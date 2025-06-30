@@ -97,16 +97,34 @@
         min-height: 500px;
     }
 
+    .mainpage_hero-content {
+        justify-content: flex-start; /* Start from top instead of center */
+        padding-top: 30px; /* Add top padding to raise content */
+        padding-bottom: 30px; /* Reduce bottom padding */
+    }
+
+    .mainpage_quote-box {
+        padding: 15px; /* Further reduce padding for mobile */
+        margin-bottom: 15px; /* Reduce space between yellow and grey text */
+    }
+
     .mainpage_quote-box blockquote {
         font-size: 1.8rem;
     }
 
     .mainpage_quote-box cite {
         font-size: 1.4rem;
+        margin-top: 8px; /* Further reduce margin for mobile */
+    }
+
+    .mainpage_hero-text {
+        padding: 15px; /* Reduce internal padding */
+        margin-top: 0; /* Remove top margin to reduce space */
     }
 
     .mainpage_hero-text p {
         font-size: 1.1rem;
+        margin-bottom: 10px; /* Reduce paragraph spacing */
     }
 }
 
@@ -226,6 +244,7 @@
     .mainpage_how-it-works-content,
     .mainpage_value-content {
         flex-direction: column; /* Stack vertically */
+        gap: 30px; /* Reduce gap for mobile */
     }
 
     .mainpage_about-image,
@@ -236,8 +255,7 @@
         max-width: 100%; /* Full width on mobile */
         margin-top: 0;
         order: 2; /* Move images below text */
-        margin-bottom: 0;
-        margin-top: 20px;
+        margin-bottom: 20px; /* Add bottom margin */
     }
 
     .mainpage_about-text,
@@ -247,6 +265,7 @@
         flex: 1 0 100%;
         max-width: 100%;
         order: 1; /* Keep text on top */
+        margin-bottom: 30px; /* Add space between text and image */
     }
 
     .mainpage_about-image img,
@@ -254,5 +273,30 @@
     .mainpage_how-it-works-image img,
     .mainpage_value-image img {
         width: 100%; /* Full width on mobile */
+    }
+
+    /* Adjust section padding for mobile */
+    .mainpage_about-section,
+    .mainpage_method-section,
+    .mainpage_how-it-works-section,
+    .mainpage_value-section {
+        padding: 50px 0; /* Reduce padding for mobile */
+    }
+
+    /* Additional mobile improvements */
+    .mainpage_about-text h3,
+    .mainpage_method-text h3,
+    .mainpage_how-it-works-text h3,
+    .mainpage_value-text h3 {
+        font-size: 24px; /* Slightly smaller on mobile */
+        margin-bottom: 15px;
+    }
+
+    .mainpage_about-text p,
+    .mainpage_method-text p,
+    .mainpage_how-it-works-text p,
+    .mainpage_value-text p {
+        font-size: 15px; /* Slightly smaller on mobile */
+        line-height: 1.5;
     }
 }
