@@ -128,9 +128,7 @@ function displayBlogPost(post) {
     const formattedDate = updatedDate.toLocaleDateString('he-IL', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        day: 'numeric'
     });
     document.getElementById('blog-post-date').textContent = `עודכן בתאריך: ${formattedDate}`;
     document.getElementById('blog-post-category').textContent = post.category;

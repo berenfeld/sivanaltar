@@ -75,24 +75,24 @@ async function initAuth() {
         checkLoginStatus().then((isLoggedIn) => {
             // Only show one-tap if user is not logged in
             if (!isLoggedIn) {
-                setTimeout(() => {
-                    try {
-                        console.log('Attempting to show one-tap sign-in...');
-                        google.accounts.id.prompt((notification) => {
-                            console.log('One-tap notification:', notification);
-                            // Use FedCM-compatible methods
-                            if (notification.isNotDisplayed()) {
-                                console.log('One-tap not displayed:', notification.getNotDisplayedReason());
-                            } else if (notification.isSkippedMoment()) {
-                                console.log('One-tap skipped:', notification.getSkippedReason());
-                            } else if (notification.isDismissedMoment()) {
-                                console.log('One-tap dismissed:', notification.getDismissedReason());
-                            }
-                        });
-                    } catch (error) {
-                        console.error('Error showing one-tap sign-in:', error);
+        setTimeout(() => {
+            try {
+                console.log('Attempting to show one-tap sign-in...');
+                google.accounts.id.prompt((notification) => {
+                    console.log('One-tap notification:', notification);
+                    // Use FedCM-compatible methods
+                    if (notification.isNotDisplayed()) {
+                        console.log('One-tap not displayed:', notification.getNotDisplayedReason());
+                    } else if (notification.isSkippedMoment()) {
+                        console.log('One-tap skipped:', notification.getSkippedReason());
+                    } else if (notification.isDismissedMoment()) {
+                        console.log('One-tap dismissed:', notification.getDismissedReason());
                     }
-                }, 1000); // Wait 1 second after initialization
+                });
+            } catch (error) {
+                console.error('Error showing one-tap sign-in:', error);
+            }
+        }, 1000); // Wait 1 second after initialization
             } else {
                 console.log('User is already logged in, skipping one-tap prompt');
             }

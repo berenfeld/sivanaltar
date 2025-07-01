@@ -26,12 +26,12 @@ try {
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Get JSON input
-    $input = json_decode(file_get_contents('php://input'), true);
+// Get JSON input
+$input = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($input['id']) || !is_numeric($input['id'])) {
+if (!isset($input['id']) || !is_numeric($input['id'])) {
         throw new Exception('Invalid blog post ID');
-    }
+}
 
     $blogId = (int)$input['id'];
 

@@ -63,7 +63,7 @@ try {
             $sql .= " WHERE is_published = TRUE";
         }
 
-        $sql .= " ORDER BY display_order ASC, updated_at DESC";
+        $sql .= " ORDER BY updated_at DESC";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();

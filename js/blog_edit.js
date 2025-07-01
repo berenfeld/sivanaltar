@@ -36,10 +36,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize image preview functionality
     initializeImagePreview();
 
+    // Initialize date picker
+    initializeDatePicker();
+
     // Check if this is a new blog or editing existing one
     if (window.isNewBlog) {
-        // New blog creation - initialize empty editor
+        // New blog creation - initialize empty editor and set current date
         console.log('Creating new blog post');
+        const now = new Date();
+        const formattedDate = formatDateForDisplay(now);
+        document.getElementById('blog-updated-at').value = formattedDate;
         initializeTinyMCE('');
     } else if (window.blogId) {
         // Editing existing blog - load content
@@ -69,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Track form changes for unsaved changes warning
     window.hasUnsavedChanges = false;
-    const formElements = ['blog-title', 'blog-category', 'blog-published', 'blog-image'];
+    const formElements = ['blog-title', 'blog-category', 'blog-published', 'blog-image', 'blog-updated-at'];
 
     // Monitor form field changes
     formElements.forEach(elementId => {
@@ -180,6 +186,11 @@ function loadBlogContent(blogId) {
                 document.getElementById('blog-title').value = blog.title;
                 document.getElementById('blog-category').value = blog.category;
                 document.getElementById('blog-published').checked = blog.is_published == 1;
+
+                // Format the date for display (date only, no time)
+                const updatedDate = new Date(blog.updated_at);
+                const formattedDate = formatDateForDisplay(updatedDate);
+                document.getElementById('blog-updated-at').value = formattedDate;
 
                 // Show current image if exists
                 if (blog.image_path) {
@@ -398,31 +409,32 @@ function saveBlogPost() {
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            // Prepare JSON data
-            const blogData = {
-                title: title,
-                content: encodeContent(content), // Encode content to base64
-                category: category,
-                is_published: isPublished
-            };
+    // Prepare JSON data
+    const blogData = {
+        title: title,
+        content: encodeContent(content), // Encode content to base64
+        category: category,
+        is_published: isPublished,
+        updated_at: parseDisplayDate(document.getElementById('blog-updated-at').value)
+    };
 
-            // Add ID only if editing existing blog (not for new blog creation)
-            if (window.blogId) {
-                blogData.id = window.blogId;
-            }
+    // Add ID only if editing existing blog (not for new blog creation)
+    if (window.blogId) {
+        blogData.id = window.blogId;
+    }
 
-            // Handle image if selected
-            const imageFile = document.getElementById('blog-image').files[0];
-            if (imageFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    blogData.image = e.target.result; // Base64 encoded image
-                    sendBlogData(blogData);
-                };
-                reader.readAsDataURL(imageFile);
-            } else {
-                sendBlogData(blogData);
-            }
+    // Handle image if selected
+    const imageFile = document.getElementById('blog-image').files[0];
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            blogData.image = e.target.result; // Base64 encoded image
+            sendBlogData(blogData);
+        };
+        reader.readAsDataURL(imageFile);
+    } else {
+        sendBlogData(blogData);
+    }
         }
     });
 }
@@ -513,4 +525,61 @@ function handleCancel() {
     } else {
         window.location.href = 'blog.php';
     }
+}
+
+// Function to initialize date picker
+function initializeDatePicker() {
+    const dateInput = document.getElementById('blog-updated-at');
+
+    // Initialize jQuery UI datepicker
+    $(dateInput).datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: '-10:+10',
+        showButtonPanel: true,
+        showTime: false,
+        constrainInput: true,
+        closeText: 'סגור',
+        currentText: 'היום',
+        monthNames: ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'],
+        monthNamesShort: ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני', 'יולי', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'],
+        dayNames: ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'],
+        dayNamesMin: ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\'', 'ש\''],
+        dayNamesShort: ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש']
+    });
+
+}
+
+// Function to format date for display (date only)
+function formatDateForDisplay(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+}
+
+// Function to parse display date back to MySQL datetime format for API (date only)
+function parseDisplayDate(dateString) {
+    // Parse dd/mm/yyyy format
+    const dateParts = dateString.split('/');
+
+    const day = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+    const year = parseInt(dateParts[2]);
+
+    // Set time to current time when saving
+    const now = new Date();
+    const date = new Date(year, month, day, now.getHours(), now.getMinutes(), now.getSeconds());
+
+    // Convert to MySQL datetime format (YYYY-MM-DD HH:MM:SS)
+    const mysqlDate = date.getFullYear() + '-' +
+        String(date.getMonth() + 1).padStart(2, '0') + '-' +
+        String(date.getDate()).padStart(2, '0') + ' ' +
+        String(date.getHours()).padStart(2, '0') + ':' +
+        String(date.getMinutes()).padStart(2, '0') + ':' +
+        String(date.getSeconds()).padStart(2, '0');
+
+    return mysqlDate;
 }

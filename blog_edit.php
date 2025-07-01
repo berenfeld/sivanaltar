@@ -2,8 +2,8 @@
 <html lang="he" dir="rtl">
 <head>
     <?php include 'head.php'; ?>
-    <!-- TinyMCE - Self-hosted free version -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.2/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- jQuery UI for better date picker -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 </head>
 <body class="blog_edit_body">
 
@@ -30,6 +30,12 @@
                         <option value="צמיחה אישית">צמיחה אישית</option>
                         <option value="אימון רגשי">אימון רגשי</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="blog-updated-at">תאריך עדכון:</label>
+                    <input type="text" id="blog-updated-at" name="updated_at" readonly required>
+                    <small>תאריך זה ישמש למיון הפוסטים בבלוג</small>
                 </div>
 
                 <div class="form-group">
@@ -72,6 +78,12 @@
     </div>
 
     <?php include 'footer.php'; ?>
+    <!-- TinyMCE - Self-hosted free version -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.2/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="js/blog_edit.js"></script>
 </body>
 </html>

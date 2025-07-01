@@ -98,6 +98,7 @@ $content = trim($input['content'] ?? '');
 $category = $input['category'] ?? 'הגיגים';
 $is_published = isset($input['is_published']) ? (bool)$input['is_published'] : true;
 $image_data = $input['image'] ?? null; // Base64 encoded image data
+$updated_at = $input['updated_at'] ?? null; // Custom updated_at timestamp
 
 // Decode content from base64
 try {
@@ -151,9 +152,9 @@ try {
     $is_new_blog = empty($blog_id);
 
     if ($is_new_blog) {
-        // Create new blog post
+        // Create new blog post - always use the provided updated_at
         $insert_sql = "INSERT INTO blog (title, content, category, is_published, image_path, created_at, updated_at)
-                       VALUES (:title, :content, :category, :is_published, :image_path, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+                       VALUES (:title, :content, :category, :is_published, :image_path, CURRENT_TIMESTAMP, :updated_at)";
 
         $stmt = $conn->prepare($insert_sql);
         $stmt->execute([
@@ -161,7 +162,8 @@ try {
             'content' => $content,
             'category' => $category,
             'is_published' => $is_published ? 1 : 0,
-            'image_path' => null // Will be updated if image is provided
+            'image_path' => null, // Will be updated if image is provided
+            'updated_at' => $updated_at
         ]);
 
         $blog_id = $conn->lastInsertId();
@@ -199,12 +201,13 @@ try {
             exit();
         }
 
+        // Update existing blog post - always use the provided updated_at
         $update_sql = "UPDATE blog SET
                        title = :title,
                        content = :content,
                        category = :category,
                        is_published = :is_published,
-                       updated_at = CURRENT_TIMESTAMP
+                       updated_at = :updated_at
                        WHERE id = :id";
 
         $stmt = $conn->prepare($update_sql);
@@ -213,6 +216,7 @@ try {
             'content' => $content,
             'category' => $category,
             'is_published' => $is_published ? 1 : 0,
+            'updated_at' => $updated_at,
             'id' => $blog_id
         ]);
 
@@ -241,60 +245,60 @@ try {
         // Handle base64 image data from frontend
         if (strpos($image_data, 'data:image/') === 0) {
             // Extract image data from data URL
-            $image_parts = explode(',', $image_data);
-            if (count($image_parts) === 2) {
-                $image_base64 = $image_parts[1];
+        $image_parts = explode(',', $image_data);
+        if (count($image_parts) === 2) {
+            $image_base64 = $image_parts[1];
                 $image_header = $image_parts[0];
 
                 // Extract MIME type from header
                 if (preg_match('/data:image\/([^;]+)/', $image_header, $matches)) {
                     $mime_type = 'image/' . $matches[1];
-                    $extension = '';
+                $extension = '';
 
-                    // Determine file extension from MIME type
-                    switch ($mime_type) {
-                        case 'image/jpeg':
-                            $extension = 'jpg';
-                            break;
-                        case 'image/png':
-                            $extension = 'png';
-                            break;
-                        case 'image/gif':
-                            $extension = 'gif';
-                            break;
-                        case 'image/webp':
-                            $extension = 'webp';
-                            break;
-                        default:
-                            http_response_code(400);
-                            echo json_encode([
-                                'success' => false,
-                                'message' => 'Invalid image type. Only JPG, PNG, GIF, and WebP are allowed.'
-                            ]);
-                            exit();
-                    }
-
-                    // Create images/blog directory if it doesn't exist
-                    $imagesDir = __DIR__ . '/../../images/blog/';
-                    if (!is_dir($imagesDir)) {
-                        mkdir($imagesDir, 0777, true);
-                    }
-
-                    // Generate unique filename
-                    $filename = uniqid() . '.' . $extension;
-                    $filepath = $imagesDir . $filename;
-
-                    // Save the image
-                    if (file_put_contents($filepath, base64_decode($image_base64))) {
-                        $image_path = 'images/blog/' . $filename;
-
-                        // Update database with image path
-                        $image_update_sql = "UPDATE blog SET image_path = :image_path WHERE id = :id";
-                        $image_stmt = $conn->prepare($image_update_sql);
-                        $image_stmt->execute([
-                            'image_path' => $image_path,
-                            'id' => $blog_id
+                // Determine file extension from MIME type
+                switch ($mime_type) {
+                    case 'image/jpeg':
+                        $extension = 'jpg';
+                        break;
+                    case 'image/png':
+                        $extension = 'png';
+                        break;
+                    case 'image/gif':
+                        $extension = 'gif';
+                        break;
+                    case 'image/webp':
+                        $extension = 'webp';
+                        break;
+                    default:
+                        http_response_code(400);
+                        echo json_encode([
+                            'success' => false,
+                            'message' => 'Invalid image type. Only JPG, PNG, GIF, and WebP are allowed.'
                         ]);
+                        exit();
+                }
+
+                // Create images/blog directory if it doesn't exist
+                $imagesDir = __DIR__ . '/../../images/blog/';
+                if (!is_dir($imagesDir)) {
+                    mkdir($imagesDir, 0777, true);
+                }
+
+                // Generate unique filename
+                $filename = uniqid() . '.' . $extension;
+                $filepath = $imagesDir . $filename;
+
+                // Save the image
+                if (file_put_contents($filepath, base64_decode($image_base64))) {
+                    $image_path = 'images/blog/' . $filename;
+
+                    // Update database with image path
+                    $image_update_sql = "UPDATE blog SET image_path = :image_path WHERE id = :id";
+                    $image_stmt = $conn->prepare($image_update_sql);
+                    $image_stmt->execute([
+                        'image_path' => $image_path,
+                        'id' => $blog_id
+                    ]);
                     }
                 }
             }
