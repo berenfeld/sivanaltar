@@ -33,7 +33,7 @@
                         <div id="user-info">
                             <img id="user-avatar" src="" alt="תמונת פרופיל">
                             <span id="user-name"></span>
-                            <span id="admin-badge" class="admin-badge" style="display: none;">מנהל</span>
+                            <span id="admin-badge" class="admin-badge admin-only admin-only-hidden">מנהל</span>
                             <button id="logout-button">יציאה</button>
                         </div>
                     </div>

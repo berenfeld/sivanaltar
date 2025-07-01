@@ -92,6 +92,11 @@ section {
     display: block;
 }
 
+/* by default hide admin controls. enabled by javascript */
+.admin-only-hidden {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
     .hide-on-mobile {
         display: none !important;

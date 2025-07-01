@@ -28,14 +28,12 @@
         <div class="container">
             <div class="gallery-container">
                 <div class="gallery-grid">
-                    <?php if ($GLOBALS['isAdmin']): ?>
-                    <div class="gallery-item add-new-item">
+                    <div class="gallery-item add-new-item admin-only admin-only-hidden">
                         <button class="upload-button" onclick="openUploadModal()">
                             <i class="fas fa-plus"></i>
                             <span>הוסף תמונה חדשה</span>
                         </button>
                     </div>
-                    <?php endif; ?>
                     <?php
                     // Include database configuration
                     require_once 'db_config.php';
@@ -65,8 +63,7 @@
                                         <p><?php echo htmlspecialchars($item['description']); ?></p>
                                     </div>
                                 </div>
-                                <?php if ($GLOBALS['isAdmin']): ?>
-                                <div class="gallery-admin-controls">
+                                <div class="gallery-admin-controls admin-only admin-only-hidden">
                                     <button class="edit-button hide-on-mobile" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($item)); ?>)">
                                         <i class="fas fa-edit"></i> ערוך
                                     </button>
@@ -74,7 +71,6 @@
                                         <i class="fas fa-trash"></i> מחק
                                     </button>
                                 </div>
-                                <?php endif; ?>
                             </div>
                             <?php
                         }

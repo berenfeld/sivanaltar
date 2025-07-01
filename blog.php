@@ -20,8 +20,7 @@
     <section class="blog-content-section">
         <div class="container">
             <div class="blog-grid">
-                <?php if ($GLOBALS['isAdmin']): ?>
-                <article class="blog-card add-new-blog-card hide-on-mobile" onclick="createNewBlog()">
+                <article class="blog-card add-new-blog-card hide-on-mobile admin-only admin-only-hidden" onclick="createNewBlog()">
                     <div class="blog-card-image add-new-image">
                         <div class="add-new-content">
                             <i class="fas fa-plus-circle"></i>
@@ -30,7 +29,6 @@
                         </div>
                     </div>
                 </article>
-                <?php endif; ?>
 
                 <!-- Container for dynamically loaded blog posts -->
                 <div id="blog-posts-container">
@@ -50,7 +48,7 @@
                         <div class="blog-post-status" id="blog-post-status" style="display: none;">
                             <span class="unpublished-label">לא מאושר לפרסום</span>
                         </div>
-                        <div class="blog-admin-controls" id="blog-admin-controls" style="display: none;">
+                        <div class="blog-admin-controls admin-only admin-only-hidden" id="blog-admin-controls">
                             <button class="blog-edit-button hide-on-mobile" id="blog-edit-button">
                                 <i class="fas fa-edit"></i> ערוך
                             </button>

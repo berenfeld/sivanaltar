@@ -198,11 +198,6 @@ function checkLoginStatus() {
     .then(data => {
         if (data.loggedIn) {
             updateUIWithUserInfo(data.user);
-
-            // If user is admin, show admin controls
-            if (data.user.is_admin) {
-                showAdminControls();
-            }
             return true;
         }
         return false;
@@ -222,7 +217,7 @@ function updateUIWithUserInfo(user) {
     console.log("Updating UI with user:", user);
 
     // Set global admin status for window.isAdmin method
-    window.is_admin = user.is_admin || false;
+    window.isAdmin = user.is_admin || false;
 
     // Update desktop UI
     if (loginButton) loginButton.style.display = 'none';
@@ -230,18 +225,8 @@ function updateUIWithUserInfo(user) {
     if (userAvatar) userAvatar.src = user.picture || user.profile_picture;
     if (user_name) user_name.textContent = user.name;
 
-    // Update admin badge
-    const adminBadge = document.getElementById('admin-badge');
-    if (adminBadge) {
-        adminBadge.style.display = user.is_admin ? 'inline-block' : 'none';
-    }
-
     // Show/hide admin controls based on admin status
-    if (user.is_admin) {
-        showAdminControls();
-    } else {
-        hideAdminControls();
-    }
+    updateAdminControls()
 }
 
 // Handle logout
@@ -265,19 +250,16 @@ function handleLogout() {
     .then(data => {
         if (data.success) {
             // Reset global admin status
-            window.is_admin = false;
+            window.isAdmin = false;
 
             // Reset UI
             if (loginButton) loginButton.style.display = 'flex';
             if (userInfo) userInfo.style.display = 'none';
 
             // Hide admin controls
-            hideAdminControls();
+            updateAdminControls();
 
             showNotification('Successfully logged out!', 'success');
-
-            // Reload to ensure clean state
-            window.location.reload();
         } else {
             throw new Error(data.message || 'Logout failed');
         }
@@ -285,8 +267,6 @@ function handleLogout() {
     .catch(error => {
         console.error('Error during logout:', error);
         showNotification(error.message || 'Failed to logout. Please try again.', 'error');
-        // Fallback reload
-        window.location.reload();
     })
     .finally(() => {
         setLoading(false);
@@ -294,16 +274,15 @@ function handleLogout() {
 }
 
 // Show admin controls
-function showAdminControls() {
+function updateAdminControls() {
     document.querySelectorAll('.admin-only').forEach(element => {
-        element.style.display = 'block';
-    });
-}
-
-// Hide admin controls
-function hideAdminControls() {
-    document.querySelectorAll('.admin-only').forEach(element => {
-        element.style.display = 'none';
+        console.log("Updating admin controls for element:", element.id);
+        console.log("isAdmin:", window.isAdmin);
+        if (window.isAdmin) {
+            element.classList.remove('admin-only-hidden');
+        } else {
+            element.classList.add('admin-only-hidden');
+        }
     });
 }
 
