@@ -21,7 +21,7 @@
         <div class="container">
             <div class="blog-grid">
                 <?php if ($GLOBALS['isAdmin']): ?>
-                <article class="blog-card add-new-blog-card" onclick="createNewBlog()">
+                <article class="blog-card add-new-blog-card hide-on-mobile" onclick="createNewBlog()">
                     <div class="blog-card-image add-new-image">
                         <div class="add-new-content">
                             <i class="fas fa-plus-circle"></i>
