@@ -276,8 +276,6 @@ function handleLogout() {
 // Show admin controls
 function updateAdminControls() {
     document.querySelectorAll('.admin-only').forEach(element => {
-        console.log("Updating admin controls for element:", element.id);
-        console.log("isAdmin:", window.isAdmin);
         if (window.isAdmin) {
             element.classList.remove('admin-only-hidden');
         } else {

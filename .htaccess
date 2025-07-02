@@ -44,3 +44,19 @@
         Header set Expires "0"
     </IfModule>
 </Files>
+
+# Redirect .html requests to .php files
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Check if the requested .html file doesn't exist
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Check if the corresponding .php file exists
+    RewriteCond %{REQUEST_URI} ^/(.*)\.html$
+    RewriteCond %{DOCUMENT_ROOT}/%1.php -f
+
+    # Redirect to the .php version (301 = permanent redirect)
+    RewriteRule ^(.*)\.html$ /$1.php [R=301,L]
+</IfModule>
