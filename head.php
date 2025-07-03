@@ -14,7 +14,7 @@ $GLOBALS['isAdmin'] = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] &&
 <!-- Canonical URL -->
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
-$base_url = 'https://sivanaltar.com';
+$base_url = 'https://www.sivanaltar.com';
 switch($current_page) {
     case 'index.php':
         echo '<link rel="canonical" href="' . $base_url . '/">';
@@ -44,17 +44,23 @@ switch($current_page) {
 
 <!-- Basic Meta -->
 <meta name="description" content="אימון וטיפול בגישת סאטיה לשחרור ממיינד ורגשות מעכבים ויצירת חיים מלאים ומשמעותיים, אהבה וריפוי">
-<meta name="keywords" content="סיון אלטרוביץ, מאמנת סאטיה, טיפול סאטיה, אימון אישי, התפתחות אישית">
+<meta name="keywords" content="סיון אלטרוביץ, מאמנת סאטיה, טיפול סאטיה, אימון אישי, התפתחות אישית, רמת השרון, ישראל">
+
+<!-- Location Meta Tags -->
+<meta name="geo.region" content="IL-TA">
+<meta name="geo.placename" content="Ramat Hasharon">
+<meta name="geo.position" content="32.1313669;34.8600712">
+<meta name="ICBM" content="32.1313669, 34.8600712">
 
 <!-- Open Graph / Facebook / WhatsApp -->
 <meta property="og:locale" content="he_IL">
 <meta property="og:type" content="website">
 <meta property="og:title" content="סיון אלטרוביץ - מאמנת סאטיה">
 <meta property="og:description" content="אימון וטיפול בגישת סאטיה לשחרור ממיינד ורגשות מעכבים">
-<meta property="og:url" content="https://sivanaltar.com/">
+<meta property="og:url" content="https://www.sivanaltar.com/">
 <meta property="og:site_name" content="סיון אלטרוביץ">
-<meta property="og:image" content="https://sivanaltar.com/images/logo.jpeg">
-<meta property="og:image:secure_url" content="https://sivanaltar.com/images/logo.jpeg">
+<meta property="og:image" content="https://www.sivanaltar.com/images/logo.jpeg">
+<meta property="og:image:secure_url" content="https://www.sivanaltar.com/images/logo.jpeg">
 <meta property="og:image:width" content="1630">
 <meta property="og:image:height" content="340">
 <meta property="og:image:alt" content="סיון אלטרוביץ - מאמנת סאטיה">
@@ -64,7 +70,7 @@ switch($current_page) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="סיון אלטרוביץ - מאמנת סאטיה">
 <meta name="twitter:description" content="אימון וטיפול בגישת סאטיה לשחרור ממיינד ורגשות מעכבים">
-<meta name="twitter:image" content="https://sivanaltar.com/images/logo.jpeg">
+<meta name="twitter:image" content="https://www.sivanaltar.com/images/logo.jpeg">
 
 <!-- Other head elements -->
 <link rel="icon" type="image/png" href="images/favicon.png">
