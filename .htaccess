@@ -49,6 +49,9 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+   # IMPORTANT: Skip the rewrite rules for sitemap.xml
+    RewriteCond %{REQUEST_URI} !^/sitemap\.xml$ [NC]
+
     # Check if the requested .html file doesn't exist
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
