@@ -245,20 +245,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Show admin controls if user is admin
             const adminControls = blogCard.querySelector('#blog-admin-controls');
-            if (window.isAdmin && adminControls) {
-                adminControls.style.display = 'flex';
 
-                // Set up edit button
-                const editButton = blogCard.querySelector('#blog-edit-button');
-                if (editButton) {
-                    editButton.onclick = () => editBlogPost(post.id);
-                }
+            adminControls.style.display = 'flex';
 
-                // Set up delete button
-                const deleteButton = blogCard.querySelector('#blog-delete-button');
-                if (deleteButton) {
-                    deleteButton.onclick = () => deleteBlogPost(post.id, post.title);
-                }
+            // Set up edit button
+            const editButton = blogCard.querySelector('#blog-edit-button');
+            if (editButton) {
+                editButton.onclick = () => editBlogPost(post.id);
+            }
+
+            // Set up delete button
+            const deleteButton = blogCard.querySelector('#blog-delete-button');
+            if (deleteButton) {
+                deleteButton.onclick = () => deleteBlogPost(post.id, post.title);
             }
 
             // Add to container

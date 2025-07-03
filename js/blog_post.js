@@ -153,20 +153,18 @@ function displayBlogPost(post) {
 
     // Show admin controls if user is admin
     const adminControls = document.getElementById('blog-post-admin-controls');
-    if (adminControls && window.isAdmin) {
-        adminControls.style.display = 'flex';
+    adminControls.style.display = 'flex';
 
-        // Set up edit button
-        const editButton = document.getElementById('blog-edit-button');
-        if (editButton) {
-            editButton.onclick = () => editBlogPost(post.id);
-        }
+    // Set up edit button
+    const editButton = document.getElementById('blog-edit-button');
+    if (editButton) {
+        editButton.onclick = () => editBlogPost(post.id);
+    }
 
-        // Set up delete button
-        const deleteButton = document.getElementById('blog-delete-button');
-        if (deleteButton) {
-            deleteButton.onclick = () => deleteBlogPost(post.id, post.title);
-        }
+    // Set up delete button
+    const deleteButton = document.getElementById('blog-delete-button');
+    if (deleteButton) {
+        deleteButton.onclick = () => deleteBlogPost(post.id, post.title);
     }
 
     // Show the blog post template
