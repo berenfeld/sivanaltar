@@ -106,6 +106,11 @@ function loadBlogPost(blogId) {
         });
 }
 
+// Update the page title after loading the blog post
+function setBlogPageTitle(title) {
+    document.title = title + ' - פוסט בלוג';
+}
+
 // Function to display blog post
 function displayBlogPost(post) {
     const blogPostContainer = document.getElementById('blog-post-container');

@@ -17,6 +17,8 @@ services:
       MYSQL_DATABASE: sivanaltar_db
       MYSQL_USER: sivanaltar_user
       MYSQL_PASSWORD: sivanaltar_password
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - sivanaltar-network
     healthcheck:
@@ -47,3 +49,6 @@ services:
 networks:
   sivanaltar-network:
     driver: bridge
+
+volumes:
+  mysql_data:

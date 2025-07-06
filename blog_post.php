@@ -66,11 +66,5 @@
 
     <?php include 'footer.php'; ?>
     <script src="js/blog_post.js"></script>
-    <script>
-    // Update the page title after loading the blog post
-    function setBlogPageTitle(title) {
-        document.title = title + ' - פוסט בלוג';
-    }
-    </script>
 </body>
 </html>
