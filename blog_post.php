@@ -34,8 +34,7 @@
 
                     <div class="blog-post-content" id="blog-post-content"></div>
 
-                    <?php if ($GLOBALS['isAdmin']): ?>
-                    <div class="blog-post-admin-controls" id="blog-post-admin-controls" style="display: none;">
+                    <div class="blog-post-admin-controls admin-only admin-only-hidden" id="blog-post-admin-controls">
                         <button class="blog-edit-button hide-on-mobile" id="blog-edit-button">
                             <i class="fas fa-edit"></i> ערוך פוסט
                         </button>
@@ -43,7 +42,6 @@
                             <i class="fas fa-trash"></i> מחק פוסט
                         </button>
                     </div>
-                    <?php endif; ?>
 
                     <div class="blog-post-footer">
                         <a href="blog.php" class="back-to-blog-button">
