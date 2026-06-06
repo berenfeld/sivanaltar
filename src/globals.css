@@ -1,0 +1,76 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 25%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 25%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 25%;
+    --primary: 188 35% 40%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 45 30% 92%;
+    --secondary-foreground: 220 20% 25%;
+    --muted: 40 20% 95%;
+    --muted-foreground: 220 10% 50%;
+    --accent: 45 40% 88%;
+    --accent-foreground: 220 20% 25%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 20% 88%;
+    --input: 40 20% 88%;
+    --ring: 188 35% 40%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
+    direction: rtl;
+  }
+}
+
+/* RTL-specific utilities */
+.rtl-text {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Quill RTL */
+.ql-editor {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+.ql-container {
+  direction: rtl !important;
+}
+
+.ql-toolbar {
+  direction: ltr;
+}
+
+.ql-editor p,
+.ql-editor h1,
+.ql-editor h2,
+.ql-editor h3,
+.ql-editor li {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Paragraph spacing for content */
+.prose p,
+.content-area p {
+  margin-bottom: 1.5rem;
+}

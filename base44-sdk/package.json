@@ -1,0 +1,7 @@
+{
+  "name": "@base44/sdk",
+  "version": "0.8.31",
+  "description": "Drop-in replacement for base44 SDK — talks to our own Express backend",
+  "main": "index.js",
+  "type": "module"
+}
