@@ -94,7 +94,7 @@ router.post('/invokeAiGuidance', requireAuth, async (req, res) => {
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,
-      system: `${systemPrompt}\n\nחשוב: השב בטקסט רגיל בלבד. אל תשתמש ב-Markdown, כוכביות, כותרות (#), קווים מפרידים (---), או כל עיצוב אחר. פסקאות רגילות בלבד.`,
+      system: systemPrompt,
       messages: [{ role: 'user', content: fullPrompt }],
     });
     const answer = message.content?.[0]?.text ?? '';
