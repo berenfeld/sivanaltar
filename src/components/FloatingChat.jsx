@@ -36,6 +36,7 @@ export default function FloatingChat() {
                 { role: "assistant", content: "שלום אני העוזרת האישית הווירטואלית של סיון אלטרוביץ - מאמנת סאטיה. אני כאן כדי להקשיב לך ולעזור לך למצוא תשובות. בואי נחקור יחד - מה מעסיק אותך כרגע?" }
               ];
               for (const qa of history) {
+                if (!qa || !qa.question || !qa.answer) continue;
                 loaded.push({ role: "user", content: qa.question });
                 loaded.push({ role: "assistant", content: qa.answer });
               }
@@ -83,15 +84,10 @@ export default function FloatingChat() {
     setLoading(true);
     try {
       const response = await base44.functions.invoke("invokeAiGuidance", { question: userMessage });
-      setMessages(prev => [...prev, { role: "assistant", content: response.data.answer }]);
+      setMessages(prev => [...prev, { role: "assistant", content: response.answer }]);
       setQuestionCount(prev => prev + 1);
     } catch (err) {
-      const isLimitReached = err?.response?.status === 403 || err?.response?.data?.error === 'LIMIT_REACHED';
-      if (isLimitReached) {
-        setQuestionCount(3);
-      } else {
-        setMessages(prev => [...prev, { role: "assistant", content: "מצטערת, הייתה בעיה. אנא נסי שוב." }]);
-      }
+      setMessages(prev => [...prev, { role: "assistant", content: "מצטערת, הייתה בעיה. אנא נסי שוב." }]);
     } finally {
       setLoading(false);
     }
