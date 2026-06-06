@@ -25,7 +25,7 @@ jobs:
       - name: Build frontend
         run: npm run build
         env:
-          VITE_API_BASE_URL: https://sivanaltar.com/api
+          VITE_API_BASE_URL: https://www.sivanaltar.com/api
 
       - name: Set up SSH
         run: |
@@ -49,6 +49,13 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key" \
             server/ \
             ubuntu@${{ secrets.SSH_HOST }}:/var/www/sivanaltar/server/
+
+      - name: Upload nginx config and reload
+        run: |
+          scp -i ~/.ssh/deploy_key scripts/nginx.conf \
+            ubuntu@${{ secrets.SSH_HOST }}:/tmp/nginx.conf
+          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.SSH_HOST }} \
+            "sudo cp /tmp/nginx.conf /etc/nginx/sites-available/sivanaltar && sudo nginx -t && sudo systemctl reload nginx"
 
       - name: Install server dependencies and restart
         run: |

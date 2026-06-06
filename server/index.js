@@ -15,9 +15,9 @@ const PORT = process.env.PORT || 3001;
 
 // Allowed origins: the VM IP, the domain, and local dev
 const allowedOrigins = [
-  'http://51.102.220.193',
-  'https://sivanaltar.com',
   'https://www.sivanaltar.com',
+  'https://sivanaltar.com',
+  'http://51.102.220.193',
   'http://localhost:5173',
 ];
 
