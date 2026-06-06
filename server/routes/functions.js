@@ -90,6 +90,11 @@ router.post('/invokeAiGuidance', requireAuth, async (req, res) => {
 
     const fullPrompt = `${historyText ? `היסטוריית שיחה:\n${historyText}\n\n` : ''}שאלה חדשה (${gender === 'female' ? 'פנייה בלשון נקבה' : 'פנייה'}): ${question}`;
 
+    console.log('=== AI GUIDANCE PROMPT ===');
+    console.log('--- SYSTEM ---\n', systemPrompt);
+    console.log('--- USER ---\n', fullPrompt);
+    console.log('==========================');
+
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
