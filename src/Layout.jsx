@@ -16,7 +16,7 @@ const navLinks = [
 ];
 
 const PAGE_TITLES = {
-  Home: "בית",
+  Home: "",
   Blog: "בלוג",
   Gallery: "גלריה",
   Calendar: "יומן",
