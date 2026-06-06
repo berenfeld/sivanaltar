@@ -60,11 +60,6 @@ jobs:
             pm2 save
           EOF
 
-      - name: Run DB schema (idempotent)
-        run: |
-          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.SSH_HOST }} \
-            "PGPASSWORD=sivanaltar psql -U sivanaltar -d sivanaltar -h localhost -f /var/www/sivanaltar/server/db/schema.sql"
-
       - name: Health check
         run: |
           sleep 3
