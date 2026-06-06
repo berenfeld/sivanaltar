@@ -88,12 +88,13 @@ router.post('/invokeAiGuidance', requireAuth, async (req, res) => {
       .map((qa) => `שאלה: ${qa.question}\nתשובה: ${qa.answer}`)
       .join('\n\n');
 
-    const fullPrompt = `${systemPrompt}\n\n${historyText ? `היסטוריית שיחה:\n${historyText}\n\n` : ''}שאלה חדשה (${gender === 'female' ? 'פנייה בלשון נקבה' : 'פנייה'}): ${question}`;
+    const fullPrompt = `${historyText ? `היסטוריית שיחה:\n${historyText}\n\n` : ''}שאלה חדשה (${gender === 'female' ? 'פנייה בלשון נקבה' : 'פנייה'}): ${question}`;
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,
+      system: `${systemPrompt}\n\nחשוב: השב בטקסט רגיל בלבד. אל תשתמש ב-Markdown, כוכביות, כותרות (#), קווים מפרידים (---), או כל עיצוב אחר. פסקאות רגילות בלבד.`,
       messages: [{ role: 'user', content: fullPrompt }],
     });
     const answer = message.content?.[0]?.text ?? '';
