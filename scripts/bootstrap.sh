@@ -1,11 +1,12 @@
 #!/bin/bash
 # Bootstrap script for sivanaltar.com on Ubuntu 24
 # Idempotent — safe to re-run to fix or upgrade.
-# Run as root: bash scripts/bootstrap.sh
+# Run as root from the repo root: bash scripts/bootstrap.sh
 set -e
 
 DOMAIN="sivanaltar.com"
 EMAIL="berenfeldran@gmail.com"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "=== Installing Node 20 ==="
 if ! command -v node &>/dev/null || [[ $(node -v) != v20* ]]; then
@@ -61,42 +62,29 @@ sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='sivanaltar'" | 
 sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='sivanaltar'" | grep -q 1 || \
   sudo -u postgres psql -c "CREATE DATABASE sivanaltar OWNER sivanaltar;"
 
-echo "=== Configuring Nginx (HTTP) ==="
-cat > /etc/nginx/sites-available/sivanaltar << 'NGINX'
+echo "=== Configuring Nginx ==="
+rm -f /etc/nginx/sites-enabled/default
+
+CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
+if [ -f "$CERT_PATH" ]; then
+  # Certs already exist — use full config with SSL blocks
+  cp "$SCRIPT_DIR/nginx.conf" /etc/nginx/sites-available/sivanaltar
+else
+  # First run — deploy HTTP-only config so certbot can complete its challenge
+  cat > /etc/nginx/sites-available/sivanaltar << NGINX_HTTP
 server {
     listen 80;
-    server_name sivanaltar.com www.sivanaltar.com;
-
+    server_name $DOMAIN www.$DOMAIN;
     root /var/www/sivanaltar/app/dist;
-    index index.html;
-
-    client_max_body_size 25M;
-
-    location /uploads/ {
-        alias /var/www/sivanaltar/uploads/;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+    location / { try_files \$uri \$uri/ /index.html; }
 }
-NGINX
+NGINX_HTTP
+fi
 
 ln -sf /etc/nginx/sites-available/sivanaltar /etc/nginx/sites-enabled/sivanaltar
-rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx
 
-echo "=== Obtaining SSL certificate via Let's Encrypt ==="
-# --non-interactive, auto-redirect HTTP→HTTPS, auto-renew cron already set by certbot
+echo "=== Obtaining / renewing SSL certificate via Let's Encrypt ==="
 certbot --nginx \
   --non-interactive \
   --agree-tos \
@@ -105,9 +93,12 @@ certbot --nginx \
   -d "$DOMAIN" \
   -d "www.$DOMAIN"
 
-echo "=== Verifying HTTPS ==="
+# Now install the full config with all redirects
+cp "$SCRIPT_DIR/nginx.conf" /etc/nginx/sites-available/sivanaltar
 nginx -t && systemctl reload nginx
-curl -sI "https://$DOMAIN" | head -3
+
+echo "=== Verifying HTTPS ==="
+curl -sI "https://www.$DOMAIN/api/health" | head -3
 
 echo "=== Setting up PM2 startup ==="
 PM2_CMD=$(pm2 startup systemd -u ubuntu --hp /home/ubuntu 2>/dev/null | grep "^sudo " | head -1)
@@ -115,5 +106,5 @@ if [ -n "$PM2_CMD" ]; then eval "$PM2_CMD"; fi || true
 
 echo ""
 echo "Bootstrap complete!"
-echo "  Site:   https://$DOMAIN"
-echo "  API:    https://$DOMAIN/api/health"
+echo "  Site:  https://www.$DOMAIN"
+echo "  API:   https://www.$DOMAIN/api/health"
