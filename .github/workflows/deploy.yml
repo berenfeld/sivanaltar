@@ -30,16 +30,16 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/deploy_key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Upload frontend dist
         run: |
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key" \
             dist/ \
-            ubuntu@${{ secrets.VM_HOST }}:/var/www/sivanaltar/app/dist/
+            ubuntu@${{ secrets.SSH_HOST }}:/var/www/sivanaltar/app/dist/
 
       - name: Upload server files
         run: |
@@ -48,11 +48,11 @@ jobs:
             --exclude .env \
             -e "ssh -i ~/.ssh/deploy_key" \
             server/ \
-            ubuntu@${{ secrets.VM_HOST }}:/var/www/sivanaltar/server/
+            ubuntu@${{ secrets.SSH_HOST }}:/var/www/sivanaltar/server/
 
       - name: Install server dependencies and restart
         run: |
-          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.VM_HOST }} << 'EOF'
+          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             cd /var/www/sivanaltar/server
             npm install --omit=dev
@@ -62,10 +62,10 @@ jobs:
 
       - name: Run DB schema (idempotent)
         run: |
-          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.VM_HOST }} \
+          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.SSH_HOST }} \
             "PGPASSWORD=sivanaltar psql -U sivanaltar -d sivanaltar -h localhost -f /var/www/sivanaltar/server/db/schema.sql"
 
       - name: Health check
         run: |
           sleep 3
-          curl -f http://${{ secrets.VM_HOST }}/api/health
+          curl -f http://${{ secrets.SSH_HOST }}/api/health
