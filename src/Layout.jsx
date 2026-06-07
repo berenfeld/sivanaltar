@@ -177,7 +177,7 @@ export default function Layout({ children, currentPageName }) {
           ) : (
             <button
               onClick={() => base44.auth.redirectToLogin(window.location.href)}
-              className="text-sm btn-primary px-4 py-2 rounded-lg font-medium"
+              className="text-sm btn-primary px-4 py-1.5 rounded-lg font-medium border border-transparent"
             >
               {t("login")}
             </button>
@@ -231,7 +231,7 @@ export default function Layout({ children, currentPageName }) {
             <div className="px-6 py-3">
               <button
                 onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                className="text-sm btn-primary px-4 py-2 rounded-lg font-medium"
+                className="text-sm btn-primary px-4 py-1.5 rounded-lg font-medium border border-transparent"
               >
                 {t("login")}
               </button>

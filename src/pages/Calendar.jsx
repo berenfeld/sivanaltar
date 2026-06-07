@@ -321,7 +321,7 @@ export default function Calendar() {
         </div>
 
         {/* Navigation & Date Picker */}
-         <div className="hidden md:flex items-center justify-center gap-4 mb-6" dir={dir}>
+         <div className="hidden md:flex items-center justify-center gap-4 mb-6" dir="ltr">
            <button
              onClick={() => setCurrentDate(subWeeks(currentDate, 1))}
              className="p-2 hover:bg-white rounded-lg"
