@@ -11,8 +11,8 @@ import FloatingChat from "@/components/FloatingChat";
 const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
 const LANGS = [
-  { code: "he", flag: "🇮🇱", label: "עברית" },
-  { code: "en", flag: "🇬🇧", label: "English" },
+  { code: "he", label: "עברית" },
+  { code: "en", label: "English" },
 ];
 
 function LangSelector({ className = "" }) {
@@ -33,7 +33,6 @@ function LangSelector({ className = "" }) {
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e8e0d4] bg-white hover:bg-[#f8f5f0] text-sm font-medium text-[#3a3a4a] transition-colors"
       >
-        <span>{current.flag}</span>
         <span>{current.label}</span>
         <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -47,7 +46,6 @@ function LangSelector({ className = "" }) {
                 lang === l.code ? "text-[#4a8fa0] font-semibold" : "text-[#3a3a4a]"
               }`}
             >
-              <span>{l.flag}</span>
               <span>{l.label}</span>
             </button>
           ))}
@@ -112,8 +110,8 @@ export default function Layout({ children, currentPageName }) {
 
       <FloatingChat />
 
-      {/* Desktop Header — always LTR so logo/nav/actions order is stable */}
-      <header className="hidden md:flex items-center justify-between px-8 py-2 bg-white shadow-sm sticky top-0 z-50" dir="ltr">
+      {/* Desktop Header — always RTL to keep original logo/nav/actions layout */}
+      <header className="hidden md:flex items-center justify-between px-8 py-2 bg-white shadow-sm sticky top-0 z-50" dir="rtl">
         <Link to={createPageUrl("Home")} className="flex items-center gap-3">
           <img
             src="/images/logo.png"

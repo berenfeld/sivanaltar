@@ -10,8 +10,8 @@ const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
 function useImageText(img, lang) {
   if (!img) return { title: "", subtitle: "" };
-  const title = (lang === "en" && img.title_en) ? img.title_en : (img.title_he || img.title_en || "");
-  const subtitle = (lang === "en" && img.subtitle_en) ? img.subtitle_en : (img.subtitle_he || img.subtitle_en || "");
+  const title = lang === "en" ? (img.title_en || "") : (img.title_he || "");
+  const subtitle = lang === "en" ? (img.subtitle_en || "") : (img.subtitle_he || "");
   return { title, subtitle };
 }
 
