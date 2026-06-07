@@ -195,7 +195,7 @@ export default function Layout({ children, currentPageName }) {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </Link>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2">
+        <button onClick={() => { const next = !mobileMenuOpen; setMobileMenuOpen(next); if (next) window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="p-2">
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </header>
