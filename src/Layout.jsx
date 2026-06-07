@@ -135,7 +135,7 @@ export default function Layout({ children, currentPageName }) {
       <FloatingChat />
 
       {/* Desktop Header — always RTL to keep original logo/nav/actions layout */}
-      <header className="hidden md:flex items-center justify-between px-8 py-2 bg-white shadow-sm sticky top-0 z-50" dir="rtl">
+      <header className="hidden md:flex items-center justify-between px-8 py-2 bg-white shadow-sm sticky top-0 z-50" dir={dir}>
         <Link to={createPageUrl("Home")} className="flex items-center gap-3">
           <img
             src="/images/logo.png"
