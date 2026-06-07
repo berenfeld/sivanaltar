@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { format, startOfWeek, endOfWeek } from "date-fns";
-import { he } from "date-fns/locale";
 import { Calendar } from "lucide-react";
+import { useLang } from "@/lib/LanguageContext";
 
 export default function DatePickerWithRanges({ currentDate, onDateChange, isMobile }) {
+  const { lang, dir } = useLang();
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
 
@@ -28,7 +29,7 @@ export default function DatePickerWithRanges({ currentDate, onDateChange, isMobi
 
   if (isMobile) {
     return (
-      <div dir="rtl" className="flex items-center gap-2 px-4 py-2 overflow-x-auto">
+      <div dir={dir} className="flex items-center gap-2 px-4 py-2 overflow-x-auto">
         <button
           onClick={() => setShowFromPicker(!showFromPicker)}
           className="flex items-center gap-2 px-3 py-1.5 border border-[#e8e0d4] rounded-lg hover:border-[#4a8fa0] transition-colors text-[#3a3a4a] text-sm"
@@ -49,50 +50,61 @@ export default function DatePickerWithRanges({ currentDate, onDateChange, isMobi
     );
   }
 
+  // In LTR: show start — end. In RTL: show end — start (right-to-left reading order).
+  const startBtn = (
+    <div className="relative">
+      <button
+        onClick={() => setShowFromPicker(!showFromPicker)}
+        className="text-sm font-medium text-[#3a3a4a] hover:text-[#4a8fa0] transition-colors"
+      >
+        {format(weekStart, "dd/MM/yyyy")}
+      </button>
+      {showFromPicker && (
+        <div className="absolute top-full mt-2 right-0 z-50">
+          <input
+            type="date"
+            value={format(sundayDate, "yyyy-MM-dd")}
+            onChange={(e) => handleDateChange("from", e)}
+            className="px-3 py-2 border-2 border-[#4a8fa0] rounded-lg text-[#3a3a4a] bg-white shadow-lg"
+            autoFocus
+            onBlur={() => setTimeout(() => setShowFromPicker(false), 200)}
+          />
+        </div>
+      )}
+    </div>
+  );
+
+  const endBtn = (
+    <div className="relative">
+      <button
+        onClick={() => setShowToPicker(!showToPicker)}
+        className="text-sm font-medium text-[#3a3a4a] hover:text-[#4a8fa0] transition-colors"
+      >
+        {format(weekEnd, "dd/MM/yyyy")}
+      </button>
+      {showToPicker && (
+        <div className="absolute top-full mt-2 right-0 z-50">
+          <input
+            type="date"
+            value={format(weekEnd, "yyyy-MM-dd")}
+            onChange={(e) => handleDateChange("to", e)}
+            className="px-3 py-2 border-2 border-[#4a8fa0] rounded-lg text-[#3a3a4a] bg-white shadow-lg"
+            autoFocus
+            onBlur={() => setTimeout(() => setShowToPicker(false), 200)}
+          />
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <div dir="rtl" className="flex items-center gap-6 px-6 py-4">
+    <div dir={dir} className="flex items-center gap-6 px-6 py-4">
       <div className="flex items-center gap-4">
-        <div className="relative">
-          <button
-            onClick={() => setShowToPicker(!showToPicker)}
-            className="text-sm font-medium text-[#3a3a4a] hover:text-[#4a8fa0] transition-colors"
-          >
-            {format(weekEnd, "dd/MM/yyyy", { locale: he })}
-          </button>
-          {showToPicker && (
-            <div className="absolute top-full mt-2 right-0 z-50">
-              <input
-                type="date"
-                value={format(weekEnd, "yyyy-MM-dd")}
-                onChange={(e) => handleDateChange("to", e)}
-                className="px-3 py-2 border-2 border-[#4a8fa0] rounded-lg text-[#3a3a4a] bg-white shadow-lg"
-                autoFocus
-                onBlur={() => setTimeout(() => setShowToPicker(false), 200)}
-              />
-            </div>
-          )}
-        </div>
-        <span className="text-[#999] font-medium">-</span>
-        <div className="relative">
-          <button
-            onClick={() => setShowFromPicker(!showFromPicker)}
-            className="text-sm font-medium text-[#3a3a4a] hover:text-[#4a8fa0] transition-colors"
-          >
-            {format(weekStart, "dd/MM/yyyy", { locale: he })}
-          </button>
-          {showFromPicker && (
-            <div className="absolute top-full mt-2 right-0 z-50">
-              <input
-                type="date"
-                value={format(sundayDate, "yyyy-MM-dd")}
-                onChange={(e) => handleDateChange("from", e)}
-                className="px-3 py-2 border-2 border-[#4a8fa0] rounded-lg text-[#3a3a4a] bg-white shadow-lg"
-                autoFocus
-                onBlur={() => setTimeout(() => setShowFromPicker(false), 200)}
-              />
-            </div>
-          )}
-        </div>
+        {dir === "rtl" ? (
+          <>{endBtn}<span className="text-[#999] font-medium">-</span>{startBtn}</>
+        ) : (
+          <>{startBtn}<span className="text-[#999] font-medium">-</span>{endBtn}</>
+        )}
       </div>
     </div>
   );

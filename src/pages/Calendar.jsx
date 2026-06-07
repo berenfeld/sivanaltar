@@ -325,7 +325,7 @@ export default function Calendar() {
         {/* Navigation & Date Picker */}
          <div className="hidden md:flex items-center justify-center gap-4 mb-6">
            <button
-             onClick={() => setCurrentDate(subWeeks(currentDate, 1))}
+             onClick={() => setCurrentDate(dir === 'rtl' ? subWeeks(currentDate, 1) : addWeeks(currentDate, 1))}
              className="p-2 hover:bg-white rounded-lg"
            >
              <ChevronRight size={24} />
@@ -334,7 +334,7 @@ export default function Calendar() {
            <DatePickerWithRanges currentDate={currentDate} onDateChange={setCurrentDate} isMobile={isMobile} />
 
            <button
-             onClick={() => setCurrentDate(addWeeks(currentDate, 1))}
+             onClick={() => setCurrentDate(dir === 'rtl' ? addWeeks(currentDate, 1) : subWeeks(currentDate, 1))}
              className="p-2 hover:bg-white rounded-lg"
            >
              <ChevronLeft size={24} />

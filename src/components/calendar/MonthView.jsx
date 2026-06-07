@@ -4,9 +4,11 @@ import { he } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import SlotButton from "./SlotButton";
 import { useTranslation } from "react-i18next";
+import { useLang } from "@/lib/LanguageContext";
 
 export default function MonthView({ currentDate, onMonthChange, getSlots, onSlotClick, isAdmin, user, appointments, dateLocale }) {
   const { t } = useTranslation();
+  const { dir } = useLang();
   const locale = dateLocale || he;
   const [selectedDay, setSelectedDay] = useState(null);
   const monthStart = startOfMonth(currentDate);
@@ -54,19 +56,19 @@ export default function MonthView({ currentDate, onMonthChange, getSlots, onSlot
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-[#e8e0d4]">
         <button
-          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}
+          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() + (dir === 'rtl' ? -1 : 1), 1))}
           className="p-1.5 hover:bg-[#f8f5f0] rounded-lg"
         >
-          <ChevronRight size={20} />
+          <ChevronLeft size={20} />
         </button>
         <h2 className="text-lg font-bold text-[#3a3a4a]">
           {format(currentDate, "MMMM yyyy", { locale })}
         </h2>
         <button
-          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}
+          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() + (dir === 'rtl' ? 1 : -1), 1))}
           className="p-1.5 hover:bg-[#f8f5f0] rounded-lg"
         >
-          <ChevronLeft size={20} />
+          <ChevronRight size={20} />
         </button>
       </div>
 
