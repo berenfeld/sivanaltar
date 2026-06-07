@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { ChevronLeft, ChevronRight, Plus, X, Settings, Calendar as CalendarIcon } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, addWeeks, subWeeks, startOfDay, endOfDay, setHours, setMinutes, differenceInDays, startOfToday, isSameDay } from "date-fns";
-import { he } from "date-fns/locale";
+import { he, enUS } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
+import { useLang } from "@/lib/LanguageContext";
 import ConfirmModal from "../components/ConfirmModal";
 import NotifyModal from "../components/NotifyModal";
 import BookingModal from "../components/calendar/BookingModal";
@@ -21,7 +24,10 @@ const DEFAULT_WORKING_HOURS = {
 };
 
 export default function Calendar() {
-  const [user, setUser] = useState(null);
+  const { t } = useTranslation();
+  const { lang, dir } = useLang();
+  const dateLocale = lang === 'en' ? enUS : he;
+  const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [workingHours, setWorkingHours] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,9 +52,6 @@ export default function Calendar() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const currentUser = await base44.auth.me().catch(() => null);
-        setUser(currentUser);
-
         const [allAppointments, hours] = await Promise.all([
           base44.entities.Appointment.list(),
           base44.entities.WorkingHours.list()
@@ -77,13 +80,14 @@ export default function Calendar() {
 
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
 
-  const DAY_NAMES_HE = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+  const DAY_NAMES = lang === 'en'
+    ? ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    : ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 
   const welcomeText = useMemo(() => {
     const available = workingHours.filter(h => h.is_available);
-    if (available.length === 0) return "ברוכים הבאים ליומן שלי! ניתן לבחור שעה פנויה ולקבוע פגישה.";
+    if (available.length === 0) return t("calendar_welcome_default");
 
-    // Deduplicate by day_of_week
     const seen = new Set();
     const unique = available.filter(h => {
       if (seen.has(h.day_of_week)) return false;
@@ -91,10 +95,14 @@ export default function Calendar() {
       return true;
     });
 
-    const parts = unique.map(h => `ימי ${DAY_NAMES_HE[h.day_of_week]} בשעות ${h.start_time}–${h.end_time}`);
-    const daysText = parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " ו" + parts[parts.length - 1];
-    return `ברוכים הבאים ליומן שלי! הפגישות שלי כרגע מתקיימות ב${daysText}, בקליניקה ברמת השרון או במצב אונליין – בהתאם לנוחות שלך. תוכלו לבחור שעה שמתאימה לכם ולהשלים את פרטיכם לפגישה. בהצלחה!`;
-  }, [workingHours]);
+    const parts = lang === 'en'
+      ? unique.map(h => `${DAY_NAMES[h.day_of_week]} ${h.start_time}–${h.end_time}`)
+      : unique.map(h => `ימי ${DAY_NAMES[h.day_of_week]} בשעות ${h.start_time}–${h.end_time}`);
+    const daysText = lang === 'en'
+      ? (parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1])
+      : (parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " ו" + parts[parts.length - 1]);
+    return t("calendar_welcome_hours").replace("{days}", daysText);
+  }, [workingHours, lang]);
 
   const getSlots = (date) => {
     const dayOfWeek = date.getDay();
@@ -267,14 +275,14 @@ export default function Calendar() {
     ]);
   };
 
-  if (loading) return <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">טוען...</div>;
+  if (loading) return <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">{t("calendar_loading")}</div>;
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#f8f5f0]">
-      <PageHeader 
+    <div dir={dir} className="min-h-screen bg-[#f8f5f0]">
+      <PageHeader
         icon={CalendarIcon}
-        title="יומן"
-        subtitle="קבעו פגישת היכרות בשעה שמתאימה לכם"
+        title={t("calendar_title")}
+        subtitle={t("calendar_subtitle")}
       />
 
       <div className="p-4 md:p-6">
@@ -287,7 +295,7 @@ export default function Calendar() {
                  className="bg-[#4a8fa0] text-white px-4 py-2 rounded-lg flex items-center gap-2"
                >
                  <Settings size={18} />
-                 הגדרות
+                 {t("calendar_settings")}
                </button>
              </div>
            )}
@@ -300,25 +308,25 @@ export default function Calendar() {
         <div className="bg-white rounded-lg p-4 mb-6 flex gap-6 justify-center flex-wrap">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-[#e8f4f5] border border-[#4a8fa0] rounded" />
-            <span className="text-sm text-[#555]">פנוי</span>
+            <span className="text-sm text-[#555]">{t("calendar_legend_free")}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-[#f0ebe3] rounded" />
-            <span className="text-sm text-[#555]">תפוס</span>
+            <span className="text-sm text-[#555]">{t("calendar_legend_booked")}</span>
           </div>
           <div className="flex items-center gap-2">
              <div className="w-4 h-4 bg-blue-100 rounded" />
-             <span className="text-sm text-[#555]">הפגישות שלך</span>
+             <span className="text-sm text-[#555]">{t("calendar_legend_mine")}</span>
            </div>
         </div>
 
         {/* Navigation & Date Picker */}
-         <div className="hidden md:flex items-center justify-center gap-4 mb-6">
+         <div className="hidden md:flex items-center justify-center gap-4 mb-6" dir={dir}>
            <button
              onClick={() => setCurrentDate(subWeeks(currentDate, 1))}
              className="p-2 hover:bg-white rounded-lg"
            >
-             <ChevronRight size={24} />
+             <ChevronLeft size={24} />
            </button>
 
            <DatePickerWithRanges currentDate={currentDate} onDateChange={setCurrentDate} isMobile={isMobile} />
@@ -327,23 +335,24 @@ export default function Calendar() {
              onClick={() => setCurrentDate(addWeeks(currentDate, 1))}
              className="p-2 hover:bg-white rounded-lg"
            >
-             <ChevronLeft size={24} />
+             <ChevronRight size={24} />
            </button>
          </div>
 
          {/* Calendar View */}
          {isMobile ? (
-           <MonthView 
-             currentDate={currentDate} 
+           <MonthView
+             currentDate={currentDate}
              onMonthChange={setCurrentDate}
-             getSlots={getSlots} 
-             onSlotClick={handleSlotClick} 
-             isAdmin={isAdmin} 
-             user={user} 
-             appointments={appointments} 
+             getSlots={getSlots}
+             onSlotClick={handleSlotClick}
+             isAdmin={isAdmin}
+             user={user}
+             appointments={appointments}
+             dateLocale={dateLocale}
            />
          ) : (
-           <WeekView weekStart={startOfWeek(currentDate)} getSlots={getSlots} onSlotClick={handleSlotClick} isAdmin={isAdmin} user={user} appointments={appointments} workingHours={workingHours} />
+           <WeekView weekStart={startOfWeek(currentDate)} getSlots={getSlots} onSlotClick={handleSlotClick} isAdmin={isAdmin} user={user} appointments={appointments} workingHours={workingHours} dateLocale={dateLocale} />
          )}
          </div>
          </div>
@@ -376,31 +385,25 @@ export default function Calendar() {
 
       <ConfirmModal
         isOpen={cancelModal.open}
-        title="ביטול פגישה"
-        message="האם אתה בטוח שברצונך לבטל פגישה זו?"
+        title={t("calendar_cancel_title")}
+        message={t("calendar_cancel_message")}
         onConfirm={() => handleCancelAppointment(cancelModal.appointmentId)}
         onCancel={() => setCancelModal({ open: false, appointmentId: null })}
-        confirmLabel="בטל פגישה"
+        confirmLabel={t("calendar_cancel_confirm")}
         confirmClassName="bg-red-500 hover:bg-red-600 text-white"
       />
 
       {loginPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-white rounded-2xl p-6 max-w-sm text-center">
-            <h3 className="text-lg font-bold mb-2">התחבר למערכת</h3>
-            <p className="text-[#777] mb-4">עליך להתחבר למערכת כדי לקבוע פגישה</p>
+          <div className="bg-white rounded-2xl p-6 max-w-sm text-center" dir={dir}>
+            <h3 className="text-lg font-bold mb-2">{t("calendar_login_title")}</h3>
+            <p className="text-[#777] mb-4">{t("calendar_login_desc")}</p>
             <div className="flex gap-3">
-              <button
-                onClick={() => setLoginPrompt(false)}
-                className="flex-1 py-2 px-4 border border-[#e8e0d4] rounded-lg hover:bg-[#f8f5f0]"
-              >
-                ביטול
+              <button onClick={() => setLoginPrompt(false)} className="flex-1 py-2 px-4 border border-[#e8e0d4] rounded-lg hover:bg-[#f8f5f0]">
+                {t("cancel")}
               </button>
-              <button
-                onClick={() => base44.auth.redirectToLogin(window.location.href)}
-                className="flex-1 py-2 px-4 bg-[#4a8fa0] text-white rounded-lg hover:bg-[#2d6b7a]"
-              >
-                התחבר
+              <button onClick={() => base44.auth.redirectToLogin(window.location.href)} className="flex-1 py-2 px-4 bg-[#4a8fa0] text-white rounded-lg hover:bg-[#2d6b7a]">
+                {t("calendar_login_btn")}
               </button>
             </div>
           </div>
@@ -409,25 +412,26 @@ export default function Calendar() {
 
       <NotifyModal
         isOpen={weeklyLimitModal}
-        title="לא ניתן לקבוע פגישה"
-        message="כבר קבעת פגישת היכרות. ניתן לקבוע פגישה אחת בלבד. אם תרצה לשנות את מועד הפגישה, אנא צור קשר או בטל את הפגישה הקיימת."
+        title={t("calendar_limit_title")}
+        message={t("calendar_limit_message")}
         onConfirm={() => setWeeklyLimitModal(false)}
+        confirmLabel={t("calendar_close")}
       />
 
       <NotifyModal
         isOpen={bookingSuccessModal}
-        title="הפגישה נקבעה בהצלחה!"
-        message="קיבלת אימייל עם פרטי הפגישה. נתראה בקרוב!"
+        title={t("calendar_success_title")}
+        message={t("calendar_success_message")}
         onConfirm={() => setBookingSuccessModal(false)}
-        confirmLabel="סגור"
+        confirmLabel={t("calendar_close")}
       />
 
       <NotifyModal
         isOpen={cancelSuccessModal}
-        title="הפגישה בוטלה בהצלחה"
-        message="הפגישה בוטלה. נשמח לראותך שוב!"
+        title={t("calendar_cancelled_title")}
+        message={t("calendar_cancelled_message")}
         onConfirm={() => setCancelSuccessModal(false)}
-        confirmLabel="סגור"
+        confirmLabel={t("calendar_close")}
       />
 
       <AppointmentDetailModal
@@ -468,14 +472,15 @@ function DayView({ date, slots, onSlotClick, isAdmin, user, appointments }) {
   );
 }
 
-function WeekView({ weekStart, getSlots, onSlotClick, isAdmin, user, appointments, workingHours }) {
+function WeekView({ weekStart, getSlots, onSlotClick, isAdmin, user, appointments, workingHours, dateLocale }) {
+  const { t } = useTranslation();
+  const locale = dateLocale || he;
   const days = eachDayOfInterval({ start: weekStart, end: endOfWeek(weekStart) });
   const today = startOfToday();
 
-  // Compute global time range across all available days (in 30-min steps)
   const availableHours = workingHours.filter(h => h.is_available);
   if (availableHours.length === 0) {
-    return <div className="bg-white rounded-xl p-6 text-center text-[#999]">אין שעות פעילות מוגדרות</div>;
+    return <div className="bg-white rounded-xl p-6 text-center text-[#999]">{t("calendar_no_hours")}</div>;
   }
 
   const toMinutes = (timeStr) => {
@@ -531,7 +536,7 @@ function WeekView({ weekStart, getSlots, onSlotClick, isAdmin, user, appointment
         <div className="border-r border-[#e8e0d4]" />
         {days.map(day => (
           <div key={day.toString()} className="p-3 text-center border-r border-[#e8e0d4] last:border-r-0">
-            <div className="font-semibold text-sm">{format(day, "EEE", { locale: he })}</div>
+            <div className="font-semibold text-sm">{format(day, "EEE", { locale })}</div>
             <div className={`text-lg ${isSameDay(day, today) ? "text-[#4a8fa0] font-bold" : "text-[#3a3a4a]"}`}>
               {format(day, "d")}
             </div>

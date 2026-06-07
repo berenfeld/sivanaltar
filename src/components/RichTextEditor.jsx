@@ -1,8 +1,6 @@
 import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import tinymce from "tinymce";
-
-// Self-hosted TinyMCE - import all required parts
+import { useLang } from "@/lib/LanguageContext";
 import "tinymce/tinymce";
 import "tinymce/icons/default";
 import "tinymce/themes/silver";
@@ -23,6 +21,8 @@ import "tinymce/plugins/emoticons/js/emojis";
 
 export default function RichTextEditor({ value, onChange, height = 450 }) {
   const editorRef = useRef(null);
+  const { lang, dir } = useLang();
+  const isHe = lang === 'he';
 
   return (
     <Editor
@@ -34,8 +34,8 @@ export default function RichTextEditor({ value, onChange, height = 450 }) {
       init={{
         height,
         menubar: false,
-        directionality: "rtl",
-        language: "he_IL",
+        directionality: isHe ? "rtl" : "ltr",
+        ...(isHe ? { language: "he_IL" } : {}),
         plugins: [
           "advlist", "autolink", "lists", "link", "image",
           "charmap", "searchreplace", "wordcount", "code",
@@ -52,8 +52,8 @@ export default function RichTextEditor({ value, onChange, height = 450 }) {
           body {
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 15px;
-            direction: rtl;
-            text-align: right;
+            direction: ${dir};
+            text-align: ${isHe ? 'right' : 'left'};
             color: #3a3a4a;
             line-height: 1.7;
             padding: 12px 16px;
@@ -61,7 +61,7 @@ export default function RichTextEditor({ value, onChange, height = 450 }) {
           p { margin: 0 0 10px 0; }
           h2 { color: #4a8fa0; }
           h3 { color: #4a8fa0; }
-          ul, ol { padding-right: 1.5rem; }
+          ul, ol { padding-${isHe ? 'right' : 'left'}: 1.5rem; }
           a { color: #4a8fa0; }
         `,
         branding: false,

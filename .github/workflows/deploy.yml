@@ -63,6 +63,7 @@ jobs:
             set -e
             cd /var/www/sivanaltar/server
             npm install --omit=dev
+            set -a && source .env && set +a && npm run migrate
             pm2 restart sivanaltar || pm2 start index.js --name sivanaltar
             pm2 save
           EOF

@@ -21,7 +21,7 @@ export function generateAppointmentEmail(appointment, user) {
   const outlookBody = encodeURIComponent(`מיקום: ${locationLabel}`);
   const outlookLocation = encodeURIComponent(locationLabel);
   const outlookCalendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${outlookTitle}&startdt=${outlookStart}&enddt=${outlookEnd}&body=${outlookBody}&location=${outlookLocation}&path=%2Fcalendar%2Faction%2Fcompose&rru=addevent`;
-  
+
   const dateStr = format(startTime, "EEEE, d MMMM yyyy", { locale: he });
   const timeStr = `${format(startTime, "HH:mm")} - ${format(endTime, "HH:mm")}`;
 
@@ -152,7 +152,7 @@ export function generateAppointmentEmail(appointment, user) {
 
     <div class="content">
       <div class="greeting">שלום ${appointment.user_name},</div>
-      
+
       <p>תודה על קביעת הפגישה! הנה פרטי הפגישה שלך:</p>
 
       <div class="appointment-box">
@@ -291,7 +291,7 @@ export function generateICS(appointment) {
   const start = new Date(appointment.start_time);
   const end = new Date(appointment.end_time);
   const now = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-  
+
   // Format dates for ICS (YYYYMMDDTHHmmssZ)
   const startStr = start.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
   const endStr = end.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
@@ -301,7 +301,7 @@ export function generateICS(appointment) {
 
   return `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Sivan Altar//Satya Method//EN
+PRODID:-//Sivan Altarovici//Satya Method//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:סיון אלטרוביץ - פגישה

@@ -3,8 +3,13 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, startOf
 import { he } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import SlotButton from "./SlotButton";
+import { useTranslation } from "react-i18next";
+import { useLang } from "@/lib/LanguageContext";
 
-export default function MonthView({ currentDate, onMonthChange, getSlots, onSlotClick, isAdmin, user, appointments }) {
+export default function MonthView({ currentDate, onMonthChange, getSlots, onSlotClick, isAdmin, user, appointments, dateLocale }) {
+  const { t } = useTranslation();
+  const { dir } = useLang();
+  const locale = dateLocale || he;
   const [selectedDay, setSelectedDay] = useState(null);
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -24,7 +29,7 @@ export default function MonthView({ currentDate, onMonthChange, getSlots, onSlot
     weeks.push(days.slice(i, i + 7));
   }
 
-  const dayNames = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+  const dayNames = t("cal_settings_days", { returnObjects: true }) || ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 
   const countAvailableSlots = (day) => {
     const slots = getSlots(day);
@@ -51,19 +56,19 @@ export default function MonthView({ currentDate, onMonthChange, getSlots, onSlot
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-[#e8e0d4]">
         <button
-          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}
-          className="p-1.5 hover:bg-[#f8f5f0] rounded-lg"
-        >
-          <ChevronRight size={20} />
-        </button>
-        <h2 className="text-lg font-bold text-[#3a3a4a]">
-          {format(currentDate, "MMMM yyyy", { locale: he })}
-        </h2>
-        <button
-          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}
+          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() + (dir === 'rtl' ? -1 : 1), 1))}
           className="p-1.5 hover:bg-[#f8f5f0] rounded-lg"
         >
           <ChevronLeft size={20} />
+        </button>
+        <h2 className="text-lg font-bold text-[#3a3a4a]">
+          {format(currentDate, "MMMM yyyy", { locale })}
+        </h2>
+        <button
+          onClick={() => onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() + (dir === 'rtl' ? 1 : -1), 1))}
+          className="p-1.5 hover:bg-[#f8f5f0] rounded-lg"
+        >
+          <ChevronRight size={20} />
         </button>
       </div>
 
@@ -116,7 +121,7 @@ export default function MonthView({ currentDate, onMonthChange, getSlots, onSlot
         <div className="mt-4 bg-white rounded-lg p-4 border border-[#e8e0d4]">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-[#3a3a4a]">
-              {format(selectedDay, "EEEE, d MMMM", { locale: he })}
+              {format(selectedDay, "EEEE, d MMMM", { locale })}
             </h3>
             <button
               onClick={() => setSelectedDay(null)}
@@ -128,14 +133,14 @@ export default function MonthView({ currentDate, onMonthChange, getSlots, onSlot
 
             {userApptOnSelectedDay && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm">
-                <p className="text-blue-900 font-medium">פגישה שלך:</p>
+                <p className="text-blue-900 font-medium">{t("cal_month_your_appt")}</p>
                 <p className="text-blue-800">{format(new Date(userApptOnSelectedDay.start_time), "HH:mm")}</p>
               </div>
             )}
 
             <div className="space-y-2">
               {selectedDaySlots.length === 0 ? (
-                <p className="text-[#999] text-center py-4">אין שעות פתוחות ביום זה</p>
+                <p className="text-[#999] text-center py-4">{t("cal_month_no_slots")}</p>
               ) : (
                 selectedDaySlots.map((slot, idx) => {
                   const isUserAppt = userApptOnSelectedDay && slot.appointment?.id === userApptOnSelectedDay.id;

@@ -1,16 +1,19 @@
+import { useTranslation } from "react-i18next";
+
 export default function SlotButton({ slot, onClick, isAdmin, isUserAppt, timeLabel, fullWidth }) {
+  const { t } = useTranslation();
   const canBook = !slot.isBooked || isAdmin || isUserAppt;
   const isBookedByOther = slot.isBooked && !isUserAppt;
 
-  const buttonText = isUserAppt 
-    ? "פגישה שלך" 
+  const buttonText = isUserAppt
+    ? t("cal_slot_mine")
     : isBookedByOther && isAdmin
-    ? slot.appointment?.user_name || "תפוס"
+    ? slot.appointment?.user_name || t("cal_slot_booked")
     : isBookedByOther
-    ? "תפוס"
+    ? t("cal_slot_booked")
     : isAdmin && !slot.isBooked
-    ? "הוסף פגישה"
-    : "קבע פגישה";
+    ? t("cal_slot_add")
+    : t("cal_slot_book");
 
   return (
     <button
