@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Plus, Pencil, Trash2, Eye, EyeOff, X, Check, Upload, ChevronLeft, ChevronRight, Image } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "@/lib/LanguageContext";
@@ -233,7 +234,7 @@ export default function Gallery() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
   const [images, setImages] = useState([]);
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingImage, setEditingImage] = useState(null);
@@ -242,7 +243,6 @@ export default function Gallery() {
   const [draggedId, setDraggedId] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => null);
     loadImages();
   }, []);
 

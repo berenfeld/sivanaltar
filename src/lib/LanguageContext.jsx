@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import i18n from '@/i18n';
-import { base44 } from '@/api/base44Client';
 import { setCurrentLang } from '@/utils';
 
 const LanguageContext = createContext();
@@ -35,7 +34,6 @@ export const LanguageProvider = ({ children }) => {
     applyLang(newLang);
     // Persist to DB if logged in
     try {
-      await base44.auth.me();
       await fetch('/api/users/me/lang', {
         method: 'PATCH',
         credentials: 'include',

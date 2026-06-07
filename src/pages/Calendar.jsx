@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { ChevronLeft, ChevronRight, Plus, X, Settings, Calendar as CalendarIcon } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, addWeeks, subWeeks, startOfDay, endOfDay, setHours, setMinutes, differenceInDays, startOfToday, isSameDay } from "date-fns";
@@ -26,7 +27,7 @@ export default function Calendar() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
   const dateLocale = lang === 'en' ? enUS : he;
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [workingHours, setWorkingHours] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,9 +52,6 @@ export default function Calendar() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const currentUser = await base44.auth.me().catch(() => null);
-        setUser(currentUser);
-
         const [allAppointments, hours] = await Promise.all([
           base44.entities.Appointment.list(),
           base44.entities.WorkingHours.list()

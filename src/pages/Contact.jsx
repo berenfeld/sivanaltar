@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Phone, Mail, MapPin, Send, Check } from "lucide-react";
@@ -10,16 +11,12 @@ import PageHeader from "@/components/PageHeader";
 export default function Contact() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [loginPrompt, setLoginPrompt] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => setUser(null));
-  }, []);
 
   useEffect(() => {
     if (user) setForm(prev => ({ ...prev, email: user.email }));

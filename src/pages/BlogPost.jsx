@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ArrowRight, ArrowLeft, Save, Eye, EyeOff, Upload, X } from "lucide-react";
@@ -17,7 +18,7 @@ export default function BlogPost() {
   const isNew = params.get("new") === "1";
   const viewOnly = params.get("view") === "1";
 
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [post, setPost] = useState(null);
   const [form, setForm] = useState({ title: "", summary: "", content: "", category: lang === 'en' ? "Reflections" : "הגיגים", published: false, image_url: "", lang });
   const [loading, setLoading] = useState(!isNew);
@@ -26,7 +27,6 @@ export default function BlogPost() {
   const [editMode, setEditMode] = useState(isNew);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => null);
     if (postId) loadPost();
   }, [postId]);
 

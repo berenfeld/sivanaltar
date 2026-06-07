@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Plus, Pencil, Trash2, Eye, EyeOff, BookOpen } from "lucide-react";
@@ -14,12 +15,11 @@ export default function Blog() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
   const [posts, setPosts] = useState([]);
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState({ open: false, id: null });
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => null);
   }, []);
 
   useEffect(() => {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Sivan Altar's life-coaching website was running on the [base44](https://base44.app) platform which provided auth, entity CRUD, file storage, email, LLM, and serverless functions as a managed service. This document describes the migration to a self-hosted Ubuntu 24 AWS VM with no remaining dependency on base44 infrastructure.
+Sivan Altararovici's life-coaching website was running on the [base44](https://base44.app) platform which provided auth, entity CRUD, file storage, email, LLM, and serverless functions as a managed service. This document describes the migration to a self-hosted Ubuntu 24 AWS VM with no remaining dependency on base44 infrastructure.
 
 ---
 

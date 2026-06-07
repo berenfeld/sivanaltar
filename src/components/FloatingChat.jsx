@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { X, Send, Mail, Trash2 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -11,6 +12,7 @@ const PENDING_MSG_KEY = "chat_pending_message";
 export default function FloatingChat() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
+  const { user, isAuthenticated } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -28,9 +30,7 @@ export default function FloatingChat() {
   useEffect(() => {
     const loadSession = async () => {
       try {
-        const isAuth = await base44.auth.isAuthenticated();
-        if (isAuth) {
-          const user = await base44.auth.me();
+        if (isAuthenticated && user) {
           if (user?.role === 'admin') setIsAdmin(true);
           const sessions = await base44.entities.UserGuidanceSession.filter({ user_email: user.email, status: 'active' });
           if (sessions.length > 0) {
@@ -59,7 +59,7 @@ export default function FloatingChat() {
       }
     };
     loadSession();
-  }, []);
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     if (isOpen && sessionLoaded && messages.length === 0) {
@@ -104,8 +104,7 @@ export default function FloatingChat() {
 
   const clearHistory = async () => {
     try {
-      const user = await base44.auth.me();
-      const sessions = await base44.entities.UserGuidanceSession.filter({ user_email: user.email, status: 'active' });
+      const sessions = await base44.entities.UserGuidanceSession.filter({ user_email: user?.email, status: 'active' });
       for (const s of sessions) {
         await base44.entities.UserGuidanceSession.update(s.id, { qa_history: [] });
       }

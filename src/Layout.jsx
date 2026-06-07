@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { BookOpen, Image, Mail, Calendar, Menu, X, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "@/lib/LanguageContext";
@@ -70,7 +71,7 @@ function LangSelector({ className = "", currentPageName = "Home" }) {
 export default function Layout({ children, currentPageName }) {
   const { t } = useTranslation();
   const { dir, lang } = useLang();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoutConfirm, setLogoutConfirm] = useState(false);
 
@@ -110,9 +111,6 @@ export default function Layout({ children, currentPageName }) {
     upsertLink('link[rel="alternate"][hreflang="x-default"]', { rel: 'alternate', hreflang: 'x-default', href: hePage });
   }, [currentPageName, lang, t]);
 
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => setUser(null));
-  }, []);
 
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
 

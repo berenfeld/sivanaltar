@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Pencil, Check, X } from "lucide-react";
@@ -80,12 +81,8 @@ function Section({ section, content, dir, isAdmin, onSave, index }) {
 export default function Home() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [pageContents, setPageContents] = useState({});
-
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => null);
-  }, []);
 
   useEffect(() => {
     loadContents();
