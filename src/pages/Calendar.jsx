@@ -545,7 +545,7 @@ function WeekView({ weekStart, getSlots, onSlotClick, isAdmin, user, appointment
       </div>
 
       {/* Time grid - CSS grid with explicit rows */}
-      <div className="overflow-y-auto max-h-[70vh]">
+      <div className="md:overflow-y-visible md:max-h-none overflow-y-auto max-h-[70vh]">
       <div
         style={{
           display: "grid",
