@@ -50,18 +50,26 @@ router.post('/invokeAiGuidance', requireAuth, async (req, res) => {
   const isAdmin = user.role === 'admin' || ADMIN_EMAILS.includes(user.email);
 
   try {
-    // Load lang-specific system prompt, fall back to any prompt with this key
-    const promptResult = await pool.query(
-      `SELECT value FROM ai_config WHERE key='guidance_system_prompt' AND lang=$1 LIMIT 1`,
-      [lang]
-    );
-    const fallbackResult = promptResult.rows.length === 0
-      ? await pool.query(`SELECT value FROM ai_config WHERE key='guidance_system_prompt' LIMIT 1`)
-      : null;
-
-    const systemPrompt = promptResult.rows[0]?.value
-      || fallbackResult?.rows[0]?.value
-      || 'You are a helpful guidance assistant.';
+    // Load lang-specific system prompt, fall back gracefully if lang column doesn't exist yet
+    let systemPrompt = 'You are a helpful guidance assistant.';
+    try {
+      const promptResult = await pool.query(
+        `SELECT value FROM ai_config WHERE key='guidance_system_prompt' AND lang=$1 LIMIT 1`,
+        [lang]
+      );
+      if (promptResult.rows.length > 0) {
+        systemPrompt = promptResult.rows[0].value;
+      } else {
+        const fallback = await pool.query(`SELECT value FROM ai_config WHERE key='guidance_system_prompt' LIMIT 1`);
+        if (fallback.rows.length > 0) systemPrompt = fallback.rows[0].value;
+      }
+    } catch (_) {
+      // lang column may not exist yet — fall back to unfiltered query
+      try {
+        const fallback = await pool.query(`SELECT value FROM ai_config WHERE key='guidance_system_prompt' LIMIT 1`);
+        if (fallback.rows.length > 0) systemPrompt = fallback.rows[0].value;
+      } catch (__) {}
+    }
 
     // Get or create active session
     let sessionResult = await pool.query(
