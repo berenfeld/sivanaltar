@@ -232,14 +232,14 @@ export default function FloatingChat() {
 
       {/* Desktop: floating window */}
       {isOpen && (
-        <div className="hidden md:flex fixed bottom-20 right-6 z-40 flex-col bg-white rounded-lg shadow-2xl w-80 h-96 border border-[#e8e0d4] mb-4">
+        <div className={`hidden md:flex fixed bottom-20 ${dir === 'rtl' ? 'right-6' : 'left-6'} z-40 flex-col bg-white rounded-lg shadow-2xl w-80 h-96 border border-[#e8e0d4] mb-4`}>
           {chatBody}
         </div>
       )}
 
       {/* Floating Button */}
       {!isOpen && (
-        <div className="fixed right-4 bottom-20 lg:bottom-6 z-50">
+        <div className={`fixed ${dir === 'rtl' ? 'right-4' : 'left-4'} bottom-20 lg:bottom-6 z-50`}>
           <button
             onClick={() => setIsOpen(true)}
             style={{ backgroundColor: "#4a8fa0", color: "white", borderRadius: "9999px", padding: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.25)", fontWeight: "600", whiteSpace: "nowrap", border: "none", cursor: "pointer", fontSize: "14px" }}
