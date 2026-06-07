@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT,
   picture TEXT,
   role TEXT DEFAULT 'user',
+  lang TEXT DEFAULT 'he',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

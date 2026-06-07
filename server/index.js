@@ -9,6 +9,7 @@ const entityRoutes = require('./routes/entities');
 const uploadRoutes = require('./routes/upload');
 const integrationRoutes = require('./routes/integrations');
 const functionRoutes = require('./routes/functions');
+const userRoutes = require('./routes/users');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -42,6 +43,7 @@ app.use('/api/entities', entityRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/integrations', integrationRoutes);
 app.use('/api/functions', functionRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ ok: true }));

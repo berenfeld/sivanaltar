@@ -2,7 +2,7 @@ name: Deploy to VM
 
 on:
   push:
-    branches: [main]
+    branches: [main, i18n-phase1]
   workflow_dispatch:
 
 jobs:
@@ -63,6 +63,7 @@ jobs:
             set -e
             cd /var/www/sivanaltar/server
             npm install --omit=dev
+            npm run migrate
             pm2 restart sivanaltar || pm2 start index.js --name sivanaltar
             pm2 save
           EOF
