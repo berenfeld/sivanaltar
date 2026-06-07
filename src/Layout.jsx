@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { BookOpen, Image, Mail, Calendar, Menu, X, ChevronDown } from "lucide-react";
@@ -17,8 +17,9 @@ const LANGS = [
   { code: "en", Flag: US, label: "English" },
 ];
 
-function LangSelector({ className = "" }) {
+function LangSelector({ className = "", currentPageName = "Home" }) {
   const { lang, setLang } = useLang();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const current = LANGS.find(l => l.code === lang) || LANGS[0];
@@ -29,6 +30,12 @@ function LangSelector({ className = "" }) {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  const handleLangChange = (code) => {
+    setLang(code); // persists to localStorage + DB
+    navigate(`/${code}/${currentPageName}`);
+    setOpen(false);
+  };
 
   return (
     <div ref={ref} className={`relative ${className}`}>
@@ -45,7 +52,7 @@ function LangSelector({ className = "" }) {
           {LANGS.map(({ code, Flag, label }) => (
             <button
               key={code}
-              onClick={() => { setLang(code); setOpen(false); }}
+              onClick={() => handleLangChange(code)}
               className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-[#f0f9fb] transition-colors ${
                 lang === code ? "text-[#4a8fa0] font-semibold" : "text-[#3a3a4a]"
               }`}
@@ -62,7 +69,7 @@ function LangSelector({ className = "" }) {
 
 export default function Layout({ children, currentPageName }) {
   const { t } = useTranslation();
-  const { dir } = useLang();
+  const { dir, lang } = useLang();
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoutConfirm, setLogoutConfirm] = useState(false);
@@ -87,7 +94,21 @@ export default function Layout({ children, currentPageName }) {
     const siteName = t("site_name");
     document.title = key ? `${t(key)} - ${siteName}` : siteName;
     window.scrollTo(0, 0);
-  }, [currentPageName, t]);
+
+    // Hreflang + canonical
+    const BASE = 'https://www.sivanaltar.com';
+    const hePage = `${BASE}/he/${currentPageName}`;
+    const enPage = `${BASE}/en/${currentPageName}`;
+    const upsertLink = (sel, attrs) => {
+      let el = document.head.querySelector(sel);
+      if (!el) { el = document.createElement('link'); document.head.appendChild(el); }
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    };
+    upsertLink('link[rel="canonical"]', { rel: 'canonical', href: lang === 'he' ? hePage : enPage });
+    upsertLink('link[rel="alternate"][hreflang="he"]', { rel: 'alternate', hreflang: 'he', href: hePage });
+    upsertLink('link[rel="alternate"][hreflang="en"]', { rel: 'alternate', hreflang: 'en', href: enPage });
+    upsertLink('link[rel="alternate"][hreflang="x-default"]', { rel: 'alternate', hreflang: 'x-default', href: hePage });
+  }, [currentPageName, lang, t]);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));
@@ -142,7 +163,7 @@ export default function Layout({ children, currentPageName }) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <LangSelector />
+          <LangSelector currentPageName={currentPageName} />
           {user ? (
             <div className="flex items-center gap-3">
               {isAdmin && (
@@ -200,7 +221,7 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Language selector in mobile menu */}
           <div className="px-6 py-3 border-b border-[#f0ebe3] flex items-center gap-2">
-            <LangSelector />
+            <LangSelector currentPageName={currentPageName} />
           </div>
 
           {user ? (

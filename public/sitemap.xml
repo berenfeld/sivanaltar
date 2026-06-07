@@ -1,28 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Hebrew pages -->
   <url>
-    <loc>https://www.sivanaltar.com/</loc>
+    <loc>https://www.sivanaltar.com/he/Home</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Home"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Home"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.sivanaltar.com/he/Home"/>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.sivanaltar.com/blog</loc>
+    <loc>https://www.sivanaltar.com/he/Blog</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Blog"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Blog"/>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.sivanaltar.com/gallery</loc>
+    <loc>https://www.sivanaltar.com/he/Gallery</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Gallery"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Gallery"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.sivanaltar.com/calendar</loc>
+    <loc>https://www.sivanaltar.com/he/Calendar</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Calendar"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Calendar"/>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.sivanaltar.com/contact</loc>
+    <loc>https://www.sivanaltar.com/he/Contact</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Contact"/>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- English pages -->
+  <url>
+    <loc>https://www.sivanaltar.com/en/Home</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Home"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Home"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.sivanaltar.com/he/Home"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.sivanaltar.com/en/Blog</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Blog"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Blog"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.sivanaltar.com/en/Gallery</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Gallery"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Gallery"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.sivanaltar.com/en/Calendar</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Calendar"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Calendar"/>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.sivanaltar.com/en/Contact</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Contact"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
