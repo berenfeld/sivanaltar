@@ -321,21 +321,21 @@ export default function Calendar() {
         </div>
 
         {/* Navigation & Date Picker */}
-         <div className="hidden md:flex items-center justify-center gap-4 mb-6">
+         <div className="hidden md:flex items-center justify-center gap-4 mb-6" dir={dir}>
            <button
-             onClick={() => setCurrentDate(dir === 'rtl' ? subWeeks(currentDate, 1) : addWeeks(currentDate, 1))}
+             onClick={() => setCurrentDate(subWeeks(currentDate, 1))}
              className="p-2 hover:bg-white rounded-lg"
            >
-             <ChevronRight size={24} />
+             <ChevronLeft size={24} />
            </button>
 
            <DatePickerWithRanges currentDate={currentDate} onDateChange={setCurrentDate} isMobile={isMobile} />
 
            <button
-             onClick={() => setCurrentDate(dir === 'rtl' ? addWeeks(currentDate, 1) : subWeeks(currentDate, 1))}
+             onClick={() => setCurrentDate(addWeeks(currentDate, 1))}
              className="p-2 hover:bg-white rounded-lg"
            >
-             <ChevronLeft size={24} />
+             <ChevronRight size={24} />
            </button>
          </div>
 
