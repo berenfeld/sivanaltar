@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useLang } from "@/lib/LanguageContext";
 import ConfirmModal from "@/components/ConfirmModal";
 import PageHeader from "@/components/PageHeader";
+import IL from "country-flag-icons/react/3x2/IL";
+import US from "country-flag-icons/react/3x2/US";
 
 const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
@@ -127,6 +129,7 @@ function ImageCard({ img, isAdmin, lang, onEdit, onDelete, onTogglePublish, onCl
 
 function ImageModal({ image, onClose, onSave, isNew }) {
   const { t } = useTranslation();
+  const { dir } = useLang();
   const [form, setForm] = useState(image || {
     title_he: "", subtitle_he: "", title_en: "", subtitle_en: "", image_url: "", published: true,
   });
@@ -147,7 +150,7 @@ function ImageModal({ image, onClose, onSave, isNew }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" dir="rtl">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" dir={dir}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-[#3a3a4a]">{isNew ? t("gallery_add_title") : t("gallery_edit_image_title")}</h3>
           <button onClick={onClose}><X size={20} className="text-[#999]" /></button>
@@ -171,7 +174,7 @@ function ImageModal({ image, onClose, onSave, isNew }) {
           )}
 
           {/* Hebrew fields */}
-          <p className="text-xs font-semibold text-[#888] mt-2">🇮🇱 עברית</p>
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-[#888] mt-2"><IL className="w-4 h-auto rounded-sm" /> {t("gallery_section_he")}</p>
           <input
             value={form.title_he || ""}
             onChange={e => setForm(prev => ({ ...prev, title_he: e.target.value }))}
@@ -187,7 +190,7 @@ function ImageModal({ image, onClose, onSave, isNew }) {
           />
 
           {/* English fields */}
-          <p className="text-xs font-semibold text-[#888] mt-2">🇬🇧 English</p>
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-[#888] mt-2"><US className="w-4 h-auto rounded-sm" /> {t("gallery_section_en")}</p>
           <input
             value={form.title_en || ""}
             onChange={e => setForm(prev => ({ ...prev, title_en: e.target.value }))}
