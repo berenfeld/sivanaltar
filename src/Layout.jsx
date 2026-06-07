@@ -11,8 +11,8 @@ import FloatingChat from "@/components/FloatingChat";
 const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
 const LANGS = [
-  { code: "he", label: "עברית" },
-  { code: "en", label: "English" },
+  { code: "he", flag: "🇮🇱", label: "עברית" },
+  { code: "en", flag: "🇺🇸", label: "English" },
 ];
 
 function LangSelector({ className = "" }) {
@@ -33,6 +33,7 @@ function LangSelector({ className = "" }) {
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e8e0d4] bg-white hover:bg-[#f8f5f0] text-sm font-medium text-[#3a3a4a] transition-colors"
       >
+        <span>{current.flag}</span>
         <span>{current.label}</span>
         <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -46,6 +47,7 @@ function LangSelector({ className = "" }) {
                 lang === l.code ? "text-[#4a8fa0] font-semibold" : "text-[#3a3a4a]"
               }`}
             >
+              <span>{l.flag}</span>
               <span>{l.label}</span>
             </button>
           ))}
