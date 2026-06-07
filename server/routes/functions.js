@@ -40,19 +40,28 @@ function detectGender(text) {
 
 // POST /api/functions/invokeAiGuidance
 router.post('/invokeAiGuidance', requireAuth, async (req, res) => {
-  const { question } = req.body || {};
+  const { question, lang: reqLang } = req.body || {};
   if (!question) return res.status(400).json({ error: 'question is required' });
+
+  const lang = ['he', 'en'].includes(reqLang) ? reqLang : 'he';
+  const isHe = lang === 'he';
 
   const user = req.user;
   const isAdmin = user.role === 'admin' || ADMIN_EMAILS.includes(user.email);
 
   try {
-    // Load AI config
-    const configResult = await pool.query('SELECT key, value FROM ai_config');
-    const config = {};
-    for (const row of configResult.rows) config[row.key] = row.value;
+    // Load lang-specific system prompt, fall back to any prompt with this key
+    const promptResult = await pool.query(
+      `SELECT value FROM ai_config WHERE key='guidance_system_prompt' AND lang=$1 LIMIT 1`,
+      [lang]
+    );
+    const fallbackResult = promptResult.rows.length === 0
+      ? await pool.query(`SELECT value FROM ai_config WHERE key='guidance_system_prompt' LIMIT 1`)
+      : null;
 
-    const systemPrompt = config.guidance_system_prompt || 'You are a helpful guidance assistant.';
+    const systemPrompt = promptResult.rows[0]?.value
+      || fallbackResult?.rows[0]?.value
+      || 'You are a helpful guidance assistant.';
 
     // Get or create active session
     let sessionResult = await pool.query(
@@ -77,18 +86,22 @@ router.post('/invokeAiGuidance', requireAuth, async (req, res) => {
     // Enforce question limit for non-admins
     if (!isAdmin && qaHistory.length >= MAX_QUESTIONS_FOR_NON_ADMIN) {
       return res.json({
-        answer: 'הגעת למגבלת השאלות. אנא צרי קשר ישירות עם סיון.',
+        answer: isHe
+          ? 'הגעת למגבלת השאלות. אנא צרי קשר ישירות עם סיון.'
+          : 'You have reached the question limit. Please contact Sivan directly.',
         sessionId: session.id,
       });
     }
 
     // Build prompt
-    const gender = detectGender(question);
-    const historyText = qaHistory
-      .map((qa) => `שאלה: ${qa.question}\nתשובה: ${qa.answer}`)
-      .join('\n\n');
+    const gender = isHe ? detectGender(question) : 'unknown';
+    const historyText = isHe
+      ? qaHistory.map((qa) => `שאלה: ${qa.question}\nתשובה: ${qa.answer}`).join('\n\n')
+      : qaHistory.map((qa) => `Question: ${qa.question}\nAnswer: ${qa.answer}`).join('\n\n');
 
-    const fullPrompt = `${historyText ? `היסטוריית שיחה:\n${historyText}\n\n` : ''}שאלה חדשה (${gender === 'female' ? 'פנייה בלשון נקבה' : 'פנייה'}): ${question}`;
+    const fullPrompt = isHe
+      ? `${historyText ? `היסטוריית שיחה:\n${historyText}\n\n` : ''}שאלה חדשה (${gender === 'female' ? 'פנייה בלשון נקבה' : 'פנייה'}): ${question}`
+      : `${historyText ? `Conversation history:\n${historyText}\n\n` : ''}New question: ${question}`;
 
     console.log('=== AI GUIDANCE PROMPT ===');
     console.log('--- SYSTEM ---\n', systemPrompt);

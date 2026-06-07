@@ -205,8 +205,19 @@ const he = {
   contact_login_btn: 'כניסה',
 
   // Floating chat
-  chat_placeholder: 'כתוב הודעה...',
+  chat_placeholder: 'השאלה שלך...',
   chat_send: 'שלח',
+  chat_title: 'הכוונה ראשונית',
+  chat_clear_title: 'נקה היסטוריה',
+  chat_clear_message: 'האם למחוק את כל היסטוריית השיחה?',
+  chat_clear_confirm: 'נקה',
+  chat_greeting: 'שלום אני העוזרת האישית הווירטואלית של סיון אלטרוביץ - מאמנת רגשית בשיטת סאטיה. אני כאן כדי להקשיב לך ולעזור לך למצוא תשובות. בואי נחקור יחד - מה מעסיק אותך כרגע?',
+  chat_error: 'מצטערת, הייתה בעיה. אנא נסי שוב.',
+  chat_contact_btn: 'צור קשר עם סיון',
+  chat_login_title: 'נדרשת התחברות',
+  chat_login_desc: 'כדי לשלוח את השאלה, יש להתחבר תחילה. השאלה שלך תישמר ותישלח אחרי ההתחברות.',
+  chat_login_btn: 'כניסה לשליחת השאלה',
+  chat_fab_text: 'מה מעסיק אותך כרגע?',
 
   // General
   save: 'שמור',
@@ -422,8 +433,19 @@ const en = {
   contact_login_btn: 'Sign In',
 
   // Floating chat
-  chat_placeholder: 'Type a message...',
+  chat_placeholder: 'Your question...',
   chat_send: 'Send',
+  chat_title: 'Initial Guidance',
+  chat_clear_title: 'Clear History',
+  chat_clear_message: 'Are you sure you want to delete the entire chat history?',
+  chat_clear_confirm: 'Clear',
+  chat_greeting: "Hi, I'm Sivan Altarovici's personal virtual assistant — an emotional coach using the Satya method. I'm here to listen and help you find answers. Let's explore together — what's on your mind right now?",
+  chat_error: 'Sorry, something went wrong. Please try again.',
+  chat_contact_btn: 'Contact Sivan',
+  chat_login_title: 'Sign In Required',
+  chat_login_desc: 'To send your question, please sign in first. Your question will be saved and sent after you log in.',
+  chat_login_btn: 'Sign In to Send',
+  chat_fab_text: "What's on your mind?",
 
   // General
   save: 'Save',
