@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { BookOpen, Image, Mail, Calendar, Menu, X } from "lucide-react";
+import { BookOpen, Image, Mail, Calendar, Menu, X, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "@/lib/LanguageContext";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -10,31 +10,49 @@ import FloatingChat from "@/components/FloatingChat";
 
 const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
-const FLAG_HE = "🇮🇱";
-const FLAG_EN = "🇬🇧";
+const LANGS = [
+  { code: "he", flag: "🇮🇱", label: "עברית" },
+  { code: "en", flag: "🇬🇧", label: "English" },
+];
 
 function LangSelector({ className = "" }) {
   const { lang, setLang } = useLang();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const current = LANGS.find(l => l.code === lang) || LANGS[0];
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   return (
-    <div className={`flex items-center gap-1 rounded-full border border-[#c8a96e]/50 overflow-hidden text-xs font-semibold ${className}`}>
+    <div ref={ref} className={`relative ${className}`}>
       <button
-        onClick={() => setLang("he")}
-        className={`px-2 py-1 flex items-center gap-1 transition-colors ${
-          lang === "he" ? "bg-[#4a8fa0] text-white" : "hover:bg-[#f0f9fb] text-[#3a3a4a]"
-        }`}
-        title="עברית"
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e8e0d4] bg-white hover:bg-[#f8f5f0] text-sm font-medium text-[#3a3a4a] transition-colors"
       >
-        {FLAG_HE} <span>עב׳</span>
+        <span>{current.flag}</span>
+        <span>{current.label}</span>
+        <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
-      <button
-        onClick={() => setLang("en")}
-        className={`px-2 py-1 flex items-center gap-1 transition-colors ${
-          lang === "en" ? "bg-[#4a8fa0] text-white" : "hover:bg-[#f0f9fb] text-[#3a3a4a]"
-        }`}
-        title="English"
-      >
-        {FLAG_EN} <span>EN</span>
-      </button>
+      {open && (
+        <div className="absolute top-full mt-1 end-0 bg-white border border-[#e8e0d4] rounded-lg shadow-lg overflow-hidden z-50 min-w-[120px]">
+          {LANGS.map(l => (
+            <button
+              key={l.code}
+              onClick={() => { setLang(l.code); setOpen(false); }}
+              className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-[#f0f9fb] transition-colors ${
+                lang === l.code ? "text-[#4a8fa0] font-semibold" : "text-[#3a3a4a]"
+              }`}
+            >
+              <span>{l.flag}</span>
+              <span>{l.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -94,8 +112,8 @@ export default function Layout({ children, currentPageName }) {
 
       <FloatingChat />
 
-      {/* Desktop Header */}
-      <header className="hidden md:flex items-center justify-between px-8 py-2 bg-white shadow-sm sticky top-0 z-50">
+      {/* Desktop Header — always LTR so logo/nav/actions order is stable */}
+      <header className="hidden md:flex items-center justify-between px-8 py-2 bg-white shadow-sm sticky top-0 z-50" dir="ltr">
         <Link to={createPageUrl("Home")} className="flex items-center gap-3">
           <img
             src="/images/logo.png"

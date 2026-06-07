@@ -29,8 +29,10 @@ CREATE TABLE IF NOT EXISTS blog_posts (
 
 CREATE TABLE IF NOT EXISTS gallery_images (
   id SERIAL PRIMARY KEY,
-  title TEXT,
-  subtitle TEXT,
+  title_he TEXT,
+  subtitle_he TEXT,
+  title_en TEXT,
+  subtitle_en TEXT,
   image_url TEXT,
   published BOOLEAN DEFAULT true,
   "order" INT DEFAULT 0,
