@@ -3,12 +3,16 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Plus, Pencil, Trash2, Eye, EyeOff, BookOpen } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useLang } from "@/lib/LanguageContext";
 import ConfirmModal from "@/components/ConfirmModal";
 import PageHeader from "@/components/PageHeader";
 
 const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
 export default function Blog() {
+  const { t } = useTranslation();
+  const { lang, dir } = useLang();
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,8 +20,13 @@ export default function Blog() {
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => null);
-    loadPosts();
   }, []);
+
+  useEffect(() => {
+    loadPosts();
+  }, [lang]);
+
+  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
 
   const loadPosts = async () => {
     setLoading(true);
@@ -26,9 +35,10 @@ export default function Blog() {
     setLoading(false);
   };
 
-  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
-
-  const visiblePosts = isAdmin ? posts : posts.filter(p => p.published);
+  // Admins see all posts across languages; public sees current lang only
+  const visiblePosts = isAdmin
+    ? posts.filter(p => p.lang === lang || !p.lang)
+    : posts.filter(p => p.published && (p.lang === lang || (!p.lang && lang === 'he')));
 
   const handleDelete = async () => {
     await base44.entities.BlogPost.delete(deleteModal.id);
@@ -54,23 +64,25 @@ export default function Blog() {
     return truncated.slice(0, lastSpace) + "...";
   };
 
+  const dateLocale = lang === 'en' ? 'en-US' : 'he-IL';
+
   return (
-    <div dir="rtl" className="min-h-screen bg-[#f8f5f0]">
-      <PageHeader 
+    <div dir={dir} className="min-h-screen bg-[#f8f5f0]">
+      <PageHeader
         icon={BookOpen}
-        title="בלוג"
-        subtitle="שיתוף במחשבות והגיגים שלי"
+        title={t("blog_title")}
+        subtitle={t("blog_subtitle")}
       />
 
       <div className="max-w-4xl mx-auto px-4 py-10">
         {isAdmin && (
-          <div className="mb-8 text-right">
+          <div className="mb-8 flex justify-start">
             <Link
               to={createPageUrl("BlogPost") + "?new=1"}
               className="inline-flex items-center gap-2 bg-[#4a8fa0] text-white px-5 py-2.5 rounded-xl font-medium hover:bg-[#2d6b7a] transition-colors"
             >
               <Plus size={18} />
-              פוסט חדש
+              {t("blog_new_post")}
             </Link>
           </div>
         )}
@@ -83,7 +95,7 @@ export default function Blog() {
           </div>
         ) : visiblePosts.length === 0 ? (
           <div className="text-center text-[#999] py-20">
-            <p className="text-xl">אין פוסטים עדיין</p>
+            <p className="text-xl">{t("blog_no_posts")}</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -110,7 +122,7 @@ export default function Blog() {
                         )}
                         {isAdmin && !post.published && (
                           <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">
-                            לא מפורסם
+                            {t("blog_unpublished")}
                           </span>
                         )}
                       </div>
@@ -119,7 +131,7 @@ export default function Blog() {
                           <button
                             onClick={() => handleTogglePublish(post)}
                             className={`p-1.5 rounded-lg transition-colors ${post.published ? "text-[#4a8fa0] hover:bg-[#f0f9fb]" : "text-yellow-600 hover:bg-yellow-50"}`}
-                            title={post.published ? "הסתר" : "פרסם"}
+                            title={post.published ? t("blog_hide") : t("blog_publish_btn")}
                           >
                             {post.published ? <Eye size={16} /> : <EyeOff size={16} />}
                           </button>
@@ -147,13 +159,15 @@ export default function Blog() {
 
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-[#aaa]">
-                        {post.publish_date ? new Date(post.publish_date).toLocaleDateString("he-IL", { year: "numeric", month: "long", day: "numeric" }) : ""}
+                        {post.publish_date
+                          ? new Date(post.publish_date).toLocaleDateString(dateLocale, { year: "numeric", month: "long", day: "numeric" })
+                          : ""}
                       </span>
                       <Link
                         to={createPageUrl("BlogPost") + `?id=${post.id}&view=1`}
                         className="text-[#4a8fa0] font-medium text-sm hover:underline"
                       >
-                        קרא עוד ←
+                        {t("blog_read_more")} {dir === "rtl" ? "←" : "→"}
                       </Link>
                     </div>
                   </div>
@@ -163,11 +177,12 @@ export default function Blog() {
           </div>
         )}
       </div>
+
       <ConfirmModal
         isOpen={deleteModal.open}
-        title="מחיקת פוסט"
-        message="האם אתה בטוח שברצונך למחוק את הפוסט? פעולה זו אינה ניתנת לביטול."
-        confirmLabel="מחק פוסט"
+        title={t("blog_delete_title")}
+        message={t("blog_delete_message")}
+        confirmLabel={t("blog_delete_confirm")}
         onConfirm={handleDelete}
         onCancel={() => setDeleteModal({ open: false, id: null })}
       />

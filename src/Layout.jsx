@@ -5,14 +5,16 @@ import { base44 } from "@/api/base44Client";
 import { BookOpen, Image, Mail, Calendar, Menu, X, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLang } from "@/lib/LanguageContext";
+import IL from 'country-flag-icons/react/3x2/IL';
+import US from 'country-flag-icons/react/3x2/US';
 import ConfirmModal from "@/components/ConfirmModal";
 import FloatingChat from "@/components/FloatingChat";
 
 const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
 const LANGS = [
-  { code: "he", flag: "🇮🇱", label: "עברית" },
-  { code: "en", flag: "🇺🇸", label: "English" },
+  { code: "he", Flag: IL, label: "עברית" },
+  { code: "en", Flag: US, label: "English" },
 ];
 
 function LangSelector({ className = "" }) {
@@ -20,6 +22,7 @@ function LangSelector({ className = "" }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const current = LANGS.find(l => l.code === lang) || LANGS[0];
+  const CurrentFlag = current.Flag;
 
   useEffect(() => {
     const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
@@ -33,22 +36,22 @@ function LangSelector({ className = "" }) {
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e8e0d4] bg-white hover:bg-[#f8f5f0] text-sm font-medium text-[#3a3a4a] transition-colors"
       >
-        <span>{current.flag}</span>
+        <CurrentFlag className="w-5 h-auto rounded-sm" />
         <span>{current.label}</span>
         <ChevronDown size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
         <div className="absolute top-full mt-1 end-0 bg-white border border-[#e8e0d4] rounded-lg shadow-lg overflow-hidden z-50 min-w-[120px]">
-          {LANGS.map(l => (
+          {LANGS.map(({ code, Flag, label }) => (
             <button
-              key={l.code}
-              onClick={() => { setLang(l.code); setOpen(false); }}
+              key={code}
+              onClick={() => { setLang(code); setOpen(false); }}
               className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-[#f0f9fb] transition-colors ${
-                lang === l.code ? "text-[#4a8fa0] font-semibold" : "text-[#3a3a4a]"
+                lang === code ? "text-[#4a8fa0] font-semibold" : "text-[#3a3a4a]"
               }`}
             >
-              <span>{l.flag}</span>
-              <span>{l.label}</span>
+              <Flag className="w-5 h-auto rounded-sm" />
+              <span>{label}</span>
             </button>
           ))}
         </div>
