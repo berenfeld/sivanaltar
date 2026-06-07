@@ -55,7 +55,7 @@ function LightboxViewer({ images, startIndex, onClose, lang }) {
       <button onClick={onClose} className="absolute top-4 left-4 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors">
         <X size={24} />
       </button>
-      <div className="absolute top-4 right-4 z-10 text-white/70 text-sm">{current + 1} / {images.length}</div>
+      <div className="absolute top-4 right-4 z-10 text-white/70 text-sm" dir="ltr">{current + 1} / {images.length}</div>
 
       <button onClick={prev} className="absolute right-3 md:right-6 z-10 p-2 md:p-3 bg-white/10 hover:bg-white/25 rounded-full text-white transition-colors" style={{top: "50%", transform: "translateY(-50%)"}}>
         <ChevronRight size={28} />
