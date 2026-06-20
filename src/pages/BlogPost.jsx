@@ -18,6 +18,12 @@ function upsertMeta(name, content) {
   el.setAttribute("content", content);
 }
 
+function upsertProp(property, content) {
+  let el = document.head.querySelector(`meta[property="${property}"]`);
+  if (!el) { el = document.createElement("meta"); el.setAttribute("property", property); document.head.appendChild(el); }
+  el.setAttribute("content", content);
+}
+
 export default function BlogPost() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
@@ -49,14 +55,34 @@ export default function BlogPost() {
   useEffect(() => {
     if (!viewOnly || !post) return;
 
-    const title = `${post.title} - ${SITE_NAME}`;
-    document.title = title;
+    const pageTitle = `${post.title} - ${SITE_NAME}`;
+    const description = post.summary || post.title || "";
+    const imageUrl = post.image_url || `${BASE}/images/logo.png`;
+    const slug = post.seo_url;
+    const canonicalUrl = slug
+      ? `${BASE}/${lang}/BlogPost/${slug}`
+      : `${BASE}/${lang}/BlogPost`;
 
-    upsertMeta("description", post.summary || post.title || "");
+    document.title = pageTitle;
+
+    // Standard meta
+    upsertMeta("title", pageTitle);
+    upsertMeta("description", description);
     if (post.keywords) upsertMeta("keywords", post.keywords);
 
-    // Canonical + hreflang for blog post
-    const slug = post.seo_url;
+    // Open Graph
+    upsertProp("og:title", pageTitle);
+    upsertProp("og:description", description);
+    upsertProp("og:url", canonicalUrl);
+    upsertProp("og:image", imageUrl);
+    upsertProp("og:type", "article");
+
+    // Twitter Card
+    upsertMeta("twitter:title", pageTitle);
+    upsertMeta("twitter:description", description);
+    upsertMeta("twitter:image", imageUrl);
+
+    // Canonical + hreflang
     if (slug) {
       const heLoc = `${BASE}/he/BlogPost/${slug}`;
       const enLoc = `${BASE}/en/BlogPost/${slug}`;
@@ -71,7 +97,6 @@ export default function BlogPost() {
     }
 
     return () => {
-      // Restore generic title when leaving
       document.title = SITE_NAME;
     };
   }, [post, viewOnly, lang]);
