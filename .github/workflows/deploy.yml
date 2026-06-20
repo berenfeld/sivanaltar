@@ -72,3 +72,22 @@ jobs:
         run: |
           sleep 3
           curl -f http://${{ secrets.SSH_HOST }}/api/health
+
+      # Pre-render every URL in the live sitemap with a real browser so that
+      # crawlers (Bing, Facebook, WhatsApp) receive fully-populated HTML without
+      # having to execute JavaScript themselves. The files land in dist/prerender/
+      # and nginx serves them ahead of the SPA shell.
+      - name: Install Playwright for pre-render
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: Pre-render sitemap pages
+        run: node scripts/prerender.js
+
+      - name: Upload pre-rendered HTML to server
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            dist/prerender/ \
+            ubuntu@${{ secrets.SSH_HOST }}:/var/www/sivanaltar/app/dist/prerender/
