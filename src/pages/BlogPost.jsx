@@ -57,7 +57,8 @@ export default function BlogPost() {
 
     const pageTitle = `${post.title} - ${SITE_NAME}`;
     const description = post.summary || post.title || "";
-    const imageUrl = post.image_url || `${BASE}/images/logo.png`;
+    const rawImage = post.image_url || "/images/main-seo.jpeg";
+    const imageUrl = rawImage.startsWith("http") ? rawImage : `${BASE}${rawImage}`;
     const slug = post.seo_url;
     const canonicalUrl = slug
       ? `${BASE}/${lang}/BlogPost/${slug}`
@@ -68,7 +69,7 @@ export default function BlogPost() {
     // Standard meta
     upsertMeta("title", pageTitle);
     upsertMeta("description", description);
-    if (post.keywords) upsertMeta("keywords", post.keywords);
+    upsertMeta("keywords", post.keywords || "סיון אלטרוביץ, מאמנת רגשית, שיטת סאטיה");
 
     // Open Graph
     upsertProp("og:title", pageTitle);
