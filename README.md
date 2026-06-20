@@ -1,6 +1,6 @@
 # Sivan Altar — Website
 
-Personal website for Sivan Altarowitz, emotional coach (Satya method). Built with React + Vite frontend and Express + PostgreSQL backend.
+Personal website for Sivan Altarovici, emotional coach (Satya method). Built with React + Vite frontend and Express + PostgreSQL backend.
 
 ## Local development
 

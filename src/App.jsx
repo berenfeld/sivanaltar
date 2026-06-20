@@ -11,6 +11,17 @@ import { LanguageProvider, useLang, readStorage } from '@/lib/LanguageContext';
 import { useEffect } from 'react';
 import BlogPost from '@/pages/BlogPost';
 
+// Passes BlogPost/:seoUrl as the currentPageName so the lang switcher
+// navigates to /{lang}/BlogPost/{seoUrl} instead of /{lang}/BlogPost
+function BlogPostSeoRoute() {
+  const { seoUrl } = useParams();
+  return (
+    <LayoutWrapper currentPageName={`BlogPost/${seoUrl}`}>
+      <BlogPost />
+    </LayoutWrapper>
+  );
+}
+
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -87,14 +98,7 @@ const AuthenticatedApp = () => {
       {/* Blog post SEO URL route — must be before generic /:lang/:pageName */}
       <Route
         path="/:lang/BlogPost/:seoUrl"
-        element={
-          <>
-            <LangSync />
-            <LayoutWrapper currentPageName="BlogPost">
-              <BlogPost />
-            </LayoutWrapper>
-          </>
-        }
+        element={<><LangSync /><BlogPostSeoRoute /></>}
       />
 
       {/* Lang-prefixed pages (/:lang/:pageName) */}
