@@ -71,12 +71,17 @@ export default function BlogPost() {
     upsertMeta("description", description);
     upsertMeta("keywords", post.keywords || "סיון אלטרוביץ, מאמנת רגשית, שיטת סאטיה");
 
-    // Open Graph
+    // Open Graph — clear static width/height from index.html when using post image
     upsertProp("og:title", pageTitle);
     upsertProp("og:description", description);
     upsertProp("og:url", canonicalUrl);
     upsertProp("og:image", imageUrl);
     upsertProp("og:type", "article");
+    if (post.image_url) {
+      // Post has its own cover — remove the main-seo.jpeg dimensions
+      upsertProp("og:image:width", "");
+      upsertProp("og:image:height", "");
+    }
 
     // Twitter Card
     upsertMeta("twitter:title", pageTitle);
