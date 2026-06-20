@@ -27,7 +27,8 @@ function upsertProp(property, content) {
 export default function BlogPost() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
-  const { seoUrl } = useParams();
+  // urlLang comes directly from the URL — always correct even before LangSync fires
+  const { seoUrl, lang: urlLang } = useParams();
   const params = new URLSearchParams(window.location.search);
   const postId = params.get("id");
   const isNew = params.get("new") === "1";
@@ -111,7 +112,7 @@ export default function BlogPost() {
     setLoading(true);
     const items = await base44.entities.BlogPost.filter({ seo_url: slug });
     // Prefer post matching current lang, fallback to first result
-    const match = items.find(p => p.lang === lang) || items[0];
+    const match = items.find(p => p.lang === (urlLang || lang)) || items[0];
     if (match) {
       setPost(match);
       setForm({ title: match.title || "", summary: match.summary || "", content: match.content || "", category: match.category || "", published: match.published || false, image_url: match.image_url || "", lang: match.lang || "he", seo_url: match.seo_url || "", keywords: match.keywords || "" });
