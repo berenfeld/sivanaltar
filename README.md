@@ -45,6 +45,22 @@ To rotate the token: generate a new fine-grained PAT at https://github.com/setti
 | Hosting | Ubuntu VM, nginx reverse proxy, pm2 |
 | CI/CD | GitHub Actions → rsync to VM |
 
+## Server access
+
+```bash
+ssh -i ~/.ssh/sivanaltar.com-access ubuntu@www.sivanaltar.com
+```
+
+Key paths on the server:
+- App dist: `/var/www/sivanaltar/app/dist/`
+- Uploads: `/var/www/sivanaltar/uploads/`
+- Server code: `/var/www/sivanaltar/server/`
+
+For one-off file drops that don't need a full deploy (e.g. webmaster verification files):
+```bash
+scp -i ~/.ssh/sivanaltar.com-access <file> ubuntu@www.sivanaltar.com:/var/www/sivanaltar/app/dist/<file>
+```
+
 ## nginx
 
 Config lives in `scripts/nginx.conf` and is deployed on every push. Key routing:
