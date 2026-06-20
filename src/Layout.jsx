@@ -76,7 +76,7 @@ export default function Layout({ children, currentPageName }) {
   const [logoutConfirm, setLogoutConfirm] = useState(false);
 
   const navLinks = [
-    { labelKey: "nav_blog", page: "Blog", icon: BookOpen },
+    { labelKey: "nav_blog", page: "Blogs", icon: BookOpen },
     { labelKey: "nav_gallery", page: "Gallery", icon: Image },
     { labelKey: "nav_calendar", page: "Calendar", icon: Calendar },
     { labelKey: "nav_contact", page: "Contact", icon: Mail },
@@ -84,7 +84,7 @@ export default function Layout({ children, currentPageName }) {
 
   const PAGE_TITLE_KEYS = {
     Home: null,
-    Blog: "page_title_blog",
+    Blogs: "page_title_blog",
     Gallery: "page_title_gallery",
     Calendar: "page_title_calendar",
     Contact: "page_title_contact",

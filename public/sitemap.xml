@@ -12,9 +12,9 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.sivanaltar.com/he/Blog</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Blog"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Blog"/>
+    <loc>https://www.sivanaltar.com/he/Blogs</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Blogs"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Blogs"/>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -50,9 +50,9 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.sivanaltar.com/en/Blog</loc>
-    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Blog"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Blog"/>
+    <loc>https://www.sivanaltar.com/en/Blogs</loc>
+    <xhtml:link rel="alternate" hreflang="he" href="https://www.sivanaltar.com/he/Blogs"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.sivanaltar.com/en/Blogs"/>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -55,7 +55,7 @@ app.get('/sitemap.xml', async (req, res) => {
 
     const staticPages = [
       { path: 'Home',     changefreq: 'weekly',  priority: '1.0', xdefault: true },
-      { path: 'Blog',     changefreq: 'weekly',  priority: '0.8' },
+      { path: 'Blogs',    changefreq: 'weekly',  priority: '0.8' },
       { path: 'Gallery',  changefreq: 'monthly', priority: '0.6' },
       { path: 'Calendar', changefreq: 'weekly',  priority: '0.9' },
       { path: 'Contact',  changefreq: 'yearly',  priority: '0.7' },

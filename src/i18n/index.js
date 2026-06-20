@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next';
 
 const he = {
   // Nav
-  nav_blog: 'בלוג',
+  nav_blog: 'הבלוגים שלי',
   nav_gallery: 'גלריה',
   nav_calendar: 'יומן',
   nav_contact: 'צור קשר',
@@ -17,7 +17,7 @@ const he = {
   logout_confirm_btn: 'יציאה',
 
   // Page titles (document.title)
-  page_title_blog: 'בלוג',
+  page_title_blog: 'הבלוגים שלי',
   page_title_gallery: 'גלריה',
   page_title_calendar: 'יומן',
   page_title_contact: 'צור קשר',
@@ -74,7 +74,7 @@ const he = {
   gallery_unpublished_badge: 'לא מפורסם',
 
   // Blog page
-  blog_title: 'בלוג',
+  blog_title: 'הבלוגים שלי',
   blog_subtitle: 'שיתוף במחשבות והגיגים שלי',
   blog_read_more: 'קראו עוד',
   blog_no_posts: 'אין פוסטים עדיין',

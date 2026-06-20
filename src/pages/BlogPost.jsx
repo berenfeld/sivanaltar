@@ -144,7 +144,7 @@ export default function BlogPost() {
           </div>
         )}
         <div className="max-w-3xl mx-auto px-6 py-10">
-          <Link to={createPageUrl("Blog")} className="inline-flex items-center gap-1 text-[#4a8fa0] mb-6 hover:underline">
+          <Link to={createPageUrl("Blogs")} className="inline-flex items-center gap-1 text-[#4a8fa0] mb-6 hover:underline">
             <BackArrow size={16} /> {t("blog_back")}
           </Link>
           {post.category && (
@@ -187,7 +187,7 @@ export default function BlogPost() {
     <div dir={dir} className="min-h-screen bg-[#f8f5f0]">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <Link to={createPageUrl("Blog")} className="inline-flex items-center gap-1 text-[#4a8fa0] hover:underline">
+          <Link to={createPageUrl("Blogs")} className="inline-flex items-center gap-1 text-[#4a8fa0] hover:underline">
             <BackArrow size={16} /> {t("blog_back")}
           </Link>
           <div className="flex items-center gap-3">

@@ -1,39 +1,54 @@
-**Welcome to your Base44 project** 
+# Sivan Altar — Website
 
-**About**
+Personal website for Sivan Altarowitz, emotional coach (Satya method). Built with React + Vite frontend and Express + PostgreSQL backend.
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+## Local development
 
-This project contains everything you need to run your app locally.
+1. Clone the repository
+2. Install frontend dependencies: `npm install`
+3. Install server dependencies: `cd server && npm install`
+4. Create `server/.env` with `DATABASE_URL=postgres://...`
+5. Run migrations: `cd server && npm run migrate`
+6. Start the server: `cd server && npm run dev`
+7. Start the frontend: `npm run dev`
 
-**Edit the code in your local development environment**
+## Deployment
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+Pushes to `master` trigger the GitHub Actions workflow (`.github/workflows/deploy.yml`) which:
+- Builds the React frontend
+- Syncs `dist/` to the VM via rsync
+- Syncs `server/` to the VM
+- Reloads nginx
+- Runs database migrations
+- Restarts the Node process via pm2
 
-**Prerequisites:** 
+## Monitoring deploys with Claude Code
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+A `GITHUB_TOKEN` (fine-grained PAT with Actions read permission) is provisioned in `~/.bashrc` on the dev VM so Claude Code can monitor GitHub Actions runs:
 
+```bash
+# ~/.bashrc
+export GITHUB_TOKEN=github_pat_...
 ```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
 
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
-```
+Claude Code uses this token to poll `https://api.github.com/repos/berenfeld/sivanaltar/actions/runs` and report deploy status without needing the `gh` CLI.
 
-Run the app: `npm run dev`
+To rotate the token: generate a new fine-grained PAT at https://github.com/settings/tokens with **Actions: read** permission on this repo, then update `~/.bashrc`.
 
-**Publish your changes**
+## Architecture
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+| Layer | Tech |
+|-------|------|
+| Frontend | React 18, Vite, Tailwind CSS, react-router-dom v6 |
+| Backend | Express, PostgreSQL, node-pg-migrate |
+| Auth | Google OAuth via custom auth flow |
+| Hosting | Ubuntu VM, nginx reverse proxy, pm2 |
+| CI/CD | GitHub Actions → rsync to VM |
 
-**Docs & Support**
+## nginx
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+Config lives in `scripts/nginx.conf` and is deployed on every push. Key routing:
+- `/api/*` → Express on port 3001
+- `/sitemap.xml` → Express on port 3001 (dynamic, includes blog posts)
+- `/uploads/*` → `/var/www/sivanaltar/uploads/`
+- Everything else → React SPA (`dist/index.html`)
