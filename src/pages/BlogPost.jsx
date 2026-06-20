@@ -169,29 +169,56 @@ export default function BlogPost() {
   if (viewOnly && post && !editMode) {
     return (
       <div dir={dir} className="min-h-screen bg-[#f8f5f0]">
+
+        {/* Mobile: full-width hero image above everything */}
         {post.image_url && (
-          <div className="w-full h-64 md:h-96 overflow-hidden">
+          <div className="md:hidden w-full h-64 overflow-hidden">
             <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
           </div>
         )}
-        <div className="max-w-3xl mx-auto px-6 py-10">
-          <Link to={createPageUrl("Blogs")} className="inline-flex items-center gap-1 text-[#4a8fa0] mb-6 hover:underline">
-            <BackArrow size={16} /> {t("blog_back")}
-          </Link>
-          {post.category && (
-            <span className="text-xs bg-[#f0e8d8] text-[#c8a96e] px-2 py-0.5 rounded-full font-medium ms-2">{post.category}</span>
-          )}
-          <h1 className="text-3xl font-bold text-[#3a3a4a] mt-3 mb-2 leading-snug">{post.title}</h1>
+
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          {/* Back + category row */}
+          <div className="flex items-center gap-3 mb-4">
+            <Link to={createPageUrl("Blogs")} className="inline-flex items-center gap-1 text-[#4a8fa0] hover:underline">
+              <BackArrow size={16} /> {t("blog_back")}
+            </Link>
+            {post.category && (
+              <span className="text-xs bg-[#f0e8d8] text-[#c8a96e] px-2 py-0.5 rounded-full font-medium">{post.category}</span>
+            )}
+          </div>
+
+          {/* Title — full width on both mobile and desktop */}
+          <h1 className="text-3xl font-bold text-[#3a3a4a] mb-2 leading-snug">{post.title}</h1>
           {post.publish_date && (
             <p className="text-sm text-[#aaa] mb-6">
               {t("blog_updated")}: {new Date(post.publish_date).toLocaleDateString(dateLocale, { year: "numeric", month: "long", day: "numeric" })}
             </p>
           )}
+
+          {/* Desktop: image floated beside content; mobile: image already shown above */}
+          {post.image_url && (
+            <img
+              src={post.image_url}
+              alt={post.title}
+              className={[
+                "hidden md:block rounded-xl object-cover mb-4 flex-shrink-0",
+                // In RTL (Hebrew) float to the left of the text; in LTR (English) float to the right
+                dir === "rtl" ? "float-left ms-0 me-8" : "float-right ms-8 me-0",
+                "w-72 h-64",
+              ].join(" ")}
+            />
+          )}
+
           <div
             className="prose prose-lg max-w-none text-[#3a3a4a] leading-relaxed [&>ul]:list-disc [&>ul]:ps-6"
             dir={dir}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+
+          {/* Clear the float so the admin button sits below */}
+          <div className="clear-both" />
+
           {isAdmin && (
             <button
               onClick={() => setEditMode(true)}
