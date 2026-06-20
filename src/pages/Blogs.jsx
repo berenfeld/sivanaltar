@@ -151,7 +151,14 @@ export default function Blog() {
                       )}
                     </div>
 
-                    <h2 className="text-xl font-bold text-[#3a3a4a] mb-2 leading-snug">{post.title}</h2>
+                    <Link
+                      to={post.seo_url
+                        ? `/${lang}/BlogPost/${post.seo_url}`
+                        : createPageUrl("BlogPost") + `?id=${post.id}`}
+                      className="hover:underline"
+                    >
+                      <h2 className="text-xl font-bold text-[#3a3a4a] mb-2 leading-snug">{post.title}</h2>
+                    </Link>
 
                     <p className="text-[#666] text-sm leading-relaxed flex-1 mb-4">
                       {truncateAtWord(stripHtml(post.content), 400)}
