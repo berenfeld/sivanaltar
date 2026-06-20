@@ -10,14 +10,17 @@
  *   dist/prerender/he/Blogs/index.html   ← matched by try_files /prerender$uri/index.html
  *   dist/prerender/he/Blogs.html         ← matched by try_files /prerender$uri.html
  *
- * Usage (CI): node scripts/prerender.js
- * Local:      npm install playwright && npx playwright install chromium && node scripts/prerender.js
+ * Usage (CI): node scripts/prerender.mjs
+ * Local:      npm install playwright && npx playwright install chromium && node scripts/prerender.mjs
  */
 
-const { chromium } = require('playwright');
-const https = require('https');
-const fs   = require('fs');
-const path = require('path');
+import { chromium } from 'playwright';
+import https from 'https';
+import fs   from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const SITE    = 'https://www.sivanaltar.com';
 const OUT_DIR = path.join(__dirname, '..', 'dist', 'prerender');
@@ -59,42 +62,40 @@ function saveHtml(urlPath, html) {
 
 // ─── main ────────────────────────────────────────────────────────────────────
 
-(async () => {
-  console.log(`Fetching sitemap from ${SITE}/sitemap.xml …`);
-  const xml  = await httpsGet(`${SITE}/sitemap.xml`);
-  const urls = parseSitemapUrls(xml);
-  console.log(`Found ${urls.length} unique URLs to pre-render\n`);
+console.log(`Fetching sitemap from ${SITE}/sitemap.xml …`);
+const xml  = await httpsGet(`${SITE}/sitemap.xml`);
+const urls = parseSitemapUrls(xml);
+console.log(`Found ${urls.length} unique URLs to pre-render\n`);
 
-  const browser = await chromium.launch();
+const browser = await chromium.launch();
 
-  let ok = 0, fail = 0;
+let ok = 0, fail = 0;
 
-  for (const url of urls) {
-    process.stdout.write(`  ${url} … `);
-    const page = await browser.newPage();
-    try {
-      // networkidle: no more than 0 in-flight requests for 500 ms — enough
-      // for the React app to finish its API calls and update the DOM.
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+for (const url of urls) {
+  process.stdout.write(`  ${url} … `);
+  const page = await browser.newPage();
+  try {
+    // networkidle: no more than 0 in-flight requests for 500 ms — enough
+    // for the React app to finish its API calls and update the DOM.
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
 
-      // Extra settle time in case a slow API call finishes just after networkidle.
-      await page.waitForTimeout(500);
+    // Extra settle time in case a slow API call finishes just after networkidle.
+    await page.waitForTimeout(500);
 
-      const html    = await page.content();
-      const urlPath = new URL(url).pathname;
-      saveHtml(urlPath, html);
-      console.log('✓');
-      ok++;
-    } catch (err) {
-      console.log(`✗  (${err.message})`);
-      fail++;
-    } finally {
-      await page.close();
-    }
+    const html    = await page.content();
+    const urlPath = new URL(url).pathname;
+    saveHtml(urlPath, html);
+    console.log('✓');
+    ok++;
+  } catch (err) {
+    console.log(`✗  (${err.message})`);
+    fail++;
+  } finally {
+    await page.close();
   }
+}
 
-  await browser.close();
+await browser.close();
 
-  console.log(`\nPre-render done: ${ok} succeeded, ${fail} failed`);
-  if (fail > 0) process.exit(1); // fail the CI step so the problem is visible
-})();
+console.log(`\nPre-render done: ${ok} succeeded, ${fail} failed`);
+if (fail > 0) process.exit(1); // fail the CI step so the problem is visible

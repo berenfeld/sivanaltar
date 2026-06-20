@@ -83,7 +83,7 @@ jobs:
           npx playwright install chromium --with-deps
 
       - name: Pre-render sitemap pages
-        run: node scripts/prerender.js
+        run: node scripts/prerender.mjs
 
       - name: Upload pre-rendered HTML to server
         run: |
