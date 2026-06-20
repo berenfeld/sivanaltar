@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ArrowRight, ArrowLeft, Save, Eye, EyeOff, Upload, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -9,34 +9,92 @@ import { useLang } from "@/lib/LanguageContext";
 import RichTextEditor from "@/components/RichTextEditor";
 
 const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
+const SITE_NAME = "סיון אלטרוביץ | מאמנת רגשית בשיטת סאטיה";
+const BASE = "https://www.sivanaltar.com";
+
+function upsertMeta(name, content) {
+  let el = document.head.querySelector(`meta[name="${name}"]`);
+  if (!el) { el = document.createElement("meta"); el.setAttribute("name", name); document.head.appendChild(el); }
+  el.setAttribute("content", content);
+}
 
 export default function BlogPost() {
   const { t } = useTranslation();
   const { lang, dir } = useLang();
+  const { seoUrl } = useParams();
   const params = new URLSearchParams(window.location.search);
   const postId = params.get("id");
   const isNew = params.get("new") === "1";
-  const viewOnly = params.get("view") === "1";
+
+  // View mode: accessed via SEO URL or legacy ?view=1
+  const viewOnly = !!seoUrl || params.get("view") === "1";
 
   const { user } = useAuth();
   const [post, setPost] = useState(null);
-  const [form, setForm] = useState({ title: "", summary: "", content: "", category: lang === 'en' ? "Reflections" : "הגיגים", published: false, image_url: "", lang });
+  const [form, setForm] = useState({ title: "", summary: "", content: "", category: lang === 'en' ? "Reflections" : "הגיגים", published: false, image_url: "", lang, seo_url: "", keywords: "" });
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [editMode, setEditMode] = useState(isNew);
 
   useEffect(() => {
-    if (postId) loadPost();
-  }, [postId]);
+    if (seoUrl) {
+      loadPostBySeoUrl(seoUrl);
+    } else if (postId) {
+      loadPost(postId);
+    }
+  }, [seoUrl, postId]);
 
-  const loadPost = async () => {
+  // Update page meta tags when viewing a blog post
+  useEffect(() => {
+    if (!viewOnly || !post) return;
+
+    const title = `${post.title} - ${SITE_NAME}`;
+    document.title = title;
+
+    upsertMeta("description", post.summary || post.title || "");
+    if (post.keywords) upsertMeta("keywords", post.keywords);
+
+    // Canonical + hreflang for blog post
+    const slug = post.seo_url;
+    if (slug) {
+      const heLoc = `${BASE}/he/BlogPost/${slug}`;
+      const enLoc = `${BASE}/en/BlogPost/${slug}`;
+      const upsertLink = (sel, attrs) => {
+        let el = document.head.querySelector(sel);
+        if (!el) { el = document.createElement("link"); document.head.appendChild(el); }
+        Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+      };
+      upsertLink('link[rel="canonical"]', { rel: "canonical", href: lang === "he" ? heLoc : enLoc });
+      upsertLink('link[rel="alternate"][hreflang="he"]', { rel: "alternate", hreflang: "he", href: heLoc });
+      upsertLink('link[rel="alternate"][hreflang="en"]', { rel: "alternate", hreflang: "en", href: enLoc });
+    }
+
+    return () => {
+      // Restore generic title when leaving
+      document.title = SITE_NAME;
+    };
+  }, [post, viewOnly, lang]);
+
+  const loadPostBySeoUrl = async (slug) => {
     setLoading(true);
-    const items = await base44.entities.BlogPost.filter({ id: postId });
+    const items = await base44.entities.BlogPost.filter({ seo_url: slug });
+    // Prefer post matching current lang, fallback to first result
+    const match = items.find(p => p.lang === lang) || items[0];
+    if (match) {
+      setPost(match);
+      setForm({ title: match.title || "", summary: match.summary || "", content: match.content || "", category: match.category || "", published: match.published || false, image_url: match.image_url || "", lang: match.lang || "he", seo_url: match.seo_url || "", keywords: match.keywords || "" });
+    }
+    setLoading(false);
+  };
+
+  const loadPost = async (id) => {
+    setLoading(true);
+    const items = await base44.entities.BlogPost.filter({ id });
     if (items.length > 0) {
       const p = items[0];
       setPost(p);
-      setForm({ title: p.title || "", summary: p.summary || "", content: p.content || "", category: p.category || "", published: p.published || false, image_url: p.image_url || "", lang: p.lang || 'he' });
+      setForm({ title: p.title || "", summary: p.summary || "", content: p.content || "", category: p.category || "", published: p.published || false, image_url: p.image_url || "", lang: p.lang || "he", seo_url: p.seo_url || "", keywords: p.keywords || "" });
     }
     setLoading(false);
   };
@@ -47,7 +105,9 @@ export default function BlogPost() {
     setSaving(true);
     if (isNew || !postId) {
       const created = await base44.entities.BlogPost.create({ ...form, lang });
-      window.location.href = createPageUrl("BlogPost") + `?id=${created.id}`;
+      window.location.href = created.seo_url
+        ? `/${lang}/BlogPost/${created.seo_url}`
+        : createPageUrl("BlogPost") + `?id=${created.id}`;
     } else {
       await base44.entities.BlogPost.update(postId, form);
       setPost({ ...post, ...form });
@@ -65,8 +125,8 @@ export default function BlogPost() {
     setUploadingImage(false);
   };
 
-  const dateLocale = lang === 'en' ? 'en-US' : 'he-IL';
-  const BackArrow = dir === 'rtl' ? ArrowRight : ArrowLeft;
+  const dateLocale = lang === "en" ? "en-US" : "he-IL";
+  const BackArrow = dir === "rtl" ? ArrowRight : ArrowLeft;
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-screen">
@@ -199,6 +259,25 @@ export default function BlogPost() {
               value={form.content}
               onChange={val => setForm(prev => ({ ...prev, content: val }))}
               height={500}
+            />
+          </div>
+
+          <div className="border-t border-[#e8e0d4] pt-4 space-y-3">
+            <p className="text-xs font-semibold text-[#999] uppercase tracking-wide">SEO</p>
+            <input
+              value={form.seo_url}
+              onChange={e => setForm(prev => ({ ...prev, seo_url: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-') }))}
+              placeholder="seo-url-slug (English, hyphens)"
+              className="w-full text-sm border border-[#e8e0d4] rounded-lg px-3 py-2 outline-none focus:border-[#4a8fa0] bg-transparent font-mono"
+              dir="ltr"
+            />
+            <textarea
+              value={form.keywords}
+              onChange={e => setForm(prev => ({ ...prev, keywords: e.target.value }))}
+              placeholder="keyword1, keyword2, keyword3"
+              rows={2}
+              className="w-full text-sm border border-[#e8e0d4] rounded-lg px-3 py-2 outline-none focus:border-[#4a8fa0] bg-transparent resize-none"
+              dir="ltr"
             />
           </div>
         </div>

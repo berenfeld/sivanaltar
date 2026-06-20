@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { LanguageProvider, useLang, readStorage } from '@/lib/LanguageContext';
 import { useEffect } from 'react';
+import BlogPost from '@/pages/BlogPost';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -78,6 +79,19 @@ const AuthenticatedApp = () => {
             <LangSync />
             <LayoutWrapper currentPageName={mainPageKey}>
               <MainPage />
+            </LayoutWrapper>
+          </>
+        }
+      />
+
+      {/* Blog post SEO URL route — must be before generic /:lang/:pageName */}
+      <Route
+        path="/:lang/BlogPost/:seoUrl"
+        element={
+          <>
+            <LangSync />
+            <LayoutWrapper currentPageName="BlogPost">
+              <BlogPost />
             </LayoutWrapper>
           </>
         }

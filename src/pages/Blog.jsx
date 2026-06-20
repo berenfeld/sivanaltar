@@ -164,7 +164,9 @@ export default function Blog() {
                           : ""}
                       </span>
                       <Link
-                        to={createPageUrl("BlogPost") + `?id=${post.id}&view=1`}
+                        to={post.seo_url
+                          ? `/${lang}/BlogPost/${post.seo_url}`
+                          : createPageUrl("BlogPost") + `?id=${post.id}`}
                         className="text-[#4a8fa0] font-medium text-sm hover:underline"
                       >
                         {t("blog_read_more")} {dir === "rtl" ? "←" : "→"}
