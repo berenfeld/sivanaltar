@@ -205,7 +205,7 @@ export default function BlogPost() {
               className={[
                 "hidden md:block rounded-xl object-cover mb-4 flex-shrink-0",
                 // In RTL (Hebrew) float to the left of the text; in LTR (English) float to the right
-                dir === "rtl" ? "float-left ms-0 me-8" : "float-right ms-8 me-0",
+                dir === "rtl" ? "float-left ms-0 me-10" : "float-right ms-10 me-0",
                 "w-72 h-64",
               ].join(" ")}
             />

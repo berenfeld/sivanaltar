@@ -237,7 +237,7 @@ const he = {
 
 const en = {
   // Nav
-  nav_blog: 'Blog',
+  nav_blog: 'My Blogs',
   nav_gallery: 'Gallery',
   nav_calendar: 'Calendar',
   nav_contact: 'Contact',
@@ -251,7 +251,7 @@ const en = {
   logout_confirm_btn: 'Sign Out',
 
   // Page titles
-  page_title_blog: 'Blog',
+  page_title_blog: 'My Blogs',
   page_title_gallery: 'Gallery',
   page_title_calendar: 'Calendar',
   page_title_contact: 'Contact',
@@ -308,7 +308,7 @@ const en = {
   gallery_unpublished_badge: 'Unpublished',
 
   // Blog page
-  blog_title: 'Blog',
+  blog_title: 'My Blogs',
   blog_subtitle: 'Sharing my thoughts and reflections',
   blog_read_more: 'Read More',
   blog_no_posts: 'No posts yet',
