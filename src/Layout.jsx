@@ -247,7 +247,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Mobile Social Footer */}
       <div className="md:hidden bg-[#2d6b7a] text-white py-4 px-4 flex justify-center gap-3 pb-20">
-        <a href="https://www.facebook.com/sivanaltar" target="_blank" rel="noopener noreferrer"
+        <a href="https://www.facebook.com/sivan.hackam" target="_blank" rel="noopener noreferrer"
           className="w-10 h-10 rounded-full bg-[#1877F2]/15 border border-[#1877F2] hover:bg-[#1877F2]/30 flex items-center justify-center transition-colors">
           <svg className="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
         </a>
@@ -294,7 +294,7 @@ export default function Layout({ children, currentPageName }) {
             </div>
           </div>
           <div className="flex gap-3">
-            <a href="https://www.facebook.com/sivanaltar" target="_blank" rel="noopener noreferrer" title="Facebook"
+            <a href="https://www.facebook.com/sivan.hackam" target="_blank" rel="noopener noreferrer" title="Facebook"
               className="w-10 h-10 rounded-full bg-[#1877F2]/15 border border-[#1877F2] hover:bg-[#1877F2]/30 flex items-center justify-center transition-colors">
               <svg className="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
             </a>
