@@ -96,8 +96,7 @@ export default function FloatingChat() {
     if (!input.trim() || questionCount >= 3) return;
     const msg = input.trim();
     localStorage.setItem(PENDING_MSG_KEY, msg);
-    const isAuth = await base44.auth.isAuthenticated();
-    if (!isAuth) { setShowLoginModal(true); return; }
+    if (!isAuthenticated) { setShowLoginModal(true); return; }
     localStorage.removeItem(PENDING_MSG_KEY);
     await sendMessage(msg);
   };

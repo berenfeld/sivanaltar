@@ -12,7 +12,7 @@ const ADMIN_EMAILS = ["berenfeldran@gmail.com", "sivanaltar@gmail.com"];
 
 const SECTIONS = [
   { key: "about_me",       titleKey: "home_section_about_title",    image: "/images/main-1.jpeg" },
-  { key: "satya_method",   titleKey: "home_section_satya_title",    image: "/images/main-2.png"  },
+  { key: "satya_method",   titleKey: "home_section_satya_title",    image: "/images/main-2.webp" },
   { key: "how_it_works",   titleKey: "home_section_howworks_title", image: "/images/main-4.jpeg" },
   { key: "coaching_value", titleKey: "home_section_value_title",    image: "/images/main-3.jpeg" },
 ];
@@ -32,7 +32,7 @@ function Section({ section, content, dir, isAdmin, onSave, index }) {
       <div className="max-w-5xl mx-auto">
         <div className={`flex flex-col md:flex-row gap-10 items-start ${isEven ? "" : "md:flex-row-reverse"}`}>
           <div className="w-full md:w-[30%] flex-shrink-0 md:mt-[3.25rem]">
-            <img src={section.image} alt={t(section.titleKey)} className="w-full h-72 object-cover rounded-2xl shadow-md" />
+            <img src={section.image} alt={t(section.titleKey)} className="w-full h-72 object-cover rounded-2xl shadow-md" loading={index === 0 ? "eager" : "lazy"} />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">

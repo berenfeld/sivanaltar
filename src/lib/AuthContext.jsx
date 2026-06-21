@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 
 const AuthContext = createContext();
@@ -10,12 +10,11 @@ export const AuthProvider = ({ children }) => {
   const [isLoadingPublicSettings] = useState(false);
   const [authError, setAuthError] = useState(null);
   const [appPublicSettings] = useState(null);
+  const checkingRef = useRef(false);
 
-  useEffect(() => {
-    checkUserAuth();
-  }, []);
-
-  const checkUserAuth = async () => {
+  const checkUserAuth = useCallback(async () => {
+    if (checkingRef.current) return;
+    checkingRef.current = true;
     try {
       setIsLoadingAuth(true);
       setAuthError(null);
@@ -26,8 +25,13 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
     } finally {
       setIsLoadingAuth(false);
+      checkingRef.current = false;
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkUserAuth();
+  }, [checkUserAuth]);
 
   const logout = (shouldRedirect = true) => {
     setUser(null);
@@ -50,6 +54,8 @@ export const AuthProvider = ({ children }) => {
       logout,
       navigateToLogin,
       checkAppState: checkUserAuth,
+      checkUserAuth,
+      authChecked: !isLoadingAuth,
     }}>
       {children}
     </AuthContext.Provider>
