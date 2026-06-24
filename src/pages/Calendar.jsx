@@ -95,9 +95,10 @@ export default function Calendar() {
       return true;
     });
 
+    const fmt = t => t.slice(0, 5);
     const dayLines = lang === 'en'
-      ? unique.map((h, i) => `${i === 0 ? '' : 'and '}${DAY_NAMES[h.day_of_week]}: ${h.start_time}–${h.end_time}`)
-      : unique.map((h, i) => `${i === 0 ? 'ימי' : 'וימי'} ${DAY_NAMES[h.day_of_week]}: בשעות ${h.start_time}–${h.end_time}`);
+      ? unique.map((h, i) => `${i === 0 ? '' : 'and '}${DAY_NAMES[h.day_of_week]}: ${fmt(h.start_time)}–${fmt(h.end_time)}`)
+      : unique.map((h, i) => `${i === 0 ? 'ימי' : 'וימי'} ${DAY_NAMES[h.day_of_week]}: בשעות ${fmt(h.start_time)}–${fmt(h.end_time)}`);
 
     return [t("calendar_welcome_hours_prefix"), ...dayLines, t("calendar_welcome_hours_suffix")].join('\n');
   }, [workingHours, lang]);
