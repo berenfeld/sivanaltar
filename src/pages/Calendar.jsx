@@ -95,13 +95,11 @@ export default function Calendar() {
       return true;
     });
 
-    const parts = lang === 'en'
-      ? unique.map(h => `${DAY_NAMES[h.day_of_week]} ${h.start_time}–${h.end_time}`)
-      : unique.map(h => `ימי ${DAY_NAMES[h.day_of_week]} בשעות ${h.start_time}–${h.end_time}`);
-    const daysText = lang === 'en'
-      ? (parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1])
-      : (parts.length === 1 ? parts[0] : parts.slice(0, -1).join(", ") + " ו" + parts[parts.length - 1]);
-    return t("calendar_welcome_hours").replace("{days}", daysText);
+    const dayLines = lang === 'en'
+      ? unique.map((h, i) => `${i === 0 ? '' : 'and '}${DAY_NAMES[h.day_of_week]}: ${h.start_time}–${h.end_time}`)
+      : unique.map((h, i) => `${i === 0 ? 'ימי' : 'וימי'} ${DAY_NAMES[h.day_of_week]}: בשעות ${h.start_time}–${h.end_time}`);
+
+    return [t("calendar_welcome_hours_prefix"), ...dayLines, t("calendar_welcome_hours_suffix")].join('\n');
   }, [workingHours, lang]);
 
   const getSlots = (date) => {
@@ -301,7 +299,7 @@ export default function Calendar() {
            )}
 
           <div className="bg-white rounded-lg p-4 mb-6 border border-[#e8e0d4]">
-            <p className="text-[#3a3a4a] leading-relaxed">{welcomeText}</p>
+            <p className="text-[#3a3a4a] leading-relaxed" style={{whiteSpace: 'pre-line'}}>{welcomeText}</p>
           </div>
 
         {/* Legend */}

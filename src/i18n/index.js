@@ -126,7 +126,8 @@ const he = {
   calendar_cancelled_message: 'הפגישה בוטלה. נשמח לראותך שוב!',
   calendar_no_hours: 'אין שעות פעילות מוגדרות',
   calendar_welcome_default: 'ברוכים הבאים ליומן שלי! ניתן לבחור שעה פנויה ולקבוע פגישה.',
-  calendar_welcome_hours: 'ברוכים הבאים ליומן שלי! הפגישות שלי מתקיימות ב{days}, בקליניקה ברמת השרון או במצב אונליין – בהתאם לנוחות שלך.',
+  calendar_welcome_hours_prefix: 'ברוכים הבאים ליומן שלי! הזמינות שלי לפגישות הכרות ולסדרת מפגשים:',
+  calendar_welcome_hours_suffix: 'אם השעות הללו אינן מסתנכרנות עם הלו"ז שלך, או אם ברצונך לתאם פגישת היכרות חד-פעמית בשעה אחרת, פנה אליי ונמצא יחד את הזמן הנכון עבורנו.',
   // BookingModal
   cal_book_title: 'קביעת פגישה',
   cal_book_price: 'מחיר הפגישה 150 ₪',
@@ -360,7 +361,8 @@ const en = {
   calendar_cancelled_message: 'Your appointment has been cancelled. Hope to see you again!',
   calendar_no_hours: 'No working hours configured',
   calendar_welcome_default: 'Welcome to my calendar! You can select an available time to book a session.',
-  calendar_welcome_hours: 'Welcome to my calendar! Sessions are available on {days}, at the clinic in Ramat HaSharon or online — whatever works best for you.',
+  calendar_welcome_hours_prefix: 'Welcome to my calendar! My availability for introductory and ongoing sessions:',
+  calendar_welcome_hours_suffix: 'If these times don\'t work for your schedule, or if you\'d like to arrange a one-time introductory session at another time, feel free to reach out and we\'ll find the right time together.',
   // BookingModal
   cal_book_title: 'Book a Session',
   cal_book_price: 'Session price: ₪150',
