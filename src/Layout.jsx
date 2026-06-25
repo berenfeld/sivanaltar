@@ -250,6 +250,11 @@ export default function Layout({ children, currentPageName }) {
       <footer className="bg-[#2d6b7a] text-white py-6 px-6 pb-24 md:pb-6">
         {/* Desktop layout */}
         <div className="hidden md:flex max-w-5xl mx-auto items-center justify-between gap-6">
+          <div className="text-right">
+            <p className="font-semibold text-lg">{t("footer_name")}</p>
+            <p className="text-sm opacity-75">{t("footer_subtitle")}</p>
+            <p className="text-xs opacity-50 mt-1">{t("footer_copyright")}</p>
+          </div>
           <div className="flex gap-3">
             <a href="https://www.facebook.com/sivan.hackam" target="_blank" rel="noopener noreferrer" title="Facebook"
               className="w-10 h-10 rounded-full bg-[#1877F2]/15 border border-[#1877F2] hover:bg-[#1877F2]/30 flex items-center justify-center transition-colors">
@@ -274,11 +279,6 @@ export default function Layout({ children, currentPageName }) {
               className="w-10 h-10 rounded-full bg-[#34A853]/15 border border-[#34A853] hover:bg-[#34A853]/30 flex items-center justify-center transition-colors">
               <svg className="w-5 h-5 text-[#34A853]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </a>
-          </div>
-          <div className="text-right">
-            <p className="font-semibold text-lg">{t("footer_name")}</p>
-            <p className="text-sm opacity-75">{t("footer_subtitle")}</p>
-            <p className="text-xs opacity-50 mt-1">{t("footer_copyright")}</p>
           </div>
         </div>
         {/* Mobile layout */}
