@@ -8,6 +8,74 @@ import { useTranslation } from "react-i18next";
 import { useLang } from "@/lib/LanguageContext";
 
 const PENDING_MSG_KEY = "chat_pending_message";
+const FAB_POS_KEY = "chat_fab_position";
+
+function useDraggable(storageKey, defaultPos) {
+  const [pos, setPos] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return defaultPos;
+  });
+  const dragging = useRef(false);
+  const offset = useRef({ x: 0, y: 0 });
+  const ref = useRef(null);
+
+  const didDrag = useRef(false);
+
+  const onPointerDown = (e) => {
+    if (e.button !== 0 && e.type === 'mousedown') return;
+    dragging.current = true;
+    didDrag.current = false;
+    const rect = ref.current.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    offset.current = { x: clientX - rect.left, y: clientY - rect.top };
+    e.preventDefault();
+  };
+
+  const wasDragged = () => didDrag.current;
+
+  useEffect(() => {
+    const onMove = (e) => {
+      if (!dragging.current) return;
+      didDrag.current = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const el = ref.current;
+      if (!el) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const w = el.offsetWidth;
+      const h = el.offsetHeight;
+      const newLeft = Math.min(Math.max(clientX - offset.current.x, 0), vw - w);
+      const newTop = Math.min(Math.max(clientY - offset.current.y, 0), vh - h);
+      setPos({ left: newLeft, top: newTop });
+    };
+    const onUp = () => {
+      if (!dragging.current) return;
+      dragging.current = false;
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const saved = { left: rect.left, top: rect.top };
+      try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch {}
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('touchend', onUp);
+    };
+  }, [storageKey]);
+
+  return { pos, ref, onPointerDown, wasDragged };
+}
 
 export default function FloatingChat() {
   const { t } = useTranslation();
@@ -24,6 +92,8 @@ export default function FloatingChat() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const messagesContainerRef = useRef(null);
+
+  const fab = useDraggable(FAB_POS_KEY, null);
 
   const greeting = () => t("chat_greeting");
 
@@ -237,10 +307,19 @@ export default function FloatingChat() {
 
       {/* Floating Button */}
       {!isOpen && (
-        <div className={`fixed ${dir === 'rtl' ? 'right-4' : 'left-4'} bottom-20 lg:bottom-6 z-50`}>
+        <div
+          ref={fab.ref}
+          style={
+            fab.pos
+              ? { position: 'fixed', left: fab.pos.left, top: fab.pos.top, zIndex: 50, touchAction: 'none' }
+              : { position: 'fixed', ...(dir === 'rtl' ? { right: 16 } : { left: 16 }), bottom: 80, zIndex: 50, touchAction: 'none' }
+          }
+          onMouseDown={fab.onPointerDown}
+          onTouchStart={fab.onPointerDown}
+        >
           <button
-            onClick={() => setIsOpen(true)}
-            style={{ backgroundColor: "#4a8fa0", color: "white", borderRadius: "9999px", padding: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.25)", fontWeight: "600", whiteSpace: "nowrap", border: "none", cursor: "pointer", fontSize: "14px" }}
+            onClick={() => { if (!fab.wasDragged()) setIsOpen(true); }}
+            style={{ backgroundColor: "#4a8fa0", color: "white", borderRadius: "9999px", padding: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.25)", fontWeight: "600", whiteSpace: "nowrap", border: "none", cursor: "grab", fontSize: "14px" }}
           >
             {t("chat_fab_text")}
           </button>

@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 
 const he = {
   // Nav
+  nav_home: 'עמוד הבית',
   nav_blog: 'הבלוגים שלי',
   nav_gallery: 'גלריה',
   nav_calendar: 'יומן',
@@ -238,6 +239,7 @@ const he = {
 
 const en = {
   // Nav
+  nav_home: 'Home',
   nav_blog: 'My Blogs',
   nav_gallery: 'Gallery',
   nav_calendar: 'Calendar',
