@@ -250,7 +250,7 @@ export default function Layout({ children, currentPageName }) {
       <footer className="bg-[#2d6b7a] text-white py-6 px-6 pb-24 md:pb-6">
         {/* Desktop layout */}
         <div className="hidden md:flex max-w-5xl mx-auto items-center justify-between gap-6">
-          <div className="text-right">
+          <div className="text-left">
             <p className="font-semibold text-lg">{t("footer_name")}</p>
             <p className="text-sm opacity-75">{t("footer_subtitle")}</p>
             <p className="text-xs opacity-50 mt-1">© {new Date().getFullYear()} {t("footer_copyright")}</p>
