@@ -27,7 +27,7 @@ const he = {
   // Footer
   footer_name: 'סיון אלטרוביץ',
   footer_subtitle: 'מאמנת רגשית בשיטת סאטיה',
-  footer_copyright: '© 2026 סיון אלטרוביץ. כל הזכויות שמורות.',
+  footer_copyright: 'סיון אלטרוביץ. כל הזכויות שמורות.',
 
   // Home hero
   home_quote: '"מי שמביט החוצה חולם, מי שמביט פנימה מתעורר"',
@@ -263,7 +263,7 @@ const en = {
   // Footer
   footer_name: 'Sivan Altarovici',
   footer_subtitle: 'Emotional Coach — Satya Method',
-  footer_copyright: '© 2026 Sivan Altarovici. All rights reserved.',
+  footer_copyright: 'Sivan Altarovici. All rights reserved.',
 
   // Home hero
   home_quote: '"Who looks outside, dreams; who looks inside, awakes."',

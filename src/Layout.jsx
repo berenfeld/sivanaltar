@@ -253,7 +253,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="text-right">
             <p className="font-semibold text-lg">{t("footer_name")}</p>
             <p className="text-sm opacity-75">{t("footer_subtitle")}</p>
-            <p className="text-xs opacity-50 mt-1">{t("footer_copyright")}</p>
+            <p className="text-xs opacity-50 mt-1">© {new Date().getFullYear()} {t("footer_copyright")}</p>
           </div>
           <div className="flex gap-3">
             <a href="https://www.facebook.com/sivan.hackam" target="_blank" rel="noopener noreferrer" title="Facebook"
@@ -286,7 +286,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="text-center">
             <p className="font-semibold text-lg">{t("footer_name")}</p>
             <p className="text-sm opacity-75">{t("footer_subtitle")}</p>
-            <p className="text-xs opacity-50 mt-1">{t("footer_copyright")}</p>
+            <p className="text-xs opacity-50 mt-1">© {new Date().getFullYear()} {t("footer_copyright")}</p>
           </div>
           <div className="flex w-full justify-around">
             <a href="https://www.facebook.com/sivan.hackam" target="_blank" rel="noopener noreferrer"
